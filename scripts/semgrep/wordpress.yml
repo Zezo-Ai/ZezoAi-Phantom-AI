@@ -1,0 +1,62 @@
+rules:
+  - id: wpdb-unprepared-query
+    languages: [php]
+    message: "Use $wpdb->prepare() for queries with dynamic data."
+    severity: ERROR
+    patterns:
+      - pattern-either:
+          - pattern: $wpdb->query($Q)
+          - pattern: $wpdb->get_var($Q)
+          - pattern: $wpdb->get_row($Q)
+          - pattern: $wpdb->get_results($Q)
+      - pattern-inside: |
+          function ...(...) { ... }
+      - pattern-not: $wpdb->...($wpdb->prepare(...))
+    metadata:
+      category: security
+      cwe: "CWE-89"
+      wp: "Use $wpdb->prepare"
+    paths:
+      include:
+        - "**/*.php"
+
+  - id: remote-request-use-wp-http
+    languages: [php]
+    message: "Use wp_remote_get/wp_remote_post instead of curl_* directly."
+    severity: WARNING
+    pattern-either:
+      - pattern: curl_exec(...)
+      - pattern: curl_setopt(...)
+      - pattern: curl_init(...)
+    metadata:
+      category: wp-guidelines
+    paths:
+      include:
+        - "**/*.php"
+
+  - id: missing-escape-on-echo
+    languages: [php]
+    message: "Echoing variable without escaping; consider esc_html(), esc_attr(), esc_url() etc."
+    severity: WARNING
+    pattern: |
+      echo $X;
+    metadata:
+      category: security
+    paths:
+      include:
+        - "**/*.php"
+
+  - id: missing-nonce-verification
+    languages: [php]
+    message: "AJAX/form handler may be missing nonce verification and capability checks."
+    severity: WARNING
+    patterns:
+      - pattern-inside: |
+          function $F(...) { ... }
+      - pattern-not: |
+          check_admin_referer(...)
+      - pattern-not: |
+          check_ajax_referer(...)
+    metadata:
+      category: security
+      note: "Heuristic; refine with hook context (admin_post_*, wp_ajax_*)."
