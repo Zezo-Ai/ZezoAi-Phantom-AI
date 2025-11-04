@@ -1,0 +1,26 @@
+name: Compliance Warnings CI
+
+on:
+  push:
+    branches: [ dev/plugin-preserve ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  scans:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v4
+        with:
+          php-version: '8.1'
+          extensions: mbstring, json
+
+      - name: Install composer dependencies
+        run: composer install --no-progress --no-suggest --prefer-dist
+
+      - name: Run PHPCS (WPCS)
+        run: ./vendor/bin/phpcs --standard=WordPress --report=json --report-file=artifacts/phpcs.json || true
