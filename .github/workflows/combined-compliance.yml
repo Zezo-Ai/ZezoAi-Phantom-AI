@@ -1,0 +1,49 @@
+name: Combined Compliance & Auto-Resolve (dry-run)
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  compliance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v4
+        with:
+          php-version: '8.1'
+          extensions: mbstring, json
+
+      - name: Composer install
+        run: composer install --no-interaction --no-progress
+
+      - name: Prepare artifacts
+        run: mkdir -p artifacts && mkdir -p artifacts/patches
+
+      - name: Run PHPCS (WPCS)
+        run: ./vendor/bin/phpcs --standard=WordPress --report=json --report-file=artifacts/phpcs.json || true
+
+      - name: Run Semgrep
+        uses: returntocorp/semgrep-action@v2
+        with:
+          config: p/ci
+          output: artifacts/semgrep.json
+        continue-on-error: true
+
+      - name: Run compliance-warnings post-processor
+        run: php phantom-ai/compliance-warnings/src/Handler.php --input=artifacts --output=artifacts || true
+
+      - name: Run registry (all modules) in dry-run
+        run: php phantom-ai/additional-mods/src/ModRegistry.php --artifacts=artifacts --dry-run || true
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: phantom-artifacts
+          path: artifacts/
