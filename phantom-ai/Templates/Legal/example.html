@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Phantom.ai Legal Disclaimers - Example</title>
+	<link rel="stylesheet" href="disclaimers.css">
+</head>
+<body>
+	<div style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+		<h1>Phantom.ai Legal Disclaimers - Examples</h1>
+		
+		<h2>1. Login Screen Disclaimer</h2>
+		<?php
+		define('PHANTOM_AI_CLI', true);
+		include 'login-disclaimer.php';
+		?>
+		
+		<hr style="margin: 3rem 0; border: none; border-top: 2px solid #dee2e6;">
+		
+		<h2>2. Full Legal / Intellectual Property Notice</h2>
+		<?php include 'full-legal-notice.php'; ?>
+		
+		<hr style="margin: 3rem 0; border: none; border-top: 2px solid #dee2e6;">
+		
+		<h2>3. Footer Disclaimer</h2>
+		<?php include 'footer-disclaimer.php'; ?>
+	</div>
+	
+	<script src="disclaimers.js"></script>
+	<script>
+		// Example: Log disclaimers to console
+		console.log('Login Disclaimer:', PhantomLegalDisclaimers.loginDisclaimer());
+		console.log('Full Legal Notice:', PhantomLegalDisclaimers.fullLegalNotice());
+		console.log('Footer Disclaimer:', PhantomLegalDisclaimers.footerDisclaimer());
+	</script>
+</body>
+</html>
