@@ -1,0 +1,413 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phantom.ai - Login Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .background {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            pointer-events: none;
+        }
+        
+        .logo {
+            position: absolute;
+            height: 122px;
+            left: 18px;
+            top: 15px;
+            width: 152px;
+            z-index: 20;
+        }
+        
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .main-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        
+        .login-card {
+            background: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            padding: 3rem;
+            width: 100%;
+            max-width: 28rem;
+        }
+        
+        .login-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #676767;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            width: 20px;
+            height: 20px;
+        }
+        
+        .form-input {
+            width: 100%;
+            background-color: #f3f4f6;
+            border-radius: 9999px;
+            padding: 1rem 1rem 1rem 3rem;
+            font-size: 1rem;
+            color: #374151;
+            border: none;
+            outline: none;
+            transition: all 0.2s;
+        }
+        
+        .form-input:focus {
+            ring: 2px solid #d1d5db;
+            box-shadow: 0 0 0 2px #d1d5db;
+        }
+        
+        .form-input::placeholder {
+            color: #9ca3af;
+        }
+        
+        .password-wrapper {
+            position: relative;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #9ca3af;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+        }
+        
+        .password-toggle:hover {
+            color: #4b5563;
+        }
+        
+        .password-toggle svg {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .form-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            color: #4b5563;
+        }
+        
+        .remember-me input[type="checkbox"] {
+            width: 1rem;
+            height: 1rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+        }
+        
+        .forgot-password {
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: color 0.2s;
+        }
+        
+        .forgot-password:hover {
+            color: #374151;
+        }
+        
+        .btn {
+            width: 100%;
+            border-radius: 9999px;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background-color: #676767;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn-primary:hover {
+            background-color: #616161;
+            transform: scale(1.02);
+        }
+        
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+        
+        .divider {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: #e5e7eb;
+        }
+        
+        .divider span {
+            position: relative;
+            display: inline-block;
+            padding: 0 1rem;
+            background: white;
+            color: #9ca3af;
+            font-size: 0.875rem;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #d1d5db;
+            transform: scale(1.02);
+        }
+        
+        .btn-secondary:active {
+            transform: scale(0.98);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            font-size: .85em;
+            color: #676767c7;
+        }
+        
+        .footer .copyright {
+            font-size: 1.1em;
+                font-weight: 500;
+                color: #676767;
+                margin-top: 8px;
+        }
+        
+        .legal-notice {
+            background: rgba(220, 38, 38, 0.1);
+            border-left: 4px solid #dc2626;
+            border-right: 4px solid #dc2626;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: .85em;
+            line-height: 1.5;
+            padding-bottom: 12px;
+            text-align: center;
+            color: #676767;
+            margin-bottom: 28px;
+            border-right-width: 4px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Image -->
+    <img src="/Users/mydemellc./Downloads/Phantom/src/assets/8bd3d0a2d303c0434ce4f77f1710f66d8eac6c0d.png" alt="" class="background">
+
+    <!-- Logo -->
+    <div class="logo">
+        <img src="/Users/mydemellc./Downloads/Phantom/src/assets/8130bd9cf12220683c55dbd65cb1fd1b9f696caf.png" alt="Phantom.ai">
+    </div>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <div class="login-card">
+            
+            
+            <img src="/Users/mydemellc./Downloads/Phantom/src/assets/8130bd9cf12220683c55dbd65cb1fd1b9f696caf.png" alt="Phantom.ai" style="
+    width: 100%;
+    z-index: 20;
+    border-radius: 9999px;
+    padding: 1em 5em 1em 5em;
+"><br><h3 class="login-title" style="
+    margin-bottom: 28px;
+">Login Access Resticted</h3><form id="loginForm">
+                <!-- Username Input -->
+                <div class="form-group">
+                    <div class="legal-notice" style="
+">
+            <strong>⚠️ PROPRIETARY SYSTEM</strong><br>
+            My Deme, LLC. © 2025 - <script>document.write(new Date().getFullYear())</script> All Rights Reserved.<br>
+            Unauthorized access is strictly prohibited and may result in legal action.
+        </div><div class="input-wrapper">
+                        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        <input type="text" id="username" placeholder="Username" class="form-input" required="">
+                    </div>
+                </div>
+
+                <!-- Password Input -->
+                <div class="form-group">
+                    <div class="input-wrapper password-wrapper">
+                        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                        </svg>
+                        <input type="password" id="password" placeholder="Password" class="form-input" required="">
+                        <button type="button" class="password-toggle" id="togglePassword">
+                            <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                            <svg id="eyeOffIcon" class="hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Remember Me & Forgot Password -->
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" id="rememberMe">
+                        <span>Remember Me</span>
+                    </label>
+                    <button type="button" class="forgot-password" id="forgotPassword">
+                        Forgot Password?
+                    </button>
+                </div>
+
+                <!-- Log in Button -->
+                <button type="submit" class="btn btn-primary" style="
+    margin-bottom: unset;
+">
+                    Log in
+                </button>
+
+                <!-- Divider -->
+                
+
+                <div class="divider">
+                    <span>Or</span>
+                </div><!-- Sign up Button -->
+                <button type="button" class="btn btn-secondary" id="signUpBtn">
+                    Sign up
+                </button>
+            <div class="footer" style="
+">
+            <p>My Deme, LLC | Florida, United States</p>
+            <p class="copyright">My Deme, LLC. © 2025 - <script>document.write(new Date().getFullYear())</script> All Rights Reserved.</p>
+            <p style="font-size: 1em;margin-top: 8px;">Protected under Florida State Law and United States Federal Law</p>
+        </div></form>
+        </div>
+    </main>
+
+    <script>
+        // Password toggle functionality
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+        const eyeOffIcon = document.getElementById('eyeOffIcon');
+
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            eyeIcon.classList.toggle('hidden');
+            eyeOffIcon.classList.toggle('hidden');
+        });
+
+        // Form submission
+        const loginForm = document.getElementById('loginForm');
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            
+            console.log('Login attempted:', { username, password, rememberMe });
+            alert('Login submitted! Check console for details.');
+        });
+
+        // Sign up button
+        const signUpBtn = document.getElementById('signUpBtn');
+        signUpBtn.addEventListener('click', function() {
+            console.log('Sign up clicked');
+            alert('Sign up functionality would be implemented here.');
+        });
+
+        // Forgot password button
+        const forgotPassword = document.getElementById('forgotPassword');
+        forgotPassword.addEventListener('click', function() {
+            console.log('Forgot password clicked');
+            alert('Password recovery would be implemented here.');
+        });
+    </script>
+
+
+</body></html>
