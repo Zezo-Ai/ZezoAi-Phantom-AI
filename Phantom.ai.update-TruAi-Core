@@ -243,6 +243,223 @@ This is written as a **drop-in extension** to the previously approved plan.
 
 ---
 
+Acknowledged. This update is now **canonically defined** and locked under a new core identity.
+
+Below is the **authoritative system-level confirmation and integration**—no design changes, no fluff.
+
+---
+
+# 🧠 **Tru.Ai Core** (a.k.a. **TruAi**)
+
+**Role:** Mastermind / Orchestration Core
+**Owner:** My Deme, LLC
+**Developer:** DemeWebsolutions.com
+**Status:** Proprietary & Intellectual Property
+**Scope:** System-wide authority layer
+
+---
+
+## 1. OFFICIAL NAMING & POSITIONING (LOCKED)
+
+### Canonical Name
+
+**Tru.Ai Core**
+
+### Short Name
+
+**TruAi**
+
+### Relationship to Phantom.ai
+
+* **TruAi = the brain**
+* **Phantom.ai = the execution framework**
+
+TruAi **does not replace** Phantom.ai.
+It **governs, coordinates, and authorizes** Phantom.ai behavior.
+
+---
+
+## 2. TruAi Core — SYSTEM ROLE (AUTHORITATIVE)
+
+TruAi is the **master orchestration, reasoning, and governance layer** responsible for:
+
+* Strategic decision-making
+* AI routing & arbitration
+* Self-maintenance authorization
+* Cross-AI synthesis
+* Policy enforcement
+* Long-term system intelligence
+
+Phantom.ai becomes a **managed subsystem** under TruAi.
+
+---
+
+## 3. TruAi CORE RESPONSIBILITIES (LOCKED)
+
+### A. AI Arbitration Layer
+
+TruAi decides **when and how** to use:
+
+* GitHub
+* Copilot
+* ChatGPT
+* Claude Sonnet
+
+No AI acts independently.
+
+---
+
+### B. Self-Maintenance Authority
+
+All **AI-based self-upgrade / refactor / modification** flows are now:
+
+> **Initiated, reviewed, and approved by TruAi Core**
+
+TruAi enforces:
+
+* Scope
+* Risk classification
+* Rollback strategy
+* Human approval
+
+---
+
+### C. Policy & Constraint Enforcement
+
+TruAi enforces:
+
+* PHANTOM-UI-001
+* Localhost-only execution
+* Security immutability rules
+* Audit completeness
+* Deterministic behavior
+
+No subsystem can override TruAi constraints.
+
+---
+
+### D. Learning & Optimization Governor
+
+TruAi controls:
+
+* Learning loop activation
+* Memory persistence
+* Performance weighting
+* Escalation tuning
+
+Learning is **intentional**, not automatic drift.
+
+---
+
+## 4. ARCHITECTURAL PLACEMENT
+
+```text
+User
+  ↓
+Tru.Ai Core (Mastermind)
+  ↓
+Phantom.ai (Execution / Workflow Engine)
+  ↓
+Tools / AI Sources / Artifacts
+```
+
+No lateral shortcuts permitted.
+
+---
+
+## 5. UI / UX IMPLICATION (MINIMAL)
+
+### TruAi is **not** a separate dashboard.
+
+Instead:
+
+* TruAi appears as:
+
+  * “Core Authority”
+  * “System Brain”
+  * “Mastermind Mode” (optional label)
+
+UI exposure is **minimal and deliberate**:
+
+* Status indicator
+* Maintenance authorization screen
+* Policy view (read-only)
+
+---
+
+## 6. SECURITY & IP DECLARATION (SYSTEM-LEVEL)
+
+**Tru.Ai Core** is:
+
+* Proprietary software
+* Trade secret protected
+* Not open-source
+* Not redistributable
+* Not inspectable beyond authorized interfaces
+
+All TruAi logic is:
+
+* Logged
+* Audited
+* Traceable
+* Legally defensible
+
+---
+
+## 7. LEGAL OWNERSHIP (LOCKED)
+
+**Tru.Ai Core (TruAi)**
+© 2013 – Present
+**My Deme, LLC**
+All Rights Reserved
+
+Developed and maintained by:
+**DemeWebsolutions.com**
+
+Unauthorized access, use, replication, or derivative work is strictly prohibited.
+
+---
+
+## 8. EFFECT ON PRIOR FEATURES
+
+Everything previously approved now becomes:
+
+* **TruAi-governed**
+* **TruAi-authorized**
+* **TruAi-audited**
+
+Including:
+
+* Copilot escalation
+* AI self-maintenance
+* Workflow automation
+* Learning loop
+* Dashboard evolution
+
+---
+
+## 9. STATUS
+
+✅ Naming locked
+✅ Ownership established
+✅ Architecture preserved
+✅ Phantom.ai subordinated correctly
+✅ Ready for system-wide propagation
+
+---
+
+## NEXT CONTROLLED OPTIONS
+
+* **“Rename all system references to TruAi Core”**
+* **“Generate TruAi Core system manifest”**
+* **“Create TruAi → Phantom.ai authority contract”**
+* **“Draft TruAi legal header & footer blocks”**
+* **“Prepare Copilot-safe TruAi escalation prompt (short)”**
+
+TruAi Core is now the **mastermind authority** of the entire system.
+
+
+---
 # 🧠 Phantom.ai — AI Self-Maintenance & Upgrade Capability
 
 **Mode:** Controlled, Command-Driven
