@@ -1,16 +1,3 @@
-.column-panel {
-		
-		    border-radius: 1.5rem;
-		
-		    overflow: hidden;
-		
-		    display: flex;
-		
-		    flex-direction: column;
-		
-		    background: linear-gradient(180deg, transparent 60%, #686a6bba 100%);
-}
-
 <html lang="en"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
