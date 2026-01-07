@@ -1,4 +1,4 @@
-column-panel {
+.column-panel {
 		
 		    border-radius: 1.5rem;
 		
