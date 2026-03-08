@@ -1,7 +1,7 @@
 <html lang="en"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phantom.ai - General Settings</title>
+    <title>Phantom.ai - Settings</title>
     <style>
         * {
             margin: 0;
@@ -352,6 +352,14 @@
             padding: var(--space-lg);
             overflow: hidden;
             background: var(--bg-main);
+            width: fit-content;
+            height: fit-content;
+            padding-right: 50px;
+            padding-bottom: 70px;
+            margin-bottom: unset;
+            border-bottom-width: 100px;
+            padding-left: 20px;
+            padding-top: 20px;
         }
 
         .three-column-grid {
@@ -566,12 +574,13 @@
             font-size: 12px;
             width: 100%;
             border-radius: 20px;
-            border-color: #6767672b;
+            border-color: #a1a1a13d;
             padding-left: 10px;
             padding-top: 10px;
             padding-right: 10px;
             padding-bottom: 10px;
             color: #676767;
+            min-height: fit-content;
         }
 
         .file-selector-dropdown.open {
@@ -823,22 +832,22 @@
         <!-- TOP MENU BAR -->
         <div class="top-menu-bar">
             <div class="menu-left">
-                <button class="menu-item active">Dashboard</button>
-                <button class="menu-item">Workspace</button>
-                <button class="menu-item">Review</button>
-                <button class="menu-item">Files</button>
+                <button class="menu-item" onclick="window.location.href='phantom-defined.html'">Dashboard</button>
+                <button class="menu-item" onclick="window.location.href='Phantom.ai.workspace.html'">Workspace</button>
+                <button class="menu-item" onclick="window.location.href='Phantom.ai.review.html'">Review</button>
+                <button class="menu-item" onclick="window.location.href='Phantom.ai.files.html'">Files</button>
             </div>
 
             <div class="menu-center">
                 <div class="dashboard-logo">
-                    <img src="/Users/mydemellc./Downloads/dashboard/src/assets/8130bd9cf12220683c55dbd65cb1fd1b9f696caf.png" alt="Phantom.ai" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <img src="./assets/phantom-logo.png" alt="Phantom.ai" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                     <span style="display:none; font-size: 20px; font-weight: 700; color: var(--accent-primary); letter-spacing: -0.5px;">Phantom.ai</span>
                 </div>
             </div>
 
             <div class="menu-right">
-                <button class="menu-item" onclick="viewAuditLog()">Audit Log</button>
-                <button class="menu-item">Settings</button>
+                <button class="menu-item" onclick="window.location.href='Phantom.ai.auditlog.html'">Audit Log</button>
+                <button class="menu-item active">Settings</button>
                 <button class="icon-button">🇮🇹</button>
                 <div class="user-profile">
                     <div class="user-avatar">A</div>
@@ -863,53 +872,113 @@
 ">
                     <div class="shadow-window">
                         <div class="shadow-window-header">
-                            <span class="shadow-window-title">Actions Window <span class="badge" id="actionStatus">Awaiting</span></span>
+                            <span class="shadow-window-title">System Configuration <span class="badge" id="actionStatus">Active</span></span>
                             <div class="shadow-window-controls">
-                                <button class="window-control-btn" onclick="clearActions()" title="Clear">✕</button>
+                                <button class="window-control-btn" onclick="clearActions()" title="Refresh">↻</button>
                             </div>
                         </div>
                         <div class="shadow-window-content" id="actionsWindow">
                             <div style="color: var(--color-medium-gray); font-style: italic;">
-State: <span id="stateDisplay">IDLE</span>
+Current Version: <span id="stateDisplay" style="color: var(--accent-success);">v2.5.1</span>
 
-Awaiting standardized output from CENTER...
+System Health: ✓ All systems operational
+Last Update: Jan 1, 2026
+Uptime: 47 days
 
-Actions:
-• Accept → Push to RIGHT (Output)
-• Reject → Return to CENTER
-• Save → Store and push to RIGHT
+Configuration Status:
+• Database: Connected
+• Cache: Active
+• API: Responding
+• Storage: 24.8 GB / 100 GB
 
-No content pending review.
+Last backup: 3 hours ago
                             </div>
                         </div>
                     </div>
 
-                    <div class="panel-header">Gating &amp; Validation</div>
+                    <div class="panel-header">General Settings</div>
                     <div class="panel-body">
                         <div class="checkbox-item">
                             <input type="checkbox" id="g1" checked="" onchange="updateCostEstimate()">
-                            <label for="g1">Include artifacts</label>
+                            <label for="g1">Enable notifications</label>
                         </div>
                         <div class="checkbox-item">
                             <input type="checkbox" id="g2" checked="" onchange="updateCostEstimate()">
-                            <label for="g2">AI outputs</label>
+                            <label for="g2">Auto-save changes</label>
                         </div>
                         <div class="checkbox-item">
                             <input type="checkbox" id="g3" checked="" onchange="updateCostEstimate()">
-                            <label for="g3">Learning history</label>
+                            <label for="g3">Dark mode (default)</label>
                         </div>
                         <div class="checkbox-item">
                             <input type="checkbox" id="g4" onchange="updateCostEstimate()">
-                            <label for="g4">Strict validation</label>
+                            <label for="g4">Beta features enabled</label>
                         </div>
 
                         <div class="divider"></div>
 
                         <div class="form-group">
-                            <label class="form-label">Validation Status</label>
+                            <label class="form-label">Quick Settings</label>
                             <div style="padding: 12px;background: #676767;border: 1px solid var(--color-dark-gray-1);border-radius: 9999px;font-size: 11px;/* color: #000; */">
-                                Pass / Fail indicators
+                                Reset Defaults | Import Config
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI CREDENTIALS PANEL -->
+                <div class="panel">
+                    <div class="panel-header">AI Credentials & API Keys</div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="form-label">Claude API Key (Anthropic)</label>
+                            <input type="password" class="form-control" placeholder="sk-ant-..." style="width: 100%;border-radius: 20px;border-color: #6767672b;background: transparent;padding: 8px 12px;font-size: 12px;">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Claude Model Version</label>
+                            <select class="form-control" id="claudeModel" style="width: 100%;border-radius: 20px;border-color: #6767672b;background: transparent;padding: 8px 12px;font-size: 12px;">
+                                <option>claude-3-5-sonnet-20241022</option>
+                                <option>claude-3-opus-20240229</option>
+                                <option>claude-3-sonnet-20240229</option>
+                                <option>claude-3-haiku-20240307</option>
+                            </select>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="form-group">
+                            <label class="form-label">OpenAI API Key (ChatGPT)</label>
+                            <input type="password" class="form-control" placeholder="sk-..." style="width: 100%;border-radius: 20px;border-color: #6767672b;background: transparent;padding: 8px 12px;font-size: 12px;">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">GPT Model Version</label>
+                            <select class="form-control" id="gptModel" style="width: 100%;border-radius: 20px;border-color: #6767672b;background: transparent;padding: 8px 12px;font-size: 12px;">
+                                <option>gpt-4-turbo-preview</option>
+                                <option>gpt-4</option>
+                                <option>gpt-3.5-turbo</option>
+                            </select>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="form-group">
+                            <label class="form-label">Google Gemini API Key</label>
+                            <input type="password" class="form-control" placeholder="AIza..." style="width: 100%;border-radius: 20px;border-color: #6767672b;background: transparent;padding: 8px 12px;font-size: 12px;">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Default AI Provider</label>
+                            <select class="form-control" id="defaultProvider" style="width: 100%;border-radius: 20px;border-color: #6767672b;background: transparent;padding: 8px 12px;font-size: 12px;">
+                                <option>Claude (Anthropic)</option>
+                                <option>ChatGPT (OpenAI)</option>
+                                <option>Gemini (Google)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <button class="btn-primary" style="width: 100%;padding: 10px;background: var(--accent-primary);border: none;border-radius: 20px;color: var(--color-white);font-weight: 600;cursor: pointer;font-size: 12px;">Save AI Credentials</button>
                         </div>
                     </div>
                 </div>
@@ -920,64 +989,79 @@ No content pending review.
 ">
                     <div class="shadow-window">
                         <div class="shadow-window-header">
-                            <span class="shadow-window-title">AI Response <span class="badge processing" id="aiStatus" style="display:none;">Processing</span></span>
+                            <span class="shadow-window-title">Configuration Preview <span class="badge processing" id="aiStatus" style="display:none;">Loading</span></span>
                             <div class="shadow-window-controls">
-                                <button class="window-control-btn" onclick="copyAI()" title="Copy">📋</button>
-                                <button class="window-control-btn" onclick="clearAI()" title="Clear">✕</button>
+                                <button class="window-control-btn" onclick="copyAI()" title="Export">📄</button>
+                                <button class="window-control-btn" onclick="clearAI()" title="Refresh">↻</button>
                             </div>
                         </div>
                         <div class="shadow-window-content" id="aiResponseWindow">
                             <div style="color: var(--color-medium-gray); font-style: italic;">
-AI Response displays here (read-only)
+<span style="color: var(--accent-success); font-weight: bold;">Current Configuration</span>
 
-Source: Internal or Third-Party
+Theme: Dark Mode
+Language: English (US)
+Timezone: UTC-8 (Pacific)
 
-Awaiting task submission...
+Notifications: Enabled
+Email alerts: Daily digest
+API access: Enabled
+
+Security:
+• 2FA: Required
+• Session timeout: 30 minutes
+• Password policy: Strong
+
+Select a setting category below to configure...
                             </div>
                         </div>
                     </div>
 
-                    <div class="panel-header">AI Interaction &amp; File Control</div>
+                    <div class="panel-header">Settings Categories</div>
                     <div class="panel-body">
                         <div class="file-selector">
                             <div class="file-selector-toggle" onclick="toggleFileSelector()">
-                                <span>📁 File / Project Selector</span>
+                                <span>⚙️ Configuration Sections</span>
                                 <span id="fileSelectorArrow">▼</span>
                             </div>
                             <div class="file-selector-dropdown" id="fileDropdown">
                                 <div class="file-item" onclick="selectFile(this)">
-                                    <span>📄</span> index.php
+                                    <span>👤</span> User Profile Settings
                                 </div>
                                 <div class="file-item" onclick="selectFile(this)">
-                                    <span>📄</span> functions.php
+                                    <span>🔒</span> Security & Privacy
                                 </div>
                                 <div class="file-item" onclick="selectFile(this)">
-                                    <span>📄</span> style.css
+                                    <span>🔔</span> Notifications & Alerts
                                 </div>
                                 <div class="file-item" onclick="selectFile(this)">
-                                    <span>📄</span> script.js
+                                    <span>🌐</span> API & Integrations
                                 </div>
                                 <div class="file-item" onclick="selectFile(this)">
-                                    <span>📁</span> /includes/
+                                    <span>🤖</span> AI Credentials
+                                </div>
+                                <div class="file-item" onclick="selectFile(this)">
+                                    <span>💾</span> Backup & Data
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Task Prompt</label>
-                            <textarea class="form-textarea" id="taskPrompt" oninput="updateCostEstimate()" placeholder="Enter AI task...
+                            <label class="form-label">Configuration Editor</label>
+                            <textarea class="form-textarea" id="taskPrompt" oninput="updateCostEstimate()" placeholder="Edit configuration values...
 
-Example: Review WordPress coding standards"></textarea>
+Example: notification_email=admin@phantom.ai
+theme=dark"></textarea>
                         </div>
 
                         <div class="form-group">
-                            <textarea class="form-control" id="taskContext" style="min-height: 120px;resize: vertical;font-family: var(--font-mono);line-height: 1.5;font-size: 12px;width: 100%;border-radius: 20px;border-color: #6767672b;background: transparent;" placeholder="Optional constraints..."></textarea>
+                            <textarea class="form-control" id="taskContext" style="min-height: 120px;resize: vertical;font-family: var(--font-mono);line-height: 1.5;font-size: 12px;width: 100%;border-radius: 20px;border-color: #6767672b;background: transparent;" placeholder="Advanced configuration (JSON/YAML format)..."></textarea>
                         </div>
 
                         <button class="action-button" id="submitBtn" onclick="submitToOutput()" style="
     background: #676767;
     color: #fff;
-">Submit to Output →</button>
+">Apply Changes →</button>
                     </div>
                 </div>
 
@@ -1023,84 +1107,87 @@ Example: Review WordPress coding standards"></textarea>
     /* background: linear-gradient(180deg, white 0%, #686a6b 100%); */
 ">
                         <div class="shadow-window-header">
-                            <span class="shadow-window-title">Output Area <span class="badge success" id="outputStatus" style="display:none;">Complete</span></span>
+                            <span class="shadow-window-title">Change Log <span class="badge success" id="outputStatus" style="display:none;">Live</span></span>
                             <div class="shadow-window-controls">
-                                <button class="window-control-btn" onclick="saveOutput()" title="Save">💾</button>
-                                <button class="window-control-btn" onclick="clearOutputWindow()" title="Clear">✕</button>
+                                <button class="window-control-btn" onclick="saveOutput()" title="Filter">🔍</button>
+                                <button class="window-control-btn" onclick="clearOutputWindow()" title="Refresh">↻</button>
                             </div>
                         </div>
                         <div class="shadow-window-content" id="outputWindow">
                             <div style="color: var(--color-medium-gray); font-style: italic;">
-Final output displays here
+<span style="color: var(--accent-success);">▸</span> Just now - Theme changed to dark mode
+<span style="color: #676767;">▸</span> 1 hr ago - API key regenerated
+<span style="color: #676767;">▸</span> 3 hr ago - Email notification enabled
+<span style="color: var(--accent-success);">▸</span> Yesterday - 2FA requirement enabled
+<span style="color: #676767;">▸</span> 2 days ago - Password policy updated
 
-• Internal generated output
-• OR Copilot escalation result
-• Stored in Phantom.ai format
-
-Awaiting approved content from LEFT...
+Recent configuration changes...
                             </div>
                         </div>
                     </div>
 
-                    <div class="panel-header">Output &amp; Escalation</div>
+                    <div class="panel-header">System Information</div>
                     <div class="panel-body">
                         <!-- Cost Estimator -->
                         <div class="cost-estimator" style="
     /* background: linear-gradient(180deg, transparent 25%, #686a6bba 100%); */
 ">
                             <div class="cost-header">
-                                <span style="font-size: 10px; font-weight: 700; color: var(--color-medium-gray); text-transform: uppercase;">Estimated Cost</span>
-                                <span class="cost-value" id="costEstimate">$0.07</span>
+                                <span style="font-size: 10px; font-weight: 700; color: var(--color-medium-gray); text-transform: uppercase;">System Resources</span>
+                                <span class="cost-value" id="costEstimate">65%</span>
                             </div>
                             <div class="cost-breakdown">
                                 <div class="cost-line">
-                                    <span>Base:</span>
-                                    <span id="baseCost">$0.010</span>
+                                    <span>Database:</span>
+                                    <span id="baseCost">Connected</span>
                                 </div>
                                 <div class="cost-line">
-                                    <span>Tier (<span id="tierName">Mid</span>):</span>
-                                    <span id="tierCost">×5</span>
+                                    <span>Active Users (<span id="tierName">Now</span>):</span>
+                                    <span id="tierCost">24</span>
                                 </div>
                                 <div class="cost-line">
-                                    <span>Complexity:</span>
-                                    <span id="complexityCost">×1.3</span>
+                                    <span>API Calls:</span>
+                                    <span id="complexityCost">1,247 today</span>
                                 </div>
                                 <div class="cost-line">
-                                    <span>Escalation Risk:</span>
-                                    <span id="escalationRisk">10%</span>
+                                    <span>Storage Used:</span>
+                                    <span id="escalationRisk">24.8 GB</span>
                                 </div>
                             </div>
                             <div class="cost-total">
-                                <strong>Expected:</strong>
-                                <strong id="totalCost">$0.07 - $0.20</strong>
+                                <strong>Status:</strong>
+                                <strong id="totalCost">Optimal ✓</strong>
                             </div>
                         </div>
 
                         <div class="form-group" style="
     background: linear-gradient(180deg, transparent 25%, #686a6bba 100%);
 ">
-                            <label class="form-label">AI Tier</label>
+                            <label class="form-label">Language</label>
                             <select class="form-control" id="aiTier" onchange="updateCostEstimate()">
-                                <option value="1">Cheap (1x)</option>
-                                <option value="5" selected="">Mid (5x)</option>
-                                <option value="20">High / Copilot (20x)</option>
+                                <option value="1" selected="">English (US)</option>
+                                <option value="5">Italiano</option>
+                                <option value="20">Español</option>
+                                <option value="20">Français</option>
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Escalation Mode</label>
+                            <label class="form-label">Timezone</label>
                             <select class="form-control" id="escalationMode">
-                                <option selected="">Auto</option>
-                                <option>Forced</option>
+                                <option selected="">UTC-8 (Pacific)</option>
+                                <option>UTC-5 (Eastern)</option>
+                                <option>UTC+0 (GMT)</option>
+                                <option>UTC+1 (CET)</option>
                             </select>
                         </div>
 
-                        <button class="action-button secondary" onclick="escalateToCopilot()">Escalate to Copilot</button>
+                        <button class="action-button secondary" onclick="escalateToCopilot()">Export Settings</button>
 
                         <div class="divider"></div>
 
-                        <div class="form-label">Artifact Controls</div>
-                        <button class="action-button secondary" onclick="commitArtifact()">Commit to Artifacts</button>
+                        <div class="form-label">Advanced Actions</div>
+                        <button class="action-button secondary" onclick="commitArtifact()">Clear Cache</button>
                         <button class="action-button secondary" onclick="exportOutput()" style="
     /* width: 100%; */
     /* border-radius: 9999px; */
@@ -1111,7 +1198,7 @@ Awaiting approved content from LEFT...
     /* cursor: pointer; */
     /* transition: all 0.2s; */
     margin-top: 10px;
-">Export Output</button>
+">Reset to Defaults</button>
                     </div>
                 </div>
             </div>
@@ -1679,6 +1766,68 @@ Exporting full audit log...
 
         // Initialize
         updateCostEstimate();
+    </script>
+
+    <!-- Legal Footer (Always Present) -->
+    <div class="footer" style="position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-panel); color: var(--color-medium-gray); padding: 12px 20px; text-align: center; font-size: 0.75rem; border-top: var(--border-subtle); z-index: 1000;">
+        <p style="margin: 0;">© 2025 - 2026 My Deme, LLC. All Rights Reserved. | Phantom.ai by DemeWebsolutions.com</p>
+        <p style="margin: 4px 0 0 0;">Protected under Florida State Law and United States Federal Law | <strong>PROPRIETARY AND CONFIDENTIAL</strong></p>
+    </div>
+
+    <!-- Session Timeout Warning -->
+    <div id="sessionWarning" style="display: none; position: fixed; top: 70px; right: 20px; background: #fbbf24; color: #78350f; padding: 1rem 1.5rem; border-radius: 0.5rem; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); z-index: 9998; font-weight: 500;">
+        ⚠️ Session will expire in <span id="timeoutCounter">5:00</span> due to inactivity
+    </div>
+
+    <script>
+        // Session Management (Frontend Security)
+        (function() {
+            const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
+            const WARNING_TIME = 5 * 60 * 1000;     // 5 minutes warning
+            let timeoutId, warningId;
+
+            function resetTimers() {
+                clearTimeout(timeoutId);
+                clearTimeout(warningId);
+                document.getElementById('sessionWarning').style.display = 'none';
+
+                warningId = setTimeout(showWarning, SESSION_TIMEOUT - WARNING_TIME);
+                timeoutId = setTimeout(logout, SESSION_TIMEOUT);
+            }
+
+            function showWarning() {
+                document.getElementById('sessionWarning').style.display = 'block';
+                let timeLeft = WARNING_TIME / 1000;
+                const countdown = setInterval(() => {
+                    timeLeft--;
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
+                    const counter = document.getElementById('timeoutCounter');
+                    if (counter) {
+                        counter.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                    }
+                    if (timeLeft <= 0) clearInterval(countdown);
+                }, 1000);
+            }
+
+            function logout() {
+                alert('Session expired due to inactivity.\n\nYou will be returned to the login page.');
+                sessionStorage.clear();
+                window.location.href = 'Phantom.ai.portal.html';
+            }
+
+            ['mousedown', 'keydown', 'scroll', 'touchstart'].forEach(event => {
+                document.addEventListener(event, resetTimers, { passive: true });
+            });
+
+            // Check if user has acknowledged legal terms
+            if (!sessionStorage.getItem('legal_acknowledged')) {
+                alert('Legal terms not acknowledged.\n\nPlease login again.');
+                window.location.href = 'Phantom.ai.portal.html';
+            }
+
+            resetTimers();
+        })();
     </script>
 
 

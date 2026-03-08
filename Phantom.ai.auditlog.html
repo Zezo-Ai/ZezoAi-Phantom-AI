@@ -1,0 +1,1772 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phantom.ai - Audit Log</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            
+            --bg-main: white;
+            --bg-panel: #121826;
+            --bg-shadow-window: #161c2f;
+            --color-black: #000000;
+            --color-dark-blue: #04182d;
+            --color-near-black: #0e1117;
+            --color-dark-gray-1: #121111;
+            --color-dark-gray-2: #121826;
+            --color-medium-gray: #8f8f8f;
+            --color-light-gray: #e7e7e7;
+            --color-off-white: #fdfdfd;
+            --color-white: #ffffff;
+            --border-subtle: 1px solid rgba(255, 255, 255, 0.08);
+            --border-strong: 1px solid rgba(255, 255, 255, 0.14);
+            --shadow-window: 0 6px 18px rgba(0, 0, 0, 0.45);
+            --shadow-1: 0 2px 8px rgba(0, 0, 0, 0.35);
+            --shadow-2: 0 4px 16px rgba(0, 0, 0, 0.45);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --space-xs: 6px;
+            --space-sm: 10px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --accent-primary: #676767;
+            --accent-success: #a1a1a1;
+            --accent-danger: #676767;
+            --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            --font-mono: 'SF Mono', Monaco, 'Courier New', monospace;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background: var(--bg-main);
+            color: var(--color-white);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(var(--color-dark-gray-1) 1px, transparent 1px),
+                linear-gradient(90deg, var(--color-dark-gray-1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        /* LOGIN */
+        .login-container {
+            position: relative;
+            z-index: 1;
+            background: var(--bg-panel);
+            border: var(--border-subtle);
+            border-radius: var(--radius-md);
+            width: 100%;
+            max-width: 400px;
+            padding: 48px 36px;
+            box-shadow: var(--shadow-panel);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 36px;
+            border-bottom: 1px solid var(--color-dark-gray-1);
+            padding-bottom: 24px;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-white);
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .tagline {
+            font-size: 11px;
+            color: var(--color-medium-gray);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .input-wrapper {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--color-medium-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--color-black);
+            border: 1px solid var(--color-dark-gray-1);
+            border-radius: 4px;
+            font-size: 14px;
+            color: var(--color-white);
+            transition: all 0.2s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--color-dark-blue);
+            box-shadow: 0 0 0 2px rgba(4, 24, 45, 0.2);
+        }
+
+        .input-field::placeholder {
+            color: var(--color-dark-gray-1);
+        }
+
+        .login-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            font-size: 12px;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--color-medium-gray);
+        }
+
+        .forgot-link {
+            color: var(--color-light-gray);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: transparent;
+            color: var(--accent-primary);
+            border: var(--border-strong);
+            border-color: var(--accent-primary);
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s ease, border-color 0.15s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .login-btn:hover {
+            background: rgba(77, 163, 255, 0.08);
+        }
+
+        .demo-credentials {
+            margin-top: 28px;
+            padding: 16px;
+            background: var(--color-black);
+            border: 1px solid var(--color-dark-gray-1);
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .demo-credentials-title {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--color-medium-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .demo-credentials code {
+            background: var(--color-dark-gray-2);
+            padding: 2px 6px;
+            border-radius: 2px;
+            font-family: var(--font-mono);
+            font-weight: 600;
+            color: var(--color-white);
+            font-size: 11px;
+        }
+
+        /* DASHBOARD */
+        .dashboard-container {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dashboard-container.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-menu-bar {
+            height: auto;
+            background: white;
+            border-bottom: var(--border-subtle);
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            padding: 0 var(--space-lg);
+            box-shadow: var(--shadow-panel);
+            gap: 20px;
+        }
+
+        .menu-left {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            justify-self: start;
+        }
+
+        .menu-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 200px;
+        }
+
+        .menu-right {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            justify-self: end;
+        }
+
+        .menu-item {
+            padding: var(--space-sm) var(--space-md);
+            background: transparent;
+            border: var(--border-subtle);
+            border-color: transparent;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-medium-gray);
+            cursor: pointer;
+            transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .menu-item:hover {
+            background: rgba(255,255,255,0.04);
+            color: #e6edf3;
+        }
+
+        .menu-item.active {
+            color: #6767678c;
+            border-radius: 9999px;
+        }
+
+        .dashboard-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-sm) 20px;
+            border: var(--border-subtle);
+            border-radius: var(--radius-sm);
+        }
+
+        .dashboard-logo img {
+            height: 100px;
+            width: auto;
+            display: block;
+        }
+
+        .icon-button {
+            width: 32px;
+            height: 32px;
+            background: transparent;
+            border: var(--border-strong);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.15s ease, border-color 0.15s ease;
+            font-size: 14px;
+        }
+
+        .icon-button:hover {
+            background: rgba(255,255,255,0.04);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: 4px var(--space-sm);
+            background: transparent;
+            border: var(--border-strong);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: background 0.15s ease, border-color 0.15s ease;
+        }
+
+        .user-profile:hover {
+            background: rgba(255,255,255,0.04);
+        }
+
+        .user-avatar {
+            width: 24px;
+            height: 24px;
+            /* background: rgba(77, 163, 255, 0.15); */
+            border: 1px solid #a1a1a1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 11px;
+            color: #676767;
+        }
+
+        .user-name {
+            font-size: 11px;
+            font-weight: 600;
+            color: #676767;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: var(--space-lg);
+            overflow: hidden;
+            background: var(--bg-main);
+            width: fit-content;
+            height: fit-content;
+            padding-right: 50px;
+            padding-bottom: 70px;
+            margin-bottom: unset;
+            border-bottom-width: 100px;
+            padding-left: 20px;
+            padding-top: 20px;
+        }
+
+        .three-column-grid {
+            display: inline-grid;
+                grid-template-columns: 25% 50% 25%;
+                gap: 16px;
+                height: 100%;
+                width: 100%;
+        }
+
+        /* CANONICAL COLUMN PANEL - LOCKED (SVG Authority) */
+        .column-panel {
+            background: var(--bg-panel);
+            border-radius: 1.5rem;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* CANONICAL SHADOW WINDOW - LOCKED (SVG Authority) */
+        .shadow-window {
+            border-radius: var(--radius-md);
+                padding: var(--space-md);
+                min-height: 200px;
+                max-height: 200px;
+                overflow-y: auto;
+                position: relative;
+                margin-bottom: 0;
+        }
+
+        .shadow-window-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-sm);
+            padding-bottom: var(--space-sm);
+            border-bottom: var(--border-subtle);
+        }
+
+        /* Section Title (SVG-consistent) */
+        .shadow-window-title,
+        .section-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--color-medium-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            opacity: 0.7;
+        }
+
+        .shadow-window-controls {
+            display: flex;
+            gap: 4px;
+        }
+
+        .window-control-btn {
+            width: 20px;
+            height: 20px;
+            background: transparent;
+            border: var(--border-strong);
+            border-radius: var(--radius-sm);
+            font-size: 10px;
+            color: #e6edf3;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s ease, border-color 0.15s ease;
+        }
+
+        .window-control-btn:hover {
+            background: rgba(255,255,255,0.04);
+            border-color: rgba(255,255,255,0.20);
+        }
+
+        .shadow-window-content {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            line-height: 1.6;
+            color: var(--color-medium-gray);
+        }
+
+        .shadow-window::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .shadow-window::-webkit-scrollbar-track {
+            background: var(--color-black);
+        }
+
+        .shadow-window::-webkit-scrollbar-thumb {
+            background: var(--color-dark-gray-1);
+            border-radius: 2px;
+        }
+
+        .panel-header {
+            padding: var(--space-md) var(--space-md);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            border-bottom: var(--border-subtle);
+            color: #676767;
+        }
+
+        .panel-body {
+            flex: 1;
+            padding: var(--space-md);
+            overflow-y: auto;
+        }
+
+        .panel-body::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .panel-body::-webkit-scrollbar-track {
+            background: var(--color-dark-gray-2);
+        }
+
+        .panel-body::-webkit-scrollbar-thumb {
+            background: var(--color-dark-gray-1);
+            border-radius: 2px;
+        }
+
+        /* Cost Estimator (SVG-aligned) */
+        .cost-estimator {
+            padding: var(--space-md);
+            border: var(--border-subtle);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-md);
+            min-height: 120px;
+            resize: vertical;
+            font-family: var(--font-mono);
+            line-height: 1.5;
+            font-size: 12px;
+            width: 100%;
+            border-radius: 20px;
+            padding: 10px;
+        }
+
+        .cost-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-sm);
+            padding-bottom: var(--space-sm);
+            border-bottom: var(--border-subtle);
+        }
+
+        .cost-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        .cost-line {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: var(--color-medium-gray);
+            margin-bottom: 4px;
+        }
+
+        .cost-total {
+            margin-top: var(--space-sm);
+            padding-top: var(--space-sm);
+            border-top: var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--color-light-gray);
+        }
+
+        /* File Selector */
+        .file-selector {
+            margin-bottom: 16px;
+        }
+
+        .file-selector-toggle {
+            
+            width: 100%;
+            padding: var(--space-sm) 12px;
+            background: transparent;
+            border: var(--border-strong);
+            border-radius: var(--radius-sm);
+            color: #676767;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.15s ease, border-color 0.15s ease;
+        }
+
+        .file-selector-toggle:hover {
+            background: rgba(255,255,255,0.04);
+        }
+
+        .file-selector-dropdown {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            border: var(--border-subtle);
+            border-top: none;
+            border-radius: 20px;
+            min-height: 120px;
+            resize: vertical;
+            font-family: var(--font-mono);
+            line-height: 1.5;
+            font-size: 12px;
+            width: 100%;
+            border-radius: 20px;
+            border-color: #a1a1a13d;
+            padding-left: 10px;
+            padding-top: 10px;
+            padding-right: 10px;
+            padding-bottom: 10px;
+            color: #676767;
+            min-height: fit-content;
+        }
+
+        .file-selector-dropdown.open {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            padding: 8px 12px;
+            font-size: 11px;
+            color: #676767;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .file-item:hover {
+            background: var(--color-dark-gray-2);
+        }
+
+        .file-item.selected {
+            background: rgba(77, 163, 255, 0.15);
+            color: var(--accent-primary);
+            border-left: 2px solid var(--accent-primary);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #676767;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            width: 100%;
+                padding: var(--space-sm) 12px;
+                background: #676767;
+                border: var(--border-subtle);
+                border-radius: 9999px;
+                font-size: 13px;
+                color: var(--color-white);
+                font-family: var(--font-primary);
+                transition: background 0.15s ease, border-color 0.15s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            background: rgba(77, 163, 255, 0.05);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: var(--font-mono);
+            line-height: 1.5;
+            font-size: 12px;
+            width: 100%;
+            border-radius: 20px;
+            border-color: #6767672b;
+            padding: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-bottom: 6px;
+        }
+
+        .checkbox-item:hover {
+            background: var(--color-black);
+        }
+
+        .checkbox-item label {
+            font-size: 12px;
+            color: #676767;
+            cursor: pointer;
+        }
+
+        /* CANONICAL BUTTON SYSTEM - LOCKED (SVG Authority) */
+        /* NO filled buttons, outline-only */
+        .action-button {
+            width: 100%;
+            padding: var(--space-sm) 14px;
+            background: transparent;
+            border: var(--border-strong);
+            border-radius: 9999px;
+            color: #e6edf3;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s ease, border-color 0.15s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: var(--space-sm);
+        }
+
+        .action-button:hover {
+            background: rgba(255,255,255,0.04);
+        }
+
+        .action-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .action-button.primary {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .action-button.primary:hover {
+            background: rgba(77, 163, 255, 0.08);
+        }
+
+        .action-button.secondary {
+            border-color: rgba(255,255,255,0.14);
+            color: #e6edf3;
+        }
+
+        .action-button.secondary:hover {
+            background: rgba(255,255,255,0.04);
+        }
+
+        .action-button.accept {
+            border-color: var(--accent-success);
+            color: var(--accent-success);
+        }
+
+        .action-button.accept:hover {
+            background: transparent;
+        }
+
+        .action-button.reject {
+            border-color: var(--accent-danger);
+            color: var(--accent-danger);
+        }
+
+        .action-button.reject:hover {
+            background: rgba(255, 92, 92, 0.08);
+        }
+
+        /* Subtle Divider (SVG-consistent) */
+        .divider {
+            height: 1px;
+            background: rgba(255,255,255,0.06);
+            margin: var(--space-md) 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            background: var(--color-dark-gray-2);
+            border: 1px solid var(--color-dark-gray-1);
+            border-radius: 9999px;
+            font-size: 9px;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge.success {
+            background: rgba(60, 207, 145, 0.1);
+            border-color: var(--accent-success);
+            color: var(--accent-success);
+        }
+
+        .badge.processing {
+            background: rgba(77, 163, 255, 0.1);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .code-line {
+            background: rgba(255,255,255,0.02);
+            padding: 2px var(--space-xs);
+            margin: 2px 0;
+            border-left: 2px solid var(--accent-primary);
+            font-size: 10px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 1200px) {
+            .three-column-grid {
+                grid-template-columns: 1fr;
+                overflow-y: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN SCREEN -->
+    <div class="login-container hidden" id="loginScreen">
+        <div class="login-header">
+            <div class="logo">Phantom.ai</div>
+            <div class="tagline">Complete Implementation</div>
+        </div>
+        
+        <form id="loginForm">
+            <div class="input-wrapper">
+                <label class="input-label">Username</label>
+                <input type="text" id="username" class="input-field" placeholder="Enter username" required="">
+            </div>
+            
+            <div class="input-wrapper">
+                <label class="input-label">Password</label>
+                <input type="password" id="password" class="input-field" placeholder="Enter password" required="">
+            </div>
+
+            <div class="login-options">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="remember">
+                    <label for="remember">Remember</label>
+                </div>
+                <a href="#" class="forgot-link">Forgot?</a>
+            </div>
+            
+            <button type="submit" class="login-btn">Sign In</button>
+        </form>
+        
+        <div class="demo-credentials">
+            <div class="demo-credentials-title">Demo Access</div>
+            <div style="font-size: 12px; color: var(--color-light-gray);">
+                <code>admin</code> / <code>phantom2025</code>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD SCREEN -->
+    <div class="dashboard-container active" id="dashboardScreen">
+        <!-- TOP MENU BAR -->
+        <div class="top-menu-bar">
+            <div class="menu-left">
+                <button class="menu-item" onclick="window.location.href='phantom-defined.html'">Dashboard</button>
+                <button class="menu-item" onclick="window.location.href='Phantom.ai.workspace.html'">Workspace</button>
+                <button class="menu-item" onclick="window.location.href='Phantom.ai.review.html'">Review</button>
+                <button class="menu-item" onclick="window.location.href='Phantom.ai.files.html'">Files</button>
+            </div>
+
+            <div class="menu-center">
+                <div class="dashboard-logo">
+                    <img src="./assets/phantom-logo.png" alt="Phantom.ai" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <span style="display:none; font-size: 20px; font-weight: 700; color: var(--accent-primary); letter-spacing: -0.5px;">Phantom.ai</span>
+                </div>
+            </div>
+
+            <div class="menu-right">
+                <button class="menu-item active">Audit Log</button>
+                <button class="menu-item" onclick="window.location.href='Phantom.ai.settings.html'">Settings</button>
+                <button class="icon-button">🇮🇹</button>
+                <div class="user-profile">
+                    <div class="user-avatar">A</div>
+                    <span class="user-name" id="displayUsername">Admin</span>
+                </div>
+                <button class="icon-button" onclick="logout()" title="Logout">⏻</button>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT: CENTER → LEFT → RIGHT WORKFLOW -->
+        <div class="main-content">
+            <div class="three-column-grid">
+                <!-- LEFT COLUMN: GATING & ACTIONS -->
+                <div class="column-panel" style="
+    background: linear-gradient(180deg, transparent 25%, #686a6bba 100%);
+    /* border-radius: 1.5rem; */
+    /* box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); */
+    /* padding: 3rem; */
+    /* width: 100%; */
+    /* max-width: 28rem; */
+    border: none;
+">
+                    <div class="shadow-window">
+                        <div class="shadow-window-header">
+                            <span class="shadow-window-title">System Audit Log <span class="badge" id="actionStatus">Monitoring</span></span>
+                            <div class="shadow-window-controls">
+                                <button class="window-control-btn" onclick="clearActions()" title="Refresh">↻</button>
+                            </div>
+                        </div>
+                        <div class="shadow-window-content" id="actionsWindow">
+                            <div style="color: var(--color-medium-gray); font-style: italic;">
+Total Events Today: <span id="stateDisplay" style="color: var(--accent-success);">247</span>
+
+Last 24 Hours:
+• Login attempts: 32
+• File modifications: 18
+• Config changes: 5
+• Failed authentications: 2
+
+System Status: ✓ All services operational
+Last backup: 2 hours ago
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-header">Event Filters</div>
+                    <div class="panel-body">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="g1" checked="" onchange="updateCostEstimate()">
+                            <label for="g1">Show system events</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="g2" checked="" onchange="updateCostEstimate()">
+                            <label for="g2">Show user actions</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="g3" checked="" onchange="updateCostEstimate()">
+                            <label for="g3">Show security events</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="g4" onchange="updateCostEstimate()">
+                            <label for="g4">Show failed attempts only</label>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="form-group">
+                            <label class="form-label">Quick Filters</label>
+                            <div style="padding: 12px;background: #676767;border: 1px solid var(--color-dark-gray-1);border-radius: 9999px;font-size: 11px;/* color: #000; */">
+                                Last Hour | Last 24h | Last 7 Days
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CENTER COLUMN: AI INTERACTION & FILE CONTROL -->
+                <div class="column-panel" style="
+    background: linear-gradient(180deg, transparent 60%, #686a6bba 100%);
+">
+                    <div class="shadow-window">
+                        <div class="shadow-window-header">
+                            <span class="shadow-window-title">Audit Event Details <span class="badge processing" id="aiStatus" style="display:none;">Loading</span></span>
+                            <div class="shadow-window-controls">
+                                <button class="window-control-btn" onclick="copyAI()" title="Export">📄</button>
+                                <button class="window-control-btn" onclick="clearAI()" title="Refresh">↻</button>
+                            </div>
+                        </div>
+                        <div class="shadow-window-content" id="aiResponseWindow">
+                            <div style="color: var(--color-medium-gray); font-style: italic;">
+<span style="color: var(--accent-success); font-weight: bold;">Event ID: #AUD-2026-0106-0247</span>
+
+Type: User Login
+User: admin@phantom.ai
+IP Address: 192.168.1.42
+Timestamp: 2026-01-06 06:15:23 UTC
+Status: Success
+
+Event Details:
+• Browser: Chrome 120
+• Location: San Francisco, CA
+• 2FA: Verified
+
+Select an event below to view full details...
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-header">Audit Event Browser</div>
+                    <div class="panel-body">
+                        <div class="file-selector">
+                            <div class="file-selector-toggle" onclick="toggleFileSelector()">
+                                <span>📋 Recent Events</span>
+                                <span id="fileSelectorArrow">▼</span>
+                            </div>
+                            <div class="file-selector-dropdown" id="fileDropdown">
+                                <div class="file-item" onclick="selectFile(this)">
+                                    <span>✅</span> User Login - admin - Success
+                                </div>
+                                <div class="file-item" onclick="selectFile(this)">
+                                    <span>📝</span> File Modified - functions.php
+                                </div>
+                                <div class="file-item" onclick="selectFile(this)">
+                                    <span>⚙️</span> Settings Changed - Security
+                                </div>
+                                <div class="file-item" onclick="selectFile(this)">
+                                    <span>❌</span> Login Failed - unknown_user
+                                </div>
+                                <div class="file-item" onclick="selectFile(this)">
+                                    <span>🔒</span> Permission Changed - Role Update
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Search Events</label>
+                            <textarea class="form-textarea" id="taskPrompt" oninput="updateCostEstimate()" placeholder="Search audit log by user, event type, IP address...
+
+Example: user:admin type:login date:2026-01-06"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <textarea class="form-control" id="taskContext" style="min-height: 120px;resize: vertical;font-family: var(--font-mono);line-height: 1.5;font-size: 12px;width: 100%;border-radius: 20px;border-color: #6767672b;background: transparent;" placeholder="Advanced search filters (JSON format)..."></textarea>
+                        </div>
+
+                        <button class="action-button" id="submitBtn" onclick="submitToOutput()" style="
+    background: #676767;
+    color: #fff;
+">Search Events →</button>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: OUTPUT & ESCALATION -->
+                <div class="column-panel" style="
+    .phantom-shadow-window {
+    background: linear-gradient(
+    180deg,
+    #161c2f 0%,
+    #121826 100%
+  );
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    box-shadow:
+    0 8px 24px rgba(0,0,0,0.55);
+    padding: 16px;
+    margin-bottom: 16px;
+};
+    background: linear-gradient(180deg, transparent 25%, #686a6bba 100%);
+    /* background: linear-gradient(    180deg,    #161c2f 0%,    #121826 100%  ); */
+    border-radius: 1.5rem;
+    /* box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); */
+    /* padding: 3rem; */
+    /* width: 100%; */
+    /* max-width: 28rem; */
+    /* background: linear-gradient(
+    180deg,
+    #161c2f 0%,
+    #121826 100%
+  ); */
+    /* border: 1px solid rgba(255,255,255,0.08); */
+    /* border-radius: 10px; */
+    /* box-shadow:
+    0 6px 18px rgba(0,0,0,0.45); */
+    /* padding: 16px; */
+    /* background: linear-gradient(
+    180deg,
+    #161c2f 0%,
+    #121826 100%
+  ); */
+">
+                    <div class="shadow-window" style="
+    /* background: linear-gradient(180deg, white 0%, #686a6b 100%); */
+">
+                        <div class="shadow-window-header">
+                            <span class="shadow-window-title">Live Activity Stream <span class="badge success" id="outputStatus" style="display:none;">Live</span></span>
+                            <div class="shadow-window-controls">
+                                <button class="window-control-btn" onclick="saveOutput()" title="Filter">🔍</button>
+                                <button class="window-control-btn" onclick="clearOutputWindow()" title="Refresh">↻</button>
+                            </div>
+                        </div>
+                        <div class="shadow-window-content" id="outputWindow">
+                            <div style="color: var(--color-medium-gray); font-style: italic;">
+<span style="color: var(--accent-success);">▸</span> Just now - Login successful: admin
+<span style="color: #676767;">▸</span> 2 min ago - File accessed: config.php
+<span style="color: #676767;">▸</span> 5 min ago - Settings updated: notifications
+<span style="color: var(--accent-success);">▸</span> 12 min ago - New user created: johndoe
+<span style="color: #ff6b6b;">▸</span> 18 min ago - Login failed: invalid credentials
+<span style="color: #676767;">▸</span> 25 min ago - Backup completed
+<span style="color: #676767;">▸</span> 34 min ago - Permission granted: reviewer role
+<span style="color: var(--accent-success);">▸</span> 45 min ago - Audit log exported
+
+Real-time system activity monitoring...
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-header">Audit Statistics</div>
+                    <div class="panel-body">
+                        <!-- Cost Estimator -->
+                        <div class="cost-estimator" style="
+    /* background: linear-gradient(180deg, transparent 25%, #686a6bba 100%); */
+">
+                            <div class="cost-header">
+                                <span style="font-size: 10px; font-weight: 700; color: var(--color-medium-gray); text-transform: uppercase;">Today's Activity</span>
+                                <span class="cost-value" id="costEstimate">247</span>
+                            </div>
+                            <div class="cost-breakdown">
+                                <div class="cost-line">
+                                    <span>Total Events:</span>
+                                    <span id="baseCost">247</span>
+                                </div>
+                                <div class="cost-line">
+                                    <span>Unique Users (<span id="tierName">Active</span>):</span>
+                                    <span id="tierCost">18</span>
+                                </div>
+                                <div class="cost-line">
+                                    <span>Security Events:</span>
+                                    <span id="complexityCost">7</span>
+                                </div>
+                                <div class="cost-line">
+                                    <span>Failed Actions:</span>
+                                    <span id="escalationRisk">2</span>
+                                </div>
+                            </div>
+                            <div class="cost-total">
+                                <strong>System Status:</strong>
+                                <strong id="totalCost">Normal ✓</strong>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="
+    background: linear-gradient(180deg, transparent 25%, #686a6bba 100%);
+">
+                            <label class="form-label">Event Category</label>
+                            <select class="form-control" id="aiTier" onchange="updateCostEstimate()">
+                                <option value="1">All Events</option>
+                                <option value="5" selected="">Security</option>
+                                <option value="20">System</option>
+                                <option value="20">User Actions</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Time Range</label>
+                            <select class="form-control" id="escalationMode">
+                                <option selected="">Last 24 Hours</option>
+                                <option>Last 7 Days</option>
+                                <option>Last 30 Days</option>
+                                <option>Custom Range</option>
+                            </select>
+                        </div>
+
+                        <button class="action-button secondary" onclick="escalateToCopilot()">Export Audit Log</button>
+
+                        <div class="divider"></div>
+
+                        <div class="form-label">Report Actions</div>
+                        <button class="action-button secondary" onclick="commitArtifact()">Generate Report</button>
+                        <button class="action-button secondary" onclick="exportOutput()" style="
+    /* width: 100%; */
+    /* border-radius: 9999px; */
+    /* padding: 1rem; */
+    /* font-size: 1rem; */
+    /* font-weight: 500; */
+    /* border: none; */
+    /* cursor: pointer; */
+    /* transition: all 0.2s; */
+    margin-top: 10px;
+">Schedule Email Report</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== STATE MACHINE ==========
+        class PhantomStateManager {
+            constructor() {
+                this.currentState = 'IDLE';
+                this.stateHistory = [];
+                this.taskData = null;
+            }
+
+            transition(toState) {
+                const allowed = this.getAllowedTransitions(this.currentState);
+                
+                if (!allowed.includes(toState)) {
+                    console.error(`Invalid transition: ${this.currentState} → ${toState}`);
+                    return false;
+                }
+
+                this.stateHistory.push({
+                    from: this.currentState,
+                    to: toState,
+                    timestamp: Date.now(),
+                    user: document.getElementById('displayUsername').textContent
+                });
+
+                this.currentState = toState;
+                this.updateUI(toState);
+                this.logTransition(toState);
+                return true;
+            }
+
+            getAllowedTransitions(state) {
+                const rules = {
+                    'IDLE': ['COMPOSING'],
+                    'COMPOSING': ['PROCESSING', 'IDLE'],
+                    'PROCESSING': ['REVIEWING', 'COMPOSING'],
+                    'REVIEWING': ['OUTPUTTING', 'COMPOSING'],
+                    'OUTPUTTING': ['ESCALATING', 'COMPLETE', 'IDLE'],
+                    'ESCALATING': ['OUTPUTTING', 'REVIEWING'],
+                    'COMPLETE': ['IDLE']
+                };
+                return rules[state] || [];
+            }
+
+            updateUI(state) {
+                document.getElementById('stateDisplay').textContent = state;
+                
+                const actionStatus = document.getElementById('actionStatus');
+                if (state === 'REVIEWING') {
+                    actionStatus.textContent = 'Pending Review';
+                    actionStatus.className = 'badge processing';
+                } else if (state === 'COMPLETE') {
+                    actionStatus.textContent = 'Complete';
+                    actionStatus.className = 'badge success';
+                } else {
+                    actionStatus.textContent = 'Awaiting';
+                    actionStatus.className = 'badge';
+                }
+            }
+
+            logTransition(state) {
+                auditLogger.log('state_transition', {
+                    from: this.stateHistory[this.stateHistory.length - 1]?.from || 'INIT',
+                    to: state,
+                    task_data: this.taskData
+                });
+            }
+
+            getCurrentState() {
+                return this.currentState;
+            }
+
+            getStateHistory() {
+                return this.stateHistory;
+            }
+        }
+
+        const stateManager = new PhantomStateManager();
+
+        // ========== AUDIT LOGGER ==========
+        class AuditLogger {
+            constructor() {
+                this.logs = [];
+                this.sessionStart = Date.now();
+            }
+
+            log(action, details = {}) {
+                const entry = {
+                    timestamp: new Date().toISOString(),
+                    session_id: this.sessionStart,
+                    user: document.getElementById('displayUsername').textContent,
+                    action: action,
+                    state: stateManager.getCurrentState(),
+                    details: details,
+                    ip: '127.0.0.1' // Localhost
+                };
+
+                this.logs.push(entry);
+                console.log('[AUDIT]', entry);
+                
+                // In production, send to server
+                // this.sendToServer(entry);
+            }
+
+            getSessionLogs() {
+                return this.logs;
+            }
+
+            exportLogs() {
+                const blob = new Blob([JSON.stringify(this.logs, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `phantom-audit-${this.sessionStart}.json`;
+                a.click();
+            }
+        }
+
+        const auditLogger = new AuditLogger();
+
+        // ========== COST ESTIMATOR ==========
+        class CostEstimator {
+            constructor() {
+                this.currentSessionCost = 0;
+                this.totalCost = 0;
+                this.taskHistory = [];
+            }
+
+            calculateBaseCost(taskData) {
+                let cost = 0.01;
+                
+                if (taskData.prompt) {
+                    const promptTokens = taskData.prompt.length / 4;
+                    cost += promptTokens * 0.00001;
+                }
+                
+                if (taskData.context) {
+                    const contextTokens = taskData.context.length / 4;
+                    cost += contextTokens * 0.00001;
+                }
+                
+                const fileCount = taskData.files?.length || 0;
+                cost += fileCount * 0.005;
+                
+                return cost;
+            }
+
+            calculateComplexityFactor(taskData) {
+                let factor = 1.0;
+                
+                if (taskData.gating?.strictMode) factor *= 1.5;
+                if (taskData.gating?.includeArtifacts) factor *= 1.2;
+                if (taskData.gating?.includeLearning) factor *= 1.1;
+                
+                const promptLength = taskData.prompt?.length || 0;
+                if (promptLength > 500) factor *= 1.5;
+                else if (promptLength > 200) factor *= 1.2;
+                
+                return factor;
+            }
+
+            calculateEscalationProbability() {
+                if (this.taskHistory.length < 3) return 0.1;
+                
+                const recent = this.taskHistory.slice(-10);
+                const escalationRate = recent.filter(t => t.escalated).length / recent.length;
+                return Math.min((0.1 + escalationRate) / 2, 0.9);
+            }
+
+            estimate(taskData) {
+                const baseCost = this.calculateBaseCost(taskData);
+                const tierMultiplier = parseInt(taskData.tier || 5);
+                const complexity = this.calculateComplexityFactor(taskData);
+                const escalationProb = this.calculateEscalationProbability();
+                
+                const estimatedCost = baseCost * tierMultiplier * complexity;
+                const maxCost = estimatedCost * (1 + escalationProb * 20);
+                
+                return {
+                    baseCost,
+                    tierMultiplier,
+                    complexity,
+                    escalationProb,
+                    estimatedCost,
+                    maxCost
+                };
+            }
+
+            addTaskCost(cost, escalated = false) {
+                this.currentSessionCost += cost;
+                this.totalCost += cost;
+                this.taskHistory.push({ cost, escalated, timestamp: Date.now() });
+                auditLogger.log('cost_incurred', { cost, escalated });
+            }
+
+            getSessionCost() {
+                return this.currentSessionCost;
+            }
+        }
+
+        const costEstimator = new CostEstimator();
+
+        // ========== COPILOT FORMATTER ==========
+        class CopilotFormatter {
+            static formatInput(taskData) {
+                return {
+                    version: '1.0',
+                    source: 'Phantom.ai',
+                    timestamp: new Date().toISOString(),
+                    task: {
+                        prompt: taskData.prompt,
+                        context: taskData.context,
+                        files: taskData.files || [],
+                        gating: taskData.gating || {},
+                        tier: taskData.tier
+                    },
+                    metadata: {
+                        user: document.getElementById('displayUsername').textContent,
+                        session_id: auditLogger.sessionStart,
+                        state: stateManager.getCurrentState()
+                    }
+                };
+            }
+
+            static parseOutput(copilotResponse) {
+                // Parse Copilot response into Phantom.ai format
+                return {
+                    version: '1.0',
+                    source: 'Copilot',
+                    timestamp: new Date().toISOString(),
+                    response: copilotResponse,
+                    formatted: true
+                };
+            }
+        }
+
+        // ========== UI FUNCTIONS ==========
+        function updateCostEstimate() {
+            const taskData = {
+                prompt: document.getElementById('taskPrompt').value,
+                context: document.getElementById('taskContext').value,
+                tier: document.getElementById('aiTier').value,
+                files: document.querySelectorAll('.file-item.selected'),
+                gating: {
+                    includeArtifacts: document.getElementById('g1').checked,
+                    includeAI: document.getElementById('g2').checked,
+                    includeLearning: document.getElementById('g3').checked,
+                    strictMode: document.getElementById('g4').checked
+                }
+            };
+
+            const estimate = costEstimator.estimate(taskData);
+            
+            document.getElementById('baseCost').textContent = `$${estimate.baseCost.toFixed(3)}`;
+            document.getElementById('tierCost').textContent = `×${estimate.tierMultiplier}`;
+            document.getElementById('tierName').textContent =
+                estimate.tierMultiplier === 1 ? 'Cheap' :
+                estimate.tierMultiplier === 5 ? 'Mid' : 'High';
+            document.getElementById('complexityCost').textContent = `×${estimate.complexity.toFixed(1)}`;
+            document.getElementById('escalationRisk').textContent = `${(estimate.escalationProb * 100).toFixed(0)}%`;
+            document.getElementById('costEstimate').textContent = `$${estimate.estimatedCost.toFixed(2)}`;
+            document.getElementById('totalCost').textContent =
+                `$${estimate.estimatedCost.toFixed(2)} - $${estimate.maxCost.toFixed(2)}`;
+        }
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username === 'admin' && password === 'phantom2025') {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('dashboardScreen').classList.add('active');
+                document.getElementById('displayUsername').textContent =
+                    username.charAt(0).toUpperCase() + username.slice(1);
+                auditLogger.log('login', { username });
+                stateManager.transition('IDLE');
+            } else {
+                alert('Invalid credentials');
+            }
+        });
+
+        function logout() {
+            auditLogger.log('logout');
+            document.getElementById('dashboardScreen').classList.remove('active');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('loginForm').reset();
+            stateManager.currentState = 'IDLE';
+        }
+
+        // Menu
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function() {
+                if (this.textContent !== 'Audit Log' && this.textContent !== 'Settings') {
+                    document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // File Selector
+        function toggleFileSelector() {
+            const dropdown = document.getElementById('fileDropdown');
+            const arrow = document.getElementById('fileSelectorArrow');
+            dropdown.classList.toggle('open');
+            arrow.textContent = dropdown.classList.contains('open') ? '▲' : '▼';
+        }
+
+        function selectFile(element) {
+            element.classList.toggle('selected');
+            updateCostEstimate();
+            auditLogger.log('file_selected', { file: element.textContent.trim() });
+        }
+
+        // Workflow: CENTER → LEFT → RIGHT
+        let pendingContent = null;
+
+        async function submitToOutput() {
+            const prompt = document.getElementById('taskPrompt').value;
+            if (!prompt) {
+                alert('Please enter a task prompt');
+                return;
+            }
+
+            if (!stateManager.transition('COMPOSING')) return;
+            auditLogger.log('task_start', { prompt: prompt.substring(0, 100) });
+
+            const btn = document.getElementById('submitBtn');
+            const aiWindow = document.getElementById('aiResponseWindow');
+            const actionsWindow = document.getElementById('actionsWindow');
+            const aiStatus = document.getElementById('aiStatus');
+
+            btn.disabled = true;
+            btn.textContent = 'Processing...';
+            
+            if (!stateManager.transition('PROCESSING')) return;
+            aiStatus.style.display = 'inline-block';
+            aiStatus.textContent = 'Processing';
+
+            aiWindow.innerHTML = `<div style="color: var(--color-light-gray);">Processing AI request...
+
+Task: ${prompt.substring(0, 50)}...
+Tier: ${document.getElementById('aiTier').options[document.getElementById('aiTier').selectedIndex].text}
+
+Generating response...</div>`;
+
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            // Calculate and track cost
+            const taskData = {
+                prompt,
+                context: document.getElementById('taskContext').value,
+                tier: document.getElementById('aiTier').value
+            };
+            const cost = costEstimator.estimate(taskData);
+            costEstimator.addTaskCost(cost.estimatedCost);
+
+            const generatedOutput = `<div style="color: var(--color-light-gray);">
+<div class="code-line">&lt;?php</div>
+<div class="code-line">/**</div>
+<div class="code-line"> * Generated by Phantom.ai</div>
+<div class="code-line"> * Cost: $${cost.estimatedCost.toFixed(2)}</div>
+<div class="code-line"> */</div>
+<div class="code-line">function phantom_review() {</div>
+<div class="code-line">    return array(</div>
+<div class="code-line">        'status' => 'pass',</div>
+<div class="code-line">        'issues' => 0</div>
+<div class="code-line">    );</div>
+<div class="code-line">}</div>
+<div class="code-line">?&gt;</div>
+
+✓ Standards validated
+✓ Security checked
+✓ Cost: $${cost.estimatedCost.toFixed(2)}
+✓ Ready for review</div>`;
+
+            aiWindow.innerHTML = generatedOutput;
+            aiStatus.textContent = 'Complete';
+            aiStatus.className = 'badge success';
+
+            if (!stateManager.transition('REVIEWING')) return;
+            auditLogger.log('ai_response_generated', { cost: cost.estimatedCost });
+
+            pendingContent = generatedOutput;
+            actionsWindow.innerHTML = `<div style="color: var(--color-light-gray);">
+<strong>State: REVIEWING</strong>
+<br><br>
+<strong>Standardized Output Received</strong>
+
+${generatedOutput}
+
+<div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--color-dark-gray-1);">
+<button class="action-button accept" onclick="acceptOutput()" style="margin-bottom: 8px;">Accept → Push to Output</button>
+<button class="action-button reject" onclick="rejectOutput()" style="margin-bottom: 8px;">Reject → Return to Center</button>
+<button class="action-button secondary" onclick="saveAndPush()">Save & Push to Output</button>
+</div>
+</div>`;
+
+            btn.disabled = false;
+            btn.textContent = 'Submit to Output →';
+        }
+
+        function acceptOutput() {
+            if (!stateManager.transition('OUTPUTTING')) return;
+            
+            const outputWindow = document.getElementById('outputWindow');
+            const outputStatus = document.getElementById('outputStatus');
+
+            outputWindow.innerHTML = `<div style="color: var(--color-light-gray);">
+<strong>State: OUTPUTTING</strong>
+<br><br>
+<strong>✓ Output Accepted & Stored</strong>
+
+${pendingContent}
+
+<div style="margin-top: 16px; padding: 12px; background: rgba(0, 208, 132, 0.1); border: 1px solid #00d084; border-radius: 3px;">
+<strong style="color: #00d084;">Status: Complete</strong><br>
+Format: Phantom.ai Standard<br>
+Timestamp: ${new Date().toISOString()}<br>
+Source: Internal AI<br>
+Session Cost: $${costEstimator.getSessionCost().toFixed(2)}
+</div>
+</div>`;
+
+            outputStatus.style.display = 'inline-block';
+            outputStatus.textContent = 'Complete';
+            
+            auditLogger.log('output_accepted', { content: pendingContent.substring(0, 100) });
+            
+            stateManager.transition('COMPLETE');
+            clearActions();
+        }
+
+        function rejectOutput() {
+            if (confirm('Reject this output and return to CENTER?')) {
+                stateManager.transition('COMPOSING');
+                auditLogger.log('output_rejected');
+                clearActions();
+            }
+        }
+
+        function saveAndPush() {
+            auditLogger.log('output_saved');
+            alert('Saved to artifacts');
+            acceptOutput();
+        }
+
+        function clearActions() {
+            document.getElementById('actionsWindow').innerHTML = `<div style="color: var(--color-medium-gray); font-style: italic;">
+State: <span id="stateDisplay">${stateManager.getCurrentState()}</span>
+
+Awaiting standardized output from CENTER...
+
+Actions:
+• Accept → Push to RIGHT (Output)
+• Reject → Return to CENTER
+• Save → Store and push to RIGHT
+
+No content pending review.
+            </div>`;
+            pendingContent = null;
+        }
+
+        function copyAI() {
+            const text = document.getElementById('aiResponseWindow').innerText;
+            navigator.clipboard.writeText(text);
+            auditLogger.log('ai_response_copied');
+            alert('AI response copied');
+        }
+
+        function clearAI() {
+            document.getElementById('aiResponseWindow').innerHTML = '<div style="color: var(--color-medium-gray); font-style: italic;">Cleared.</div>';
+            document.getElementById('aiStatus').style.display = 'none';
+            auditLogger.log('ai_response_cleared');
+        }
+
+        function clearOutputWindow() {
+            document.getElementById('outputWindow').innerHTML = '<div style="color: var(--color-medium-gray); font-style: italic;">Cleared.</div>';
+            document.getElementById('outputStatus').style.display = 'none';
+            stateManager.transition('IDLE');
+            auditLogger.log('output_cleared');
+        }
+
+        function saveOutput() {
+            const text = document.getElementById('outputWindow').innerText;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `phantom-output-${Date.now()}.txt`;
+            a.click();
+            auditLogger.log('output_saved_to_file');
+        }
+
+        function escalateToCopilot() {
+            if (!confirm('Escalate to Copilot (High Tier)? This will incur additional cost.')) return;
+            
+            if (!stateManager.transition('ESCALATING')) return;
+            
+            const taskData = {
+                prompt: document.getElementById('taskPrompt').value,
+                context: document.getElementById('taskContext').value,
+                tier: 20
+            };
+            
+            const formattedInput = CopilotFormatter.formatInput(taskData);
+            console.log('Copilot Input:', formattedInput);
+            
+            auditLogger.log('escalated_to_copilot', formattedInput);
+            
+            alert('Escalating to Copilot...\n\nInput formatted in Phantom.ai standard.\nCheck console for formatted payload.');
+            
+            document.getElementById('outputWindow').innerHTML = `<div style="color: var(--color-light-gray);">
+<strong>Escalated to Copilot</strong>
+
+Request sent to third-party AI
+Tier: High (20x)
+Format: Phantom.ai Standard
+
+Input Payload:
+<pre style="font-size: 10px; background: var(--color-dark-gray-2); padding: 8px; border-radius: 3px; overflow-x: auto;">${JSON.stringify(formattedInput, null, 2)}</pre>
+
+Awaiting response...
+</div>`;
+
+            costEstimator.addTaskCost(1.00, true);
+            stateManager.transition('OUTPUTTING');
+        }
+
+        function commitArtifact() {
+            auditLogger.log('artifact_committed');
+            alert('Output committed to artifacts folder');
+        }
+
+        function exportOutput() {
+            saveOutput();
+        }
+
+        function viewAuditLog() {
+            const logs = auditLogger.getSessionLogs();
+            const summary = `
+Audit Log Summary
+=================
+
+Session Start: ${new Date(auditLogger.sessionStart).toISOString()}
+Total Entries: ${logs.length}
+Current State: ${stateManager.getCurrentState()}
+Session Cost: $${costEstimator.getSessionCost().toFixed(2)}
+
+Recent Entries:
+${logs.slice(-5).map(l => `[${l.timestamp}] ${l.action} (${l.state})`).join('\n')}
+
+Exporting full audit log...
+            `;
+            
+            alert(summary);
+            auditLogger.exportLogs();
+        }
+
+        // Initialize
+        updateCostEstimate();
+    </script>
+
+    <!-- Legal Footer (Always Present) -->
+    <div class="footer" style="position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-panel); color: var(--color-medium-gray); padding: 12px 20px; text-align: center; font-size: 0.75rem; border-top: var(--border-subtle); z-index: 1000;">
+        <p style="margin: 0;">© 2025 - 2026 My Deme, LLC. All Rights Reserved. | Phantom.ai by DemeWebsolutions.com</p>
+        <p style="margin: 4px 0 0 0;">Protected under Florida State Law and United States Federal Law | <strong>PROPRIETARY AND CONFIDENTIAL</strong></p>
+    </div>
+
+    <!-- Session Timeout Warning -->
+    <div id="sessionWarning" style="display: none; position: fixed; top: 70px; right: 20px; background: #fbbf24; color: #78350f; padding: 1rem 1.5rem; border-radius: 0.5rem; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); z-index: 9998; font-weight: 500;">
+        ⚠️ Session will expire in <span id="timeoutCounter">5:00</span> due to inactivity
+    </div>
+
+    <script>
+        // Session Management (Frontend Security)
+        (function() {
+            const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
+            const WARNING_TIME = 5 * 60 * 1000;     // 5 minutes warning
+            let timeoutId, warningId;
+
+            function resetTimers() {
+                clearTimeout(timeoutId);
+                clearTimeout(warningId);
+                document.getElementById('sessionWarning').style.display = 'none';
+
+                warningId = setTimeout(showWarning, SESSION_TIMEOUT - WARNING_TIME);
+                timeoutId = setTimeout(logout, SESSION_TIMEOUT);
+            }
+
+            function showWarning() {
+                document.getElementById('sessionWarning').style.display = 'block';
+                let timeLeft = WARNING_TIME / 1000;
+                const countdown = setInterval(() => {
+                    timeLeft--;
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
+                    const counter = document.getElementById('timeoutCounter');
+                    if (counter) {
+                        counter.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                    }
+                    if (timeLeft <= 0) clearInterval(countdown);
+                }, 1000);
+            }
+
+            function logout() {
+                alert('Session expired due to inactivity.\n\nYou will be returned to the login page.');
+                sessionStorage.clear();
+                window.location.href = 'Phantom.ai.portal.html';
+            }
+
+            ['mousedown', 'keydown', 'scroll', 'touchstart'].forEach(event => {
+                document.addEventListener(event, resetTimers, { passive: true });
+            });
+
+            // Check if user has acknowledged legal terms
+            if (!sessionStorage.getItem('legal_acknowledged')) {
+                alert('Legal terms not acknowledged.\n\nPlease login again.');
+                window.location.href = 'Phantom.ai.portal.html';
+            }
+
+            resetTimers();
+        })();
+    </script>
+
+
+
+</body></html>
