@@ -1,7 +1,7 @@
 <html lang="en"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phantom.ai - Settings</title>
+    <title>Phantom.ai - Audit Log</title>
     <style>
         * {
             margin: 0;
@@ -840,14 +840,14 @@
 
             <div class="menu-center">
                 <div class="dashboard-logo">
-                    <img src="./assets/phantom-logo.png" alt="Phantom.ai" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <img src="../assets/phantom-logo.png" alt="Phantom.ai" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                     <span style="display:none; font-size: 20px; font-weight: 700; color: var(--accent-primary); letter-spacing: -0.5px;">Phantom.ai</span>
                 </div>
             </div>
 
             <div class="menu-right">
-                <button class="menu-item" onclick="window.location.href='Phantom.ai.auditlog.html'">Audit Log</button>
-                <button class="menu-item active">Settings</button>
+                <button class="menu-item active">Audit Log</button>
+                <button class="menu-item" onclick="window.location.href='Phantom.ai.settings.html'">Settings</button>
                 <button class="icon-button">🇮🇹</button>
                 <div class="user-profile">
                     <div class="user-avatar">A</div>
@@ -872,113 +872,53 @@
 ">
                     <div class="shadow-window">
                         <div class="shadow-window-header">
-                            <span class="shadow-window-title">System Configuration <span class="badge" id="actionStatus">Active</span></span>
+                            <span class="shadow-window-title">System Audit Log <span class="badge" id="actionStatus">Monitoring</span></span>
                             <div class="shadow-window-controls">
                                 <button class="window-control-btn" onclick="clearActions()" title="Refresh">↻</button>
                             </div>
                         </div>
                         <div class="shadow-window-content" id="actionsWindow">
                             <div style="color: var(--color-medium-gray); font-style: italic;">
-Current Version: <span id="stateDisplay" style="color: var(--accent-success);">v2.5.1</span>
+Total Events Today: <span id="stateDisplay" style="color: var(--accent-success);">247</span>
 
-System Health: ✓ All systems operational
-Last Update: Jan 1, 2026
-Uptime: 47 days
+Last 24 Hours:
+• Login attempts: 32
+• File modifications: 18
+• Config changes: 5
+• Failed authentications: 2
 
-Configuration Status:
-• Database: Connected
-• Cache: Active
-• API: Responding
-• Storage: 24.8 GB / 100 GB
-
-Last backup: 3 hours ago
+System Status: ✓ All services operational
+Last backup: 2 hours ago
                             </div>
                         </div>
                     </div>
 
-                    <div class="panel-header">General Settings</div>
+                    <div class="panel-header">Event Filters</div>
                     <div class="panel-body">
                         <div class="checkbox-item">
                             <input type="checkbox" id="g1" checked="" onchange="updateCostEstimate()">
-                            <label for="g1">Enable notifications</label>
+                            <label for="g1">Show system events</label>
                         </div>
                         <div class="checkbox-item">
                             <input type="checkbox" id="g2" checked="" onchange="updateCostEstimate()">
-                            <label for="g2">Auto-save changes</label>
+                            <label for="g2">Show user actions</label>
                         </div>
                         <div class="checkbox-item">
                             <input type="checkbox" id="g3" checked="" onchange="updateCostEstimate()">
-                            <label for="g3">Dark mode (default)</label>
+                            <label for="g3">Show security events</label>
                         </div>
                         <div class="checkbox-item">
                             <input type="checkbox" id="g4" onchange="updateCostEstimate()">
-                            <label for="g4">Beta features enabled</label>
+                            <label for="g4">Show failed attempts only</label>
                         </div>
 
                         <div class="divider"></div>
 
                         <div class="form-group">
-                            <label class="form-label">Quick Settings</label>
+                            <label class="form-label">Quick Filters</label>
                             <div style="padding: 12px;background: #676767;border: 1px solid var(--color-dark-gray-1);border-radius: 9999px;font-size: 11px;/* color: #000; */">
-                                Reset Defaults | Import Config
+                                Last Hour | Last 24h | Last 7 Days
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- AI CREDENTIALS PANEL -->
-                <div class="panel">
-                    <div class="panel-header">AI Credentials & API Keys</div>
-                    <div class="panel-body">
-                        <div class="form-group">
-                            <label class="form-label">Claude API Key (Anthropic)</label>
-                            <input type="password" class="form-control" placeholder="sk-ant-..." style="width: 100%;border-radius: 20px;border-color: #6767672b;background: transparent;padding: 8px 12px;font-size: 12px;">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">Claude Model Version</label>
-                            <select class="form-control" id="claudeModel" style="width: 100%;border-radius: 20px;border-color: #6767672b;background: transparent;padding: 8px 12px;font-size: 12px;">
-                                <option>claude-3-5-sonnet-20241022</option>
-                                <option>claude-3-opus-20240229</option>
-                                <option>claude-3-sonnet-20240229</option>
-                                <option>claude-3-haiku-20240307</option>
-                            </select>
-                        </div>
-
-                        <div class="divider"></div>
-
-                        <div class="form-group">
-                            <label class="form-label">OpenAI API Key (ChatGPT)</label>
-                            <input type="password" class="form-control" placeholder="sk-..." style="width: 100%;border-radius: 20px;border-color: #6767672b;background: transparent;padding: 8px 12px;font-size: 12px;">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label">GPT Model Version</label>
-                            <select class="form-control" id="gptModel" style="width: 100%;border-radius: 20px;border-color: #6767672b;background: transparent;padding: 8px 12px;font-size: 12px;">
-                                <option>gpt-4-turbo-preview</option>
-                                <option>gpt-4</option>
-                                <option>gpt-3.5-turbo</option>
-                            </select>
-                        </div>
-
-                        <div class="divider"></div>
-
-                        <div class="form-group">
-                            <label class="form-label">Google Gemini API Key</label>
-                            <input type="password" class="form-control" placeholder="AIza..." style="width: 100%;border-radius: 20px;border-color: #6767672b;background: transparent;padding: 8px 12px;font-size: 12px;">
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Default AI Provider</label>
-                            <select class="form-control" id="defaultProvider" style="width: 100%;border-radius: 20px;border-color: #6767672b;background: transparent;padding: 8px 12px;font-size: 12px;">
-                                <option>Claude (Anthropic)</option>
-                                <option>ChatGPT (OpenAI)</option>
-                                <option>Gemini (Google)</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <button class="btn-primary" style="width: 100%;padding: 10px;background: var(--accent-primary);border: none;border-radius: 20px;color: var(--color-white);font-weight: 600;cursor: pointer;font-size: 12px;">Save AI Credentials</button>
                         </div>
                     </div>
                 </div>
@@ -989,7 +929,7 @@ Last backup: 3 hours ago
 ">
                     <div class="shadow-window">
                         <div class="shadow-window-header">
-                            <span class="shadow-window-title">Configuration Preview <span class="badge processing" id="aiStatus" style="display:none;">Loading</span></span>
+                            <span class="shadow-window-title">Audit Event Details <span class="badge processing" id="aiStatus" style="display:none;">Loading</span></span>
                             <div class="shadow-window-controls">
                                 <button class="window-control-btn" onclick="copyAI()" title="Export">📄</button>
                                 <button class="window-control-btn" onclick="clearAI()" title="Refresh">↻</button>
@@ -997,71 +937,65 @@ Last backup: 3 hours ago
                         </div>
                         <div class="shadow-window-content" id="aiResponseWindow">
                             <div style="color: var(--color-medium-gray); font-style: italic;">
-<span style="color: var(--accent-success); font-weight: bold;">Current Configuration</span>
+<span style="color: var(--accent-success); font-weight: bold;">Event ID: #AUD-2026-0106-0247</span>
 
-Theme: Dark Mode
-Language: English (US)
-Timezone: UTC-8 (Pacific)
+Type: User Login
+User: admin@phantom.ai
+IP Address: 192.168.1.42
+Timestamp: 2026-01-06 06:15:23 UTC
+Status: Success
 
-Notifications: Enabled
-Email alerts: Daily digest
-API access: Enabled
+Event Details:
+• Browser: Chrome 120
+• Location: San Francisco, CA
+• 2FA: Verified
 
-Security:
-• 2FA: Required
-• Session timeout: 30 minutes
-• Password policy: Strong
-
-Select a setting category below to configure...
+Select an event below to view full details...
                             </div>
                         </div>
                     </div>
 
-                    <div class="panel-header">Settings Categories</div>
+                    <div class="panel-header">Audit Event Browser</div>
                     <div class="panel-body">
                         <div class="file-selector">
                             <div class="file-selector-toggle" onclick="toggleFileSelector()">
-                                <span>⚙️ Configuration Sections</span>
+                                <span>📋 Recent Events</span>
                                 <span id="fileSelectorArrow">▼</span>
                             </div>
                             <div class="file-selector-dropdown" id="fileDropdown">
                                 <div class="file-item" onclick="selectFile(this)">
-                                    <span>👤</span> User Profile Settings
+                                    <span>✅</span> User Login - admin - Success
                                 </div>
                                 <div class="file-item" onclick="selectFile(this)">
-                                    <span>🔒</span> Security & Privacy
+                                    <span>📝</span> File Modified - functions.php
                                 </div>
                                 <div class="file-item" onclick="selectFile(this)">
-                                    <span>🔔</span> Notifications & Alerts
+                                    <span>⚙️</span> Settings Changed - Security
                                 </div>
                                 <div class="file-item" onclick="selectFile(this)">
-                                    <span>🌐</span> API & Integrations
+                                    <span>❌</span> Login Failed - unknown_user
                                 </div>
                                 <div class="file-item" onclick="selectFile(this)">
-                                    <span>🤖</span> AI Credentials
-                                </div>
-                                <div class="file-item" onclick="selectFile(this)">
-                                    <span>💾</span> Backup & Data
+                                    <span>🔒</span> Permission Changed - Role Update
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Configuration Editor</label>
-                            <textarea class="form-textarea" id="taskPrompt" oninput="updateCostEstimate()" placeholder="Edit configuration values...
+                            <label class="form-label">Search Events</label>
+                            <textarea class="form-textarea" id="taskPrompt" oninput="updateCostEstimate()" placeholder="Search audit log by user, event type, IP address...
 
-Example: notification_email=admin@phantom.ai
-theme=dark"></textarea>
+Example: user:admin type:login date:2026-01-06"></textarea>
                         </div>
 
                         <div class="form-group">
-                            <textarea class="form-control" id="taskContext" style="min-height: 120px;resize: vertical;font-family: var(--font-mono);line-height: 1.5;font-size: 12px;width: 100%;border-radius: 20px;border-color: #6767672b;background: transparent;" placeholder="Advanced configuration (JSON/YAML format)..."></textarea>
+                            <textarea class="form-control" id="taskContext" style="min-height: 120px;resize: vertical;font-family: var(--font-mono);line-height: 1.5;font-size: 12px;width: 100%;border-radius: 20px;border-color: #6767672b;background: transparent;" placeholder="Advanced search filters (JSON format)..."></textarea>
                         </div>
 
                         <button class="action-button" id="submitBtn" onclick="submitToOutput()" style="
     background: #676767;
     color: #fff;
-">Apply Changes →</button>
+">Search Events →</button>
                     </div>
                 </div>
 
@@ -1107,7 +1041,7 @@ theme=dark"></textarea>
     /* background: linear-gradient(180deg, white 0%, #686a6b 100%); */
 ">
                         <div class="shadow-window-header">
-                            <span class="shadow-window-title">Change Log <span class="badge success" id="outputStatus" style="display:none;">Live</span></span>
+                            <span class="shadow-window-title">Live Activity Stream <span class="badge success" id="outputStatus" style="display:none;">Live</span></span>
                             <div class="shadow-window-controls">
                                 <button class="window-control-btn" onclick="saveOutput()" title="Filter">🔍</button>
                                 <button class="window-control-btn" onclick="clearOutputWindow()" title="Refresh">↻</button>
@@ -1115,79 +1049,82 @@ theme=dark"></textarea>
                         </div>
                         <div class="shadow-window-content" id="outputWindow">
                             <div style="color: var(--color-medium-gray); font-style: italic;">
-<span style="color: var(--accent-success);">▸</span> Just now - Theme changed to dark mode
-<span style="color: #676767;">▸</span> 1 hr ago - API key regenerated
-<span style="color: #676767;">▸</span> 3 hr ago - Email notification enabled
-<span style="color: var(--accent-success);">▸</span> Yesterday - 2FA requirement enabled
-<span style="color: #676767;">▸</span> 2 days ago - Password policy updated
+<span style="color: var(--accent-success);">▸</span> Just now - Login successful: admin
+<span style="color: #676767;">▸</span> 2 min ago - File accessed: config.php
+<span style="color: #676767;">▸</span> 5 min ago - Settings updated: notifications
+<span style="color: var(--accent-success);">▸</span> 12 min ago - New user created: johndoe
+<span style="color: #ff6b6b;">▸</span> 18 min ago - Login failed: invalid credentials
+<span style="color: #676767;">▸</span> 25 min ago - Backup completed
+<span style="color: #676767;">▸</span> 34 min ago - Permission granted: reviewer role
+<span style="color: var(--accent-success);">▸</span> 45 min ago - Audit log exported
 
-Recent configuration changes...
+Real-time system activity monitoring...
                             </div>
                         </div>
                     </div>
 
-                    <div class="panel-header">System Information</div>
+                    <div class="panel-header">Audit Statistics</div>
                     <div class="panel-body">
                         <!-- Cost Estimator -->
                         <div class="cost-estimator" style="
     /* background: linear-gradient(180deg, transparent 25%, #686a6bba 100%); */
 ">
                             <div class="cost-header">
-                                <span style="font-size: 10px; font-weight: 700; color: var(--color-medium-gray); text-transform: uppercase;">System Resources</span>
-                                <span class="cost-value" id="costEstimate">65%</span>
+                                <span style="font-size: 10px; font-weight: 700; color: var(--color-medium-gray); text-transform: uppercase;">Today's Activity</span>
+                                <span class="cost-value" id="costEstimate">247</span>
                             </div>
                             <div class="cost-breakdown">
                                 <div class="cost-line">
-                                    <span>Database:</span>
-                                    <span id="baseCost">Connected</span>
+                                    <span>Total Events:</span>
+                                    <span id="baseCost">247</span>
                                 </div>
                                 <div class="cost-line">
-                                    <span>Active Users (<span id="tierName">Now</span>):</span>
-                                    <span id="tierCost">24</span>
+                                    <span>Unique Users (<span id="tierName">Active</span>):</span>
+                                    <span id="tierCost">18</span>
                                 </div>
                                 <div class="cost-line">
-                                    <span>API Calls:</span>
-                                    <span id="complexityCost">1,247 today</span>
+                                    <span>Security Events:</span>
+                                    <span id="complexityCost">7</span>
                                 </div>
                                 <div class="cost-line">
-                                    <span>Storage Used:</span>
-                                    <span id="escalationRisk">24.8 GB</span>
+                                    <span>Failed Actions:</span>
+                                    <span id="escalationRisk">2</span>
                                 </div>
                             </div>
                             <div class="cost-total">
-                                <strong>Status:</strong>
-                                <strong id="totalCost">Optimal ✓</strong>
+                                <strong>System Status:</strong>
+                                <strong id="totalCost">Normal ✓</strong>
                             </div>
                         </div>
 
                         <div class="form-group" style="
     background: linear-gradient(180deg, transparent 25%, #686a6bba 100%);
 ">
-                            <label class="form-label">Language</label>
+                            <label class="form-label">Event Category</label>
                             <select class="form-control" id="aiTier" onchange="updateCostEstimate()">
-                                <option value="1" selected="">English (US)</option>
-                                <option value="5">Italiano</option>
-                                <option value="20">Español</option>
-                                <option value="20">Français</option>
+                                <option value="1">All Events</option>
+                                <option value="5" selected="">Security</option>
+                                <option value="20">System</option>
+                                <option value="20">User Actions</option>
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Timezone</label>
+                            <label class="form-label">Time Range</label>
                             <select class="form-control" id="escalationMode">
-                                <option selected="">UTC-8 (Pacific)</option>
-                                <option>UTC-5 (Eastern)</option>
-                                <option>UTC+0 (GMT)</option>
-                                <option>UTC+1 (CET)</option>
+                                <option selected="">Last 24 Hours</option>
+                                <option>Last 7 Days</option>
+                                <option>Last 30 Days</option>
+                                <option>Custom Range</option>
                             </select>
                         </div>
 
-                        <button class="action-button secondary" onclick="escalateToCopilot()">Export Settings</button>
+                        <button class="action-button secondary" onclick="escalateToCopilot()">Export Audit Log</button>
 
                         <div class="divider"></div>
 
-                        <div class="form-label">Advanced Actions</div>
-                        <button class="action-button secondary" onclick="commitArtifact()">Clear Cache</button>
+                        <div class="form-label">Report Actions</div>
+                        <button class="action-button secondary" onclick="commitArtifact()">Generate Report</button>
                         <button class="action-button secondary" onclick="exportOutput()" style="
     /* width: 100%; */
     /* border-radius: 9999px; */
@@ -1198,7 +1135,7 @@ Recent configuration changes...
     /* cursor: pointer; */
     /* transition: all 0.2s; */
     margin-top: 10px;
-">Reset to Defaults</button>
+">Schedule Email Report</button>
                     </div>
                 </div>
             </div>
