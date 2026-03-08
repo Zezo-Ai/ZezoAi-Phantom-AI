@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phantom.ai - AI Execution Screen</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-main: #ffffff;
+            --bg-panel: #121826;
+            --bg-input: #1a2332;
+            --bg-context: #0f1419;
+            --color-white: #ffffff;
+            --color-gray: #8f8f8f;
+            --color-light: #e7e7e7;
+            --accent-primary: #676767;
+            --accent-success: #a1a1a1;
+            --border-subtle: 1px solid rgba(255, 255, 255, 0.08);
+            --shadow-panel: 0 6px 18px rgba(0, 0, 0, 0.45);
+            --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            --font-mono: 'SF Mono', Monaco, 'Courier New', monospace;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background: var(--bg-main);
+            color: var(--color-white);
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(#121111 1px, transparent 1px),
+                linear-gradient(90deg, #121111 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: var(--bg-panel);
+            border: var(--border-subtle);
+            border-radius: 10px;
+            padding: 20px 30px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .header .subtitle {
+            font-size: 11px;
+            color: var(--color-gray);
+            margin-top: 4px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-success);
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        /* Unified Input Panel */
+        .input-panel {
+            background: var(--bg-panel);
+            border: var(--border-subtle);
+            border-radius: 10px;
+            padding: 30px;
+        }
+
+        .input-panel h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--color-light);
+        }
+
+        .input-area {
+            position: relative;
+        }
+
+        #ai-input {
+            width: 100%;
+            min-height: 120px;
+            background: var(--bg-input);
+            border: var(--border-subtle);
+            border-radius: 8px;
+            padding: 15px;
+            color: var(--color-white);
+            font-family: var(--font-primary);
+            font-size: 14px;
+            resize: vertical;
+            outline: none;
+        }
+
+        #ai-input::placeholder {
+            color: var(--color-gray);
+        }
+
+        #ai-input:focus {
+            border-color: var(--accent-primary);
+        }
+
+        .input-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .keyboard-hint {
+            font-size: 11px;
+            color: var(--color-gray);
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border-radius: 6px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: var(--color-white);
+        }
+
+        .btn-primary:hover {
+            background: #555;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--color-gray);
+            border: var(--border-subtle);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-input);
+        }
+
+        /* Context Panel */
+        .context-panel {
+            background: var(--bg-panel);
+            border: var(--border-subtle);
+            border-radius: 10px;
+            padding: 25px;
+        }
+
+        .context-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .context-header h2 {
+            font-size: 16px;
+            color: var(--color-light);
+        }
+
+        .context-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .context-type {
+            background: var(--bg-input);
+            border: var(--border-subtle);
+            border-radius: 6px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .context-type:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .context-type-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .context-type-label {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .context-items {
+            margin-top: 15px;
+        }
+
+        .context-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-context);
+            border: var(--border-subtle);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+
+        .context-item-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .context-item-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .context-item-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Response Panel */
+        .response-panel {
+            background: var(--bg-panel);
+            border: var(--border-subtle);
+            border-radius: 10px;
+            padding: 30px;
+            min-height: 400px;
+        }
+
+        .response-panel h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: var(--color-light);
+        }
+
+        .response-content {
+            background: var(--bg-input);
+            border: var(--border-subtle);
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 300px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .response-empty {
+            color: var(--color-gray);
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .response-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        /* Settings Panel */
+        .settings-panel {
+            background: var(--bg-panel);
+            border: var(--border-subtle);
+            border-radius: 10px;
+            padding: 25px;
+        }
+
+        .settings-panel h2 {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: var(--color-light);
+        }
+
+        .setting-group {
+            margin-bottom: 20px;
+        }
+
+        .setting-label {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .setting-select {
+            width: 100%;
+            background: var(--bg-input);
+            border: var(--border-subtle);
+            border-radius: 6px;
+            padding: 10px;
+            color: var(--color-white);
+            font-size: 13px;
+            outline: none;
+        }
+
+        .ai-suggestion {
+            background: rgba(161, 161, 161, 0.1);
+            border: 1px solid var(--accent-success);
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .ai-suggestion-header {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--accent-success);
+        }
+
+        .ai-suggestion-content {
+            font-size: 12px;
+            margin-bottom: 10px;
+            color: var(--color-light);
+        }
+
+        .ai-suggestion-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Maintenance Mode */
+        .maintenance-mode {
+            background: var(--bg-panel);
+            border: 2px solid #cc6600;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .maintenance-mode.active {
+            display: block;
+        }
+
+        .maintenance-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .maintenance-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ff8800;
+        }
+
+        .maintenance-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-switch {
+            width: 44px;
+            height: 24px;
+            background: var(--bg-input);
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #ff8800;
+        }
+
+        .toggle-slider {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: left 0.3s;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            left: 22px;
+        }
+
+        /* Hidden file input */
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Audit Log */
+        .audit-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--bg-panel);
+            border: var(--border-subtle);
+            border-radius: 6px;
+            padding: 10px 15px;
+            font-size: 11px;
+            color: var(--color-gray);
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div>
+                <h1>Phantom.ai</h1>
+                <div class="subtitle">TruAi Core - AI Execution Interface</div>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span id="status-text">System Ready</span>
+            </div>
+        </div>
+
+        <!-- Maintenance Mode Banner -->
+        <div class="maintenance-mode" id="maintenance-banner">
+            <div class="maintenance-header">
+                <div class="maintenance-title">⚠️ Maintenance Mode</div>
+                <div class="maintenance-toggle">
+                    <span style="font-size: 12px;">Enable</span>
+                    <div class="toggle-switch" id="maintenance-toggle" onclick="toggleMaintenanceMode()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+            <p style="font-size: 12px; color: var(--color-gray);">
+                When enabled, allows AI-based system maintenance and modifications.
+                All changes require explicit approval.
+            </p>
+        </div>
+
+        <div class="main-grid">
+            <!-- Unified Input Panel -->
+            <div class="input-panel">
+                <h2>AI Command Input</h2>
+                <div class="input-area">
+                    <textarea 
+                        id="ai-input" 
+                        placeholder="Describe what you want the AI to do... (e.g., 'Create a product grid block', 'Review security in auth.php', 'Upgrade dashboard layout')"
+                    ></textarea>
+                </div>
+                <div class="input-controls">
+                    <span class="keyboard-hint">Press Shift+Enter for new line, Enter to submit</span>
+                    <button class="btn btn-primary" onclick="submitToAI()">Send to AI</button>
+                </div>
+            </div>
+
+            <!-- Context Attachment Panel -->
+            <div class="context-panel">
+                <div class="context-header">
+                    <h2>Context Attachments</h2>
+                    <button class="btn btn-secondary" onclick="clearContext()">Clear All</button>
+                </div>
+
+                <div class="context-types">
+                    <div class="context-type" onclick="document.getElementById('file-upload').click()">
+                        <div class="context-type-icon">📄</div>
+                        <div class="context-type-label">Upload File</div>
+                    </div>
+                    <div class="context-type" onclick="document.getElementById('image-upload').click()">
+                        <div class="context-type-icon">🖼</div>
+                        <div class="context-type-label">Upload Image</div>
+                    </div>
+                    <div class="context-type" onclick="addURLContext()">
+                        <div class="context-type-icon">🌐</div>
+                        <div class="context-type-label">Add URL</div>
+                    </div>
+                    <div class="context-type" onclick="selectProjectFile()">
+                        <div class="context-type-icon">📁</div>
+                        <div class="context-type-label">Project File</div>
+                    </div>
+                </div>
+
+                <input type="file" id="file-upload" accept=".php,.js,.css,.json,.md" onchange="handleFileUpload(event)">
+                <input type="file" id="image-upload" accept=".svg,.png,.jpg,.jpeg" onchange="handleImageUpload(event)">
+
+                <div class="context-items" id="context-items">
+                    <!-- Context items will be added here dynamically -->
+                </div>
+            </div>
+
+            <!-- AI Response Panel -->
+            <div class="response-panel">
+                <h2>AI Response</h2>
+                <div class="response-content" id="ai-response">
+                    <div class="response-empty">
+                        AI responses will appear here...
+                    </div>
+                </div>
+                <div class="response-controls">
+                    <button class="btn btn-secondary" onclick="copyResponse()">Copy</button>
+                    <button class="btn btn-secondary" onclick="saveToArtifacts()">Save to Artifacts</button>
+                    <button class="btn btn-secondary" onclick="sendToReview()">Send to Review</button>
+                    <button class="btn btn-primary" onclick="escalateToCopilot()">Escalate to Copilot</button>
+                </div>
+            </div>
+
+            <!-- AI-Accessible Settings Panel -->
+            <div class="settings-panel">
+                <h2>AI Settings (Controlled)</h2>
+
+                <div class="setting-group">
+                    <label class="setting-label">AI Tier</label>
+                    <select class="setting-select" id="ai-tier">
+                        <option value="cheap">Cheap/Fast (Planning & Comprehension)</option>
+                        <option value="mid" selected>Mid-Tier (Review & Testing)</option>
+                        <option value="copilot">High-Tier (Copilot Production Code)</option>
+                    </select>
+                </div>
+
+                <div class="setting-group">
+                    <label class="setting-label">Escalation Mode</label>
+                    <select class="setting-select" id="escalation-mode">
+                        <option value="auto">Automatic (Based on task)</option>
+                        <option value="manual" selected>Manual (Require approval)</option>
+                    </select>
+                </div>
+
+                <div class="setting-group">
+                    <label class="setting-label">Output Format</label>
+                    <select class="setting-select" id="output-format">
+                        <option value="text">Text Explanation</option>
+                        <option value="code" selected>Code Blocks</option>
+                        <option value="diff">Diff-Style Changes</option>
+                    </select>
+                </div>
+
+                <div class="setting-group">
+                    <label class="setting-label">Workflow Mode</label>
+                    <select class="setting-select" id="workflow-mode">
+                        <option value="review">Review & Validate</option>
+                        <option value="generate" selected>Generate Code</option>
+                        <option value="document">Documentation</option>
+                    </select>
+                </div>
+
+                <!-- AI Suggestion Example (hidden by default) -->
+                <div class="ai-suggestion" id="ai-suggestion" style="display: none;">
+                    <div class="ai-suggestion-header">AI Suggests Setting Change</div>
+                    <div class="ai-suggestion-content" id="suggestion-content">
+                        <!-- Suggestion content will be added dynamically -->
+                    </div>
+                    <div class="ai-suggestion-controls">
+                        <button class="btn btn-primary" onclick="acceptSuggestion()">Accept</button>
+                        <button class="btn btn-secondary" onclick="rejectSuggestion()">Reject</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audit Indicator -->
+    <div class="audit-indicator">
+        <span id="audit-count">0</span> interactions logged
+    </div>
+
+    <script>
+        let contextItems = [];
+        let maintenanceMode = false;
+        let auditCount = 0;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup keyboard shortcuts
+            document.getElementById('ai-input').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    submitToAI();
+                }
+            });
+
+            // Show maintenance banner
+            document.getElementById('maintenance-banner').style.display = 'block';
+        });
+
+        function toggleMaintenanceMode() {
+            maintenanceMode = !maintenanceMode;
+            const toggle = document.getElementById('maintenance-toggle');
+            const banner = document.getElementById('maintenance-banner');
+            
+            if (maintenanceMode) {
+                toggle.classList.add('active');
+                banner.style.borderColor = '#ff8800';
+                updateStatus('Maintenance Mode: ON');
+            } else {
+                toggle.classList.remove('active');
+                banner.style.borderColor = '#cc6600';
+                updateStatus('System Ready');
+            }
+
+            logAudit('maintenance_mode_changed', { enabled: maintenanceMode });
+        }
+
+        function submitToAI() {
+            const input = document.getElementById('ai-input').value.trim();
+            
+            if (!input) {
+                alert('Please enter a command for the AI');
+                return;
+            }
+
+            // Log the interaction
+            logAudit('ai_command_submitted', {
+                command: input,
+                context_items: contextItems.length,
+                maintenance_mode: maintenanceMode
+            });
+
+            // Show processing status
+            updateStatus('Processing...');
+            
+            // Call the API to get AI source arbitration
+            getAIRecommendation(input);
+        }
+
+        async function getAIRecommendation(input) {
+            try {
+                // Determine task type based on input keywords
+                const taskType = determineTaskType(input);
+                
+                // Get included context files
+                const includedFiles = contextItems
+                    .filter(item => item.included)
+                    .map(item => item.name);
+                
+                // Get current AI tier from settings
+                const currentTier = document.getElementById('ai-tier').value;
+                
+                // Call the arbitration API
+                const response = await fetch('/api/truai/arbitrate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        task_type: taskType,
+                        description: input,
+                        context: {
+                            files: includedFiles,
+                            tier: currentTier,
+                            maintenance_mode: maintenanceMode
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAIResponse(input, data);
+                    updateStatus('Response Received');
+                } else {
+                    throw new Error(data.error || 'Unknown error');
+                }
+                
+            } catch (error) {
+                console.error('API Error:', error);
+                updateStatus('Error connecting to API');
+                // Fall back to simulated response
+                showAIResponseFallback(input);
+            }
+        }
+
+        function determineTaskType(input) {
+            const inputLower = input.toLowerCase();
+            
+            // Match task types based on keywords
+            if (inputLower.includes('review') || inputLower.includes('audit') || inputLower.includes('check')) {
+                return 'code_review';
+            } else if (inputLower.includes('refactor') || inputLower.includes('optimize') || inputLower.includes('improve')) {
+                return 'refactor';
+            } else if (inputLower.includes('create') || inputLower.includes('generate') || inputLower.includes('build') || inputLower.includes('implement')) {
+                return 'production_code';
+            } else if (inputLower.includes('plan') || inputLower.includes('design') || inputLower.includes('architect')) {
+                return 'planning';
+            } else if (inputLower.includes('research') || inputLower.includes('find') || inputLower.includes('search')) {
+                return 'research';
+            } else {
+                return 'planning'; // Default to planning for general queries
+            }
+        }
+
+        function showAIResponse(input, apiData) {
+            const responseDiv = document.getElementById('ai-response');
+            
+            const source = apiData.recommended_source;
+            const reason = apiData.reason;
+            const taskType = apiData.task_type;
+            
+            // Map AI source to tier name
+            const tierMap = {
+                'chatgpt': 'Cheap-Tier',
+                'claude': 'Mid-Tier (Claude Sonnet)',
+                'copilot': 'High-Tier (Copilot)',
+                'github': 'Research'
+            };
+            
+            const tierName = tierMap[source] || source;
+            
+            let response = `<div style="color: var(--color-light);">`;
+            response += `<strong>Command Received:</strong> ${input}<br><br>`;
+            response += `<strong>Task Type:</strong> ${taskType.replace(/_/g, ' ')}<br>`;
+            response += `<strong>Context Items:</strong> ${contextItems.filter(i => i.included).length}<br><br>`;
+            response += `<strong>TruAi Recommendation:</strong><br>`;
+            response += `<strong>Recommended Tier:</strong> ${tierName}<br>`;
+            response += `<strong>AI Source:</strong> ${source.toUpperCase()}<br>`;
+            response += `<strong>Reason:</strong> ${reason}<br><br>`;
+            
+            // Add action recommendations based on source
+            if (source === 'copilot') {
+                response += `<em>Use "Escalate to Copilot" button to proceed with production code generation.</em>`;
+            } else if (source === 'claude') {
+                response += `<em>This task is suitable for code review and refactoring workflow.</em>`;
+            } else if (source === 'chatgpt') {
+                response += `<em>This task is suitable for planning and documentation workflow.</em>`;
+            } else if (source === 'github') {
+                response += `<em>Use GitHub search and examples for reference implementation.</em>`;
+            }
+            
+            response += `</div>`;
+            responseDiv.innerHTML = response;
+            
+            // Update AI tier selector to match recommendation
+            updateTierSelector(source);
+        }
+
+        function showAIResponseFallback(input) {
+            // Fallback to simulated response if API is unavailable
+            const responseDiv = document.getElementById('ai-response');
+            
+            let response = `<div style="color: var(--color-light);">`;
+            response += `<strong>Command Received:</strong> ${input}<br><br>`;
+            response += `<strong>Context Items:</strong> ${contextItems.length}<br><br>`;
+            response += `<strong>Recommended Action (Simulated):</strong><br>`;
+            response += `<em style="color: #ff8800;">Note: Using fallback response. API unavailable.</em><br><br>`;
+            
+            if (input.toLowerCase().includes('create') || input.toLowerCase().includes('generate')) {
+                response += `This is a code generation task. Recommending <strong>High-Tier (Copilot)</strong> execution.<br><br>`;
+                response += `<strong>Suggested AI Source:</strong> GitHub Copilot<br>`;
+            } else if (input.toLowerCase().includes('review')) {
+                response += `This is a code review task. Recommending <strong>Mid-Tier (Claude Sonnet)</strong> execution.<br><br>`;
+                response += `<strong>Suggested AI Source:</strong> Claude Sonnet<br>`;
+            } else {
+                response += `This appears to be a planning task. Processing with <strong>Cheap-Tier</strong> AI.<br><br>`;
+                response += `<strong>Suggested AI Source:</strong> ChatGPT<br>`;
+            }
+            
+            response += `</div>`;
+            responseDiv.innerHTML = response;
+        }
+
+        function updateTierSelector(aiSource) {
+            const tierSelect = document.getElementById('ai-tier');
+            
+            // Map AI source to tier value
+            const sourceToTier = {
+                'chatgpt': 'cheap',
+                'claude': 'mid',
+                'copilot': 'copilot',
+                'github': 'cheap'
+            };
+            
+            const tierValue = sourceToTier[aiSource];
+            if (tierValue && tierSelect.value !== tierValue) {
+                tierSelect.value = tierValue;
+                
+                // Show suggestion banner if tier changed
+                showTierSuggestion(aiSource, tierValue);
+            }
+        }
+
+        function showTierSuggestion(aiSource, tierValue) {
+            const suggestionDiv = document.getElementById('ai-suggestion');
+            const suggestionContent = document.getElementById('suggestion-content');
+            
+            const tierNames = {
+                'cheap': 'Cheap/Fast Tier',
+                'mid': 'Mid-Tier',
+                'copilot': 'High-Tier (Copilot)'
+            };
+            
+            suggestionContent.textContent = `TruAi recommends switching to ${tierNames[tierValue]} for optimal ${aiSource.toUpperCase()} processing.`;
+            suggestionDiv.style.display = 'block';
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                addContextItem('file', file.name, file);
+            }
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                addContextItem('image', file.name, file);
+            }
+        }
+
+        function addURLContext() {
+            const url = prompt('Enter URL:');
+            if (url) {
+                addContextItem('url', url, { url: url });
+            }
+        }
+
+        function selectProjectFile() {
+            const filename = prompt('Enter project file path:');
+            if (filename) {
+                addContextItem('project', filename, { path: filename });
+            }
+        }
+
+        function addContextItem(type, name, data) {
+            const item = {
+                id: Date.now(),
+                type: type,
+                name: name,
+                data: data,
+                included: true
+            };
+
+            contextItems.push(item);
+            renderContextItems();
+            logAudit('context_item_added', { type, name });
+        }
+
+        function renderContextItems() {
+            const container = document.getElementById('context-items');
+            
+            if (contextItems.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = contextItems.map(item => `
+                <div class="context-item">
+                    <div class="context-item-info">
+                        <span>${getTypeIcon(item.type)}</span>
+                        <span class="context-item-name">${item.name}</span>
+                    </div>
+                    <div class="context-item-controls">
+                        <button class="btn btn-secondary" style="padding: 5px 12px; font-size: 12px;" 
+                                onclick="toggleContextItem(${item.id})">
+                            ${item.included ? '✓ Included' : 'Excluded'}
+                        </button>
+                        <button class="btn btn-secondary" style="padding: 5px 12px; font-size: 12px;" 
+                                onclick="removeContextItem(${item.id})">
+                            Remove
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getTypeIcon(type) {
+            const icons = {
+                'file': '📄',
+                'image': '🖼',
+                'url': '🌐',
+                'project': '📁'
+            };
+            return icons[type] || '📄';
+        }
+
+        function toggleContextItem(id) {
+            const item = contextItems.find(i => i.id === id);
+            if (item) {
+                item.included = !item.included;
+                renderContextItems();
+            }
+        }
+
+        function removeContextItem(id) {
+            contextItems = contextItems.filter(i => i.id !== id);
+            renderContextItems();
+        }
+
+        function clearContext() {
+            contextItems = [];
+            renderContextItems();
+            logAudit('context_cleared', {});
+        }
+
+        function copyResponse() {
+            const responseText = document.getElementById('ai-response').innerText;
+            navigator.clipboard.writeText(responseText);
+            updateStatus('Response copied to clipboard');
+        }
+
+        function saveToArtifacts() {
+            logAudit('response_saved_to_artifacts', {});
+            updateStatus('Response saved to artifacts/');
+            alert('Response saved to artifacts/');
+        }
+
+        function sendToReview() {
+            logAudit('response_sent_to_review', {});
+            updateStatus('Response sent to review workflow');
+            alert('Response sent to review workflow');
+        }
+
+        function escalateToCopilot() {
+            logAudit('escalated_to_copilot', {});
+            updateStatus('Task escalated to GitHub Copilot');
+            alert('Task will be processed by GitHub Copilot');
+        }
+
+        function acceptSuggestion() {
+            const suggestion = document.getElementById('ai-suggestion');
+            suggestion.style.display = 'none';
+            logAudit('ai_suggestion_accepted', {});
+            updateStatus('AI suggestion accepted');
+        }
+
+        function rejectSuggestion() {
+            const suggestion = document.getElementById('ai-suggestion');
+            suggestion.style.display = 'none';
+            logAudit('ai_suggestion_rejected', {});
+            updateStatus('AI suggestion rejected');
+        }
+
+        function updateStatus(message) {
+            document.getElementById('status-text').innerText = message;
+        }
+
+        function logAudit(eventType, data) {
+            auditCount++;
+            document.getElementById('audit-count').innerText = auditCount;
+            
+            const auditEntry = {
+                timestamp: new Date().toISOString(),
+                event: eventType,
+                data: data
+            };
+            
+            console.log('AUDIT LOG:', auditEntry);
+            
+            // PRODUCTION NOTE: In production, this should send to backend API
+            // Example implementation:
+            // fetch('/api/truai/audit-log', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify(auditEntry)
+            // }).then(response => {
+            //     if (!response.ok) {
+            //         console.error('Failed to log audit entry');
+            //     }
+            // });
+        }
+    </script>
+</body>
+</html>
