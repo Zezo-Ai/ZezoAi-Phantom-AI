@@ -9,7 +9,7 @@
 
 // Ensure session is started only once (idempotent)
 function phantom_start_session() {
-    if (session_status() === PHP_STATUS_NONE) {
+    if (session_status() === PHP_SESSION_NONE) {
         session_name('PHANTOM_SESSION');
         session_start();
     }

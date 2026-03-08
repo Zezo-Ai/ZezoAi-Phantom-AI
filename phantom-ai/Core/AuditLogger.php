@@ -28,6 +28,7 @@ class AuditLogger
         $required = ['user_id', 'input_text', 'ai_tier', 'context_items'];
         foreach ($required as $field) {
             if (!isset($interaction[$field])) {
+                error_log("AuditLogger::logAIInteraction: missing required field '{$field}'");
                 return false;
             }
         }
