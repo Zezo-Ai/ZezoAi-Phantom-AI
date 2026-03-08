@@ -25,3 +25,4 @@ Thumbs.db
 
 # Phantom.ai
 /phantom-metadata/
+/logs/
