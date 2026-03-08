@@ -1,7 +1,7 @@
 <html lang="en"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phantom.ai - Review</title>
+    <title>Phantom.ai - Workspace</title>
     <style>
         * {
             margin: 0;
@@ -209,17 +209,15 @@
         /* DASHBOARD */
         .dashboard-container {
             display: none;
-            width: fit-content;
-            height: fit-content;
+            width: 100vw;
+            height: 100vh;
             position: relative;
             z-index: 1;
         }
 
         .dashboard-container.active {
-            display: inline-flex;
+            display: flex;
             flex-direction: column;
-            width: 100vw;
-            height: 100vh;
         }
 
         .top-menu-bar {
@@ -351,21 +349,25 @@
 
         .main-content {
             flex: 1;
-            padding: 20px 50px 70px 20px;
-            overflow-x: auto;
-            overflow-y: auto;
+            padding: var(--space-lg);
+            overflow: hidden;
             background: var(--bg-main);
-            width: 100%;
-            height: 100%;
+            width: fit-content;
+            height: fit-content;
+            padding-right: 50px;
+            padding-bottom: 70px;
+            margin-bottom: unset;
+            border-bottom-width: 100px;
+            padding-left: 20px;
+            padding-top: 20px;
         }
 
         .three-column-grid {
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            gap: 16px;
-            height: calc(100vh - 200px);
-            width: 100%;
-            min-width: 1200px;
+            display: inline-grid;
+                grid-template-columns: 25% 50% 25%;
+                gap: 16px;
+                height: 100%;
+                width: 100%;
         }
 
         /* CANONICAL COLUMN PANEL - LOCKED (SVG Authority) */
@@ -380,12 +382,12 @@
         /* CANONICAL SHADOW WINDOW - LOCKED (SVG Authority) */
         .shadow-window {
             border-radius: var(--radius-md);
-            padding: var(--space-md);
-            min-height: 360px;
-            max-height: fit-content;
-            overflow-y: auto;
-            position: relative;
-            margin-bottom: 0;
+                padding: var(--space-md);
+                min-height: 200px;
+                max-height: 200px;
+                overflow-y: auto;
+                position: relative;
+                margin-bottom: 0;
         }
 
         .shadow-window-header {
@@ -831,14 +833,14 @@
         <div class="top-menu-bar">
             <div class="menu-left">
                 <button class="menu-item" onclick="window.location.href='phantom-defined.html'">Dashboard</button>
-                <button class="menu-item" onclick="window.location.href='Phantom.ai.workspace.html'">Workspace</button>
-                <button class="menu-item active">Review</button>
+                <button class="menu-item active">Workspace</button>
+                <button class="menu-item" onclick="window.location.href='Phantom.ai.review.html'">Review</button>
                 <button class="menu-item" onclick="window.location.href='Phantom.ai.files.html'">Files</button>
             </div>
 
             <div class="menu-center">
                 <div class="dashboard-logo">
-                    <img src="./assets/phantom-logo.png" alt="Phantom.ai" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <img src="../assets/phantom-logo.png" alt="Phantom.ai" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                     <span style="display:none; font-size: 20px; font-weight: 700; color: var(--accent-primary); letter-spacing: -0.5px;">Phantom.ai</span>
                 </div>
             </div>
@@ -855,168 +857,277 @@
             </div>
         </div>
 
-        <!-- MAIN CONTENT: REVIEW PAGE - VALIDATION & DECISION SURFACE -->
+        <!-- MAIN CONTENT: CENTER → LEFT → RIGHT WORKFLOW -->
         <div class="main-content">
             <div class="three-column-grid">
-                <!-- LEFT COLUMN: REVIEW SUMMARY & COMPLIANCE INDICATORS -->
-                <div class="column-panel" style="background: linear-gradient(180deg, transparent 60%, #686a6bba 100%);">
-                    <!-- REVIEW SUMMARY PANEL -->
-                    <div class="panel-header">Review Summary</div>
-                    <div class="panel-body">
-                        <div class="form-group">
-                            <label class="form-label">Task Identifier</label>
-                            <div style="padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--color-dark-gray-1); border-radius: 8px; font-size: 11px; color: var(--color-white); font-family: var(--font-mono);">
-                                TASK-2025-001-AI-OUTPUT
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">AI Tier Used</label>
-                            <select class="form-control" id="aiTierUsed" disabled>
-                                <option>Cheap</option>
-                                <option selected>Mid</option>
-                                <option>Copilot</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Generation Timestamp</label>
-                            <div style="padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--color-dark-gray-1); border-radius: 8px; font-size: 11px; color: var(--color-medium-gray);">
-                                2026-01-06 15:32:14 UTC
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Status</label>
-                            <div style="padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--color-dark-gray-1); border-radius: 8px; font-size: 11px;">
-                                <span class="badge processing">Pending Review</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- COMPLIANCE & VALIDATION INDICATORS -->
-                    <div class="panel-header">Compliance & Validation</div>
-                    <div class="panel-body">
-                        <div class="cost-breakdown" style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; font-size: 11px;">
-                            <div class="cost-item">
-                                <span>Formatting Validity:</span>
-                                <span class="badge success">PASS</span>
-                            </div>
-                            <div class="cost-item">
-                                <span>Standard Compliance:</span>
-                                <span class="badge success">PASS</span>
-                            </div>
-                            <div class="cost-item">
-                                <span>Security Scan:</span>
-                                <span class="badge warning">WARN</span>
-                            </div>
-                        </div>
-
-                        <div style="margin-top: 12px; padding: 12px; background: rgba(255, 165, 0, 0.1); border: 1px solid rgba(255, 165, 0, 0.3); border-radius: 8px; font-size: 11px; color: var(--color-medium-gray);">
-                            ⚠️ Security scan detected 1 potential issue. Review recommended before approval.
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CENTER COLUMN: OUTPUT PREVIEW WINDOW -->
-                <div class="column-panel" style="background: linear-gradient(180deg, transparent 60%, #686a6bba 100%);">
-                    <div class="shadow-window" style="min-height: 400px; max-height: 600px;">
+                <!-- LEFT COLUMN: GATING & ACTIONS -->
+                <div class="column-panel" style="
+    background: linear-gradient(180deg, transparent 25%, #686a6bba 100%);
+    /* border-radius: 1.5rem; */
+    /* box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); */
+    /* padding: 3rem; */
+    /* width: 100%; */
+    /* max-width: 28rem; */
+    border: none;
+">
+                    <div class="shadow-window">
                         <div class="shadow-window-header">
-                            <span class="shadow-window-title">Output Preview <span class="badge">Read-Only</span></span>
+                            <span class="shadow-window-title">Workspace Status <span class="badge" id="actionStatus">Active</span></span>
                             <div class="shadow-window-controls">
-                                <button class="window-control-btn" onclick="copyOutput()" title="Copy">📋</button>
-                                <button class="window-control-btn" onclick="expandPreview()" title="Expand">⛶</button>
+                                <button class="window-control-btn" onclick="clearActions()" title="Refresh">↻</button>
                             </div>
                         </div>
-                        <div class="shadow-window-content" id="outputPreview" style="font-family: var(--font-mono); font-size: 12px; line-height: 1.6; color: var(--color-white); white-space: pre-wrap;">
-<span style="color: #a1a1a1;">// AI-Generated Code Output</span>
-<span style="color: #676767;">function</span> <span style="color: #ffffff;">validateUserInput</span>($data) {
-    <span style="color: #676767;">if</span> (<span style="color: #a1a1a1;">empty</span>($data)) {
-        <span style="color: #676767;">return</span> <span style="color: #a1a1a1;">false</span>;
-    }
-    
-    $sanitized = <span style="color: #a1a1a1;">filter_var</span>(
-        $data,
-        <span style="color: #a1a1a1;">FILTER_SANITIZE_STRING</span>
-    );
-    
-    <span style="color: #676767;">return</span> $sanitized;
-}
+                        <div class="shadow-window-content" id="actionsWindow">
+                            <div style="color: var(--color-medium-gray); font-style: italic;">
+Current Workspace: <span id="stateDisplay" style="color: var(--accent-success);">Production-v1.2</span>
 
-<span style="color: #a1a1a1;">// Security Note: Consider additional validation</span>
-<span style="color: #a1a1a1;">// for SQL injection prevention</span>
+Active Projects: 3
+Active Files: 12
+Pending Tasks: 8
+
+Recent Activity:
+• Project Alpha - Build completed
+• User assigned to Feature-X
+• Code review approved for PR#145
+
+Workspace health: ✓ Operational
+                            </div>
                         </div>
                     </div>
 
-                    <div class="panel-header">Review Actions</div>
+                    <div class="panel-header">Workspace Controls</div>
                     <div class="panel-body">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
-                            <button class="action-button accept" onclick="approveOutput()" style="width: 100%; padding: 12px; font-size: 12px;">
-                                ✓ Approve
-                            </button>
-                            <button class="action-button secondary" onclick="sendBackRevision()" style="width: 100%; padding: 12px; font-size: 12px;">
-                                ↶ Revision
-                            </button>
-                            <button class="action-button reject" onclick="rejectOutput()" style="width: 100%; padding: 12px; font-size: 12px;">
-                                ✕ Reject
-                            </button>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="g1" checked="" onchange="updateCostEstimate()">
+                            <label for="g1">Auto-sync enabled</label>
                         </div>
-
-                        <div style="margin-top: 12px; padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--color-dark-gray-1); border-radius: 8px; font-size: 11px; color: var(--color-medium-gray);">
-                            <strong>Note:</strong> Actions will update system state only. No regeneration will occur from this page.
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="g2" checked="" onchange="updateCostEstimate()">
+                            <label for="g2">Project notifications</label>
                         </div>
-                    </div>
-                </div>
-
-                <!-- RIGHT COLUMN: AUDIT METADATA -->
-                <div class="column-panel" style="background: linear-gradient(180deg, transparent 60%, #686a6bba 100%);">
-                    <div class="panel-header">Audit Metadata</div>
-                    <div class="panel-body">
-                        <div class="form-group">
-                            <label class="form-label">Reviewer</label>
-                            <div style="padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--color-dark-gray-1); border-radius: 8px; font-size: 11px; color: var(--color-white);">
-                                Admin (User)
-                            </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="g3" checked="" onchange="updateCostEstimate()">
+                            <label for="g3">Real-time collaboration</label>
                         </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Review Time</label>
-                            <div style="padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--color-dark-gray-1); border-radius: 8px; font-size: 11px; color: var(--color-medium-gray);" id="reviewTimeDisplay">
-                                Not yet completed
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Decision Outcome</label>
-                            <div style="padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--color-dark-gray-1); border-radius: 8px; font-size: 11px; color: var(--color-medium-gray);" id="decisionOutcome">
-                                Awaiting decision
-                            </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="g4" onchange="updateCostEstimate()">
+                            <label for="g4">Lock workspace settings</label>
                         </div>
 
                         <div class="divider"></div>
 
-                        <div style="padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--color-dark-gray-1); border-radius: 8px; font-size: 10px; color: var(--color-medium-gray); line-height: 1.5;">
-                            <strong>Audit Trail:</strong><br>
-                            • Created: 2026-01-06 15:32:14<br>
-                            • Assigned: 2026-01-06 15:32:20<br>
-                            • Opened: 2026-01-06 15:45:03<br>
-                            • Status: In Review
+                        <div class="form-group">
+                            <label class="form-label">Quick Actions</label>
+                            <div style="padding: 12px;background: #676767;border: 1px solid var(--color-dark-gray-1);border-radius: 9999px;font-size: 11px;/* color: #000; */">
+                                Create Project | Invite Member
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CENTER COLUMN: AI INTERACTION & FILE CONTROL -->
+                <div class="column-panel" style="
+    background: linear-gradient(180deg, transparent 60%, #686a6bba 100%);
+">
+                    <div class="shadow-window">
+                        <div class="shadow-window-header">
+                            <span class="shadow-window-title">Project Details <span class="badge processing" id="aiStatus" style="display:none;">Loading</span></span>
+                            <div class="shadow-window-controls">
+                                <button class="window-control-btn" onclick="copyAI()" title="Export">📄</button>
+                                <button class="window-control-btn" onclick="clearAI()" title="Refresh">↻</button>
+                            </div>
+                        </div>
+                        <div class="shadow-window-content" id="aiResponseWindow">
+                            <div style="color: var(--color-medium-gray); font-style: italic;">
+<span style="color: var(--accent-success); font-weight: bold;">Project Alpha</span>
+
+Status: In Progress
+Due Date: Jan 15, 2026
+Contributors: 5 users
+
+Last Update: Added new feature module
+Next Milestone: Beta release
+
+Select a project below to view details...
+                            </div>
                         </div>
                     </div>
 
-                    <div class="panel-header">Review Context</div>
+                    <div class="panel-header">Project & Task Management</div>
                     <div class="panel-body">
-                        <div style="padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--color-dark-gray-1); border-radius: 8px; font-size: 11px; color: var(--color-medium-gray); line-height: 1.5;">
-                            <strong>Source:</strong> AI Mid-Tier<br>
-                            <strong>Task Type:</strong> Code Generation<br>
-                            <strong>Complexity:</strong> Medium<br>
-                            <strong>Tokens Used:</strong> 1,247<br>
-                            <strong>Estimated Cost:</strong> $0.03
+                        <div class="file-selector">
+                            <div class="file-selector-toggle" onclick="toggleFileSelector()">
+                                <span>📋 Active Projects</span>
+                                <span id="fileSelectorArrow">▼</span>
+                            </div>
+                            <div class="file-selector-dropdown" id="fileDropdown">
+                                <div class="file-item" onclick="selectFile(this)">
+                                    <span>🚀</span> Project Alpha - In Progress
+                                </div>
+                                <div class="file-item" onclick="selectFile(this)">
+                                    <span>✅</span> Project Beta - Completed
+                                </div>
+                                <div class="file-item" onclick="selectFile(this)">
+                                    <span>⏸️</span> Project Gamma - On Hold
+                                </div>
+                                <div class="file-item" onclick="selectFile(this)">
+                                    <span>🆕</span> New Project Template
+                                </div>
+                                <div class="file-item" onclick="selectFile(this)">
+                                    <span>📁</span> Archived Projects
+                                </div>
+                            </div>
                         </div>
 
-                        <button class="action-button secondary" style="width: 100%; margin-top: 12px;" onclick="viewFullAuditLog()">
-                            View Full Audit Log
-                        </button>
+                        <div class="form-group">
+                            <label class="form-label">Task Assignment</label>
+                            <textarea class="form-textarea" id="taskPrompt" oninput="updateCostEstimate()" placeholder="Assign task to user...
+
+Example: @john_doe Review feature implementation for Project Alpha"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <textarea class="form-control" id="taskContext" style="min-height: 120px;resize: vertical;font-family: var(--font-mono);line-height: 1.5;font-size: 12px;width: 100%;border-radius: 20px;border-color: #6767672b;background: transparent;" placeholder="Task description and requirements..."></textarea>
+                        </div>
+
+                        <button class="action-button" id="submitBtn" onclick="submitToOutput()" style="
+    background: #676767;
+    color: #fff;
+">Create Task →</button>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: OUTPUT & ESCALATION -->
+                <div class="column-panel" style="
+    .phantom-shadow-window {
+    background: linear-gradient(
+    180deg,
+    #161c2f 0%,
+    #121826 100%
+  );
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    box-shadow:
+    0 8px 24px rgba(0,0,0,0.55);
+    padding: 16px;
+    margin-bottom: 16px;
+};
+    background: linear-gradient(180deg, transparent 25%, #686a6bba 100%);
+    /* background: linear-gradient(    180deg,    #161c2f 0%,    #121826 100%  ); */
+    border-radius: 1.5rem;
+    /* box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); */
+    /* padding: 3rem; */
+    /* width: 100%; */
+    /* max-width: 28rem; */
+    /* background: linear-gradient(
+    180deg,
+    #161c2f 0%,
+    #121826 100%
+  ); */
+    /* border: 1px solid rgba(255,255,255,0.08); */
+    /* border-radius: 10px; */
+    /* box-shadow:
+    0 6px 18px rgba(0,0,0,0.45); */
+    /* padding: 16px; */
+    /* background: linear-gradient(
+    180deg,
+    #161c2f 0%,
+    #121826 100%
+  ); */
+">
+                    <div class="shadow-window" style="
+    /* background: linear-gradient(180deg, white 0%, #686a6b 100%); */
+">
+                        <div class="shadow-window-header">
+                            <span class="shadow-window-title">Activity Feed <span class="badge success" id="outputStatus" style="display:none;">Live</span></span>
+                            <div class="shadow-window-controls">
+                                <button class="window-control-btn" onclick="saveOutput()" title="Filter">🔍</button>
+                                <button class="window-control-btn" onclick="clearOutputWindow()" title="Refresh">↻</button>
+                            </div>
+                        </div>
+                        <div class="shadow-window-content" id="outputWindow">
+                            <div style="color: var(--color-medium-gray); font-style: italic;">
+<span style="color: var(--accent-success);">▸</span> 2 min ago - Task completed by @jane_smith
+<span style="color: #676767;">▸</span> 15 min ago - New commit pushed to Alpha
+<span style="color: #676767;">▸</span> 1 hr ago - Project sync scheduled
+<span style="color: var(--accent-success);">▸</span> 2 hr ago - PR #145 approved
+
+Live updates from workspace activity...
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-header">Workspace Metrics & Resources</div>
+                    <div class="panel-body">
+                        <!-- Cost Estimator -->
+                        <div class="cost-estimator" style="
+    /* background: linear-gradient(180deg, transparent 25%, #686a6bba 100%); */
+">
+                            <div class="cost-header">
+                                <span style="font-size: 10px; font-weight: 700; color: var(--color-medium-gray); text-transform: uppercase;">Resource Usage</span>
+                                <span class="cost-value" id="costEstimate">78%</span>
+                            </div>
+                            <div class="cost-breakdown">
+                                <div class="cost-line">
+                                    <span>Storage:</span>
+                                    <span id="baseCost">12.4 GB / 50 GB</span>
+                                </div>
+                                <div class="cost-line">
+                                    <span>Execution Metrics (<span id="tierName">12</span>):</span>
+                                    <span id="tierCost">8 active</span>
+                                </div>
+                                <div class="cost-line">
+                                    <span>Projects:</span>
+                                    <span id="complexityCost">3 active</span>
+                                </div>
+                                <div class="cost-line">
+                                    <span>Tasks Pending:</span>
+                                    <span id="escalationRisk">8</span>
+                                </div>
+                            </div>
+                            <div class="cost-total">
+                                <strong>Workspace:</strong>
+                                <strong id="totalCost">Healthy ✓</strong>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="
+    background: linear-gradient(180deg, transparent 25%, #686a6bba 100%);
+">
+                            <label class="form-label">User Role</label>
+                            <select class="form-control" id="aiTier" onchange="updateCostEstimate()">
+                                <option value="1">Contributor</option>
+                                <option value="5" selected="">Manager</option>
+                                <option value="20">Admin</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Project Filter</label>
+                            <select class="form-control" id="escalationMode">
+                                <option selected="">All Projects</option>
+                                <option>Active Only</option>
+                                <option>Archived</option>
+                            </select>
+                        </div>
+
+                        <button class="action-button secondary" onclick="escalateToCopilot()">Export Workspace Data</button>
+
+                        <div class="divider"></div>
+
+                        <div class="form-label">Workspace Actions</div>
+                        <button class="action-button secondary" onclick="commitArtifact()">Backup Workspace</button>
+                        <button class="action-button secondary" onclick="exportOutput()" style="
+    /* width: 100%; */
+    /* border-radius: 9999px; */
+    /* padding: 1rem; */
+    /* font-size: 1rem; */
+    /* font-weight: 500; */
+    /* border: none; */
+    /* cursor: pointer; */
+    /* transition: all 0.2s; */
+    margin-top: 10px;
+">Share Workspace</button>
                     </div>
                 </div>
             </div>
@@ -1024,55 +1135,7 @@
     </div>
 
     <script>
-        // ========== REVIEW PAGE FUNCTIONS ==========
-        function approveOutput() {
-            const now = new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
-            document.getElementById('reviewTimeDisplay').textContent = now;
-            document.getElementById('decisionOutcome').innerHTML = '<span class="badge success">APPROVED</span>';
-            
-            alert('Output approved successfully. System state updated.');
-            logAccessEvent('REVIEW_APPROVED', { taskId: 'TASK-2025-001-AI-OUTPUT', reviewer: 'Admin' });
-        }
-
-        function rejectOutput() {
-            const now = new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
-            document.getElementById('reviewTimeDisplay').textContent = now;
-            document.getElementById('decisionOutcome').innerHTML = '<span class="badge danger">REJECTED</span>';
-            
-            alert('Output rejected. System state updated.');
-            logAccessEvent('REVIEW_REJECTED', { taskId: 'TASK-2025-001-AI-OUTPUT', reviewer: 'Admin' });
-        }
-
-        function sendBackRevision() {
-            const now = new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
-            document.getElementById('reviewTimeDisplay').textContent = now;
-            document.getElementById('decisionOutcome').innerHTML = '<span class="badge warning">REVISION REQUESTED</span>';
-            
-            alert('Output sent back for revision. System state updated.');
-            logAccessEvent('REVIEW_REVISION_REQUESTED', { taskId: 'TASK-2025-001-AI-OUTPUT', reviewer: 'Admin' });
-        }
-
-        function copyOutput() {
-            const output = document.getElementById('outputPreview').textContent;
-            navigator.clipboard.writeText(output).then(() => {
-                alert('Output copied to clipboard');
-            });
-        }
-
-        function expandPreview() {
-            const preview = document.getElementById('outputPreview');
-            if (preview.style.maxHeight === 'none') {
-                preview.style.maxHeight = '600px';
-            } else {
-                preview.style.maxHeight = 'none';
-            }
-        }
-
-        function viewFullAuditLog() {
-            window.location.href = 'Phantom.ai.auditlog.html';
-        }
-
-        // ========== STATE MACHINE (RETAINED FROM ORIGINAL) ==========
+        // ========== STATE MACHINE ==========
         class PhantomStateManager {
             constructor() {
                 this.currentState = 'IDLE';
@@ -1115,18 +1178,27 @@
             }
 
             updateUI(state) {
-                // Minimal UI update for Review page
-                console.log('State updated:', state);
+                document.getElementById('stateDisplay').textContent = state;
+                
+                const actionStatus = document.getElementById('actionStatus');
+                if (state === 'REVIEWING') {
+                    actionStatus.textContent = 'Pending Review';
+                    actionStatus.className = 'badge processing';
+                } else if (state === 'COMPLETE') {
+                    actionStatus.textContent = 'Complete';
+                    actionStatus.className = 'badge success';
+                } else {
+                    actionStatus.textContent = 'Awaiting';
+                    actionStatus.className = 'badge';
+                }
             }
 
             logTransition(state) {
-                if (window.auditLogger) {
-                    auditLogger.log('state_transition', {
-                        from: this.stateHistory[this.stateHistory.length - 1]?.from || 'INIT',
-                        to: state,
-                        task_data: this.taskData
-                    });
-                }
+                auditLogger.log('state_transition', {
+                    from: this.stateHistory[this.stateHistory.length - 1]?.from || 'INIT',
+                    to: state,
+                    task_data: this.taskData
+                });
             }
 
             getCurrentState() {
@@ -1151,7 +1223,7 @@
                 const entry = {
                     timestamp: new Date().toISOString(),
                     session_id: this.sessionStart,
-                    user: document.getElementById('displayUsername')?.textContent || 'Unknown',
+                    user: document.getElementById('displayUsername').textContent,
                     action: action,
                     state: stateManager.getCurrentState(),
                     details: details,
@@ -1181,31 +1253,91 @@
 
         const auditLogger = new AuditLogger();
 
-        // ========== ACCESS LOGGING HELPER ==========
-        function logAccessEvent(action, details = {}) {
-            const event = {
-                timestamp: new Date().toISOString(),
-                action: action,
-                user: document.getElementById('displayUsername')?.textContent || 'Admin',
-                details: details
-            };
-            
-            // Store in localStorage (limited to last 100 entries)
-            let accessLog = JSON.parse(localStorage.getItem('phantom_access_log') || '[]');
-            accessLog.push(event);
-            if (accessLog.length > 100) accessLog = accessLog.slice(-100);
-            localStorage.setItem('phantom_access_log', JSON.stringify(accessLog));
-            
-            console.log('[ACCESS LOG]', event);
+        // ========== COST ESTIMATOR ==========
+        class CostEstimator {
+            constructor() {
+                this.currentSessionCost = 0;
+                this.totalCost = 0;
+                this.taskHistory = [];
+            }
+
+            calculateBaseCost(taskData) {
+                let cost = 0.01;
+                
+                if (taskData.prompt) {
+                    const promptTokens = taskData.prompt.length / 4;
+                    cost += promptTokens * 0.00001;
+                }
+                
+                if (taskData.context) {
+                    const contextTokens = taskData.context.length / 4;
+                    cost += contextTokens * 0.00001;
+                }
+                
+                const fileCount = taskData.files?.length || 0;
+                cost += fileCount * 0.005;
+                
+                return cost;
+            }
+
+            calculateComplexityFactor(taskData) {
+                let factor = 1.0;
+                
+                if (taskData.gating?.strictMode) factor *= 1.5;
+                if (taskData.gating?.includeArtifacts) factor *= 1.2;
+                if (taskData.gating?.includeLearning) factor *= 1.1;
+                
+                const promptLength = taskData.prompt?.length || 0;
+                if (promptLength > 500) factor *= 1.5;
+                else if (promptLength > 200) factor *= 1.2;
+                
+                return factor;
+            }
+
+            calculateEscalationProbability() {
+                if (this.taskHistory.length < 3) return 0.1;
+                
+                const recent = this.taskHistory.slice(-10);
+                const escalationRate = recent.filter(t => t.escalated).length / recent.length;
+                return Math.min((0.1 + escalationRate) / 2, 0.9);
+            }
+
+            estimate(taskData) {
+                const baseCost = this.calculateBaseCost(taskData);
+                const tierMultiplier = parseInt(taskData.tier || 5);
+                const complexity = this.calculateComplexityFactor(taskData);
+                const escalationProb = this.calculateEscalationProbability();
+                
+                const estimatedCost = baseCost * tierMultiplier * complexity;
+                const maxCost = estimatedCost * (1 + escalationProb * 20);
+                
+                return {
+                    baseCost,
+                    tierMultiplier,
+                    complexity,
+                    escalationProb,
+                    estimatedCost,
+                    maxCost
+                };
+            }
+
+            addTaskCost(cost, escalated = false) {
+                this.currentSessionCost += cost;
+                this.totalCost += cost;
+                this.taskHistory.push({ cost, escalated, timestamp: Date.now() });
+                auditLogger.log('cost_incurred', { cost, escalated });
+            }
+
+            getSessionCost() {
+                return this.currentSessionCost;
+            }
         }
 
-        // Log page load
-        document.addEventListener('DOMContentLoaded', function() {
-            logAccessEvent('REVIEW_PAGE_LOADED', { page: 'Phantom.ai.review.html' });
-        });
-    </script>
+        const costEstimator = new CostEstimator();
 
-    <script>
+        // ========== COPILOT FORMATTER ==========
+        class CopilotFormatter {
+            static formatInput(taskData) {
                 return {
                     version: '1.0',
                     source: 'Phantom.ai',
