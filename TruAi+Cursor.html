@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TruAi — Prototype</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: #0b0d11;
+      color: #B3B3B3;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Top Navigation ── */
+    .topnav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 24px;
+      background: rgba(0, 0, 0, 0.4);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: relative;
+      z-index: 100;
+      flex-shrink: 0;
+    }
+
+    .topnav-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .topnav-brand img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+
+    .topnav-brand span {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: 0.01em;
+    }
+
+    .topnav-center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 14px;
+      font-weight: 500;
+      color: #e8e9eb;
+    }
+
+    .topnav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .topnav-actions a {
+      padding: 5px 12px;
+      font-size: 13px;
+      color: #8b8d98;
+      text-decoration: none;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 6px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .topnav-actions a:hover {
+      color: #00A3FF;
+      border-color: rgba(0, 163, 255, 0.4);
+    }
+
+    /* ── Main Layout ── */
+    .app-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    /* ── Header / Logo Section ── */
+    .header-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 20px 12px;
+      flex-shrink: 0;
+    }
+
+    .logo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .logo-container img {
+      width: 32px;
+      height: auto;
+    }
+
+    .project-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: #e8e9eb;
+    }
+
+    /* ── Main 3-Column Area ── */
+    .main-area {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+      gap: 12px;
+      padding: 0 16px 12px;
+    }
+
+    /* ── Left Sidebar — Content/Explorer ── */
+    .sidebar-left {
+      flex: 0 0 220px;
+      min-width: 180px;
+      max-width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sidebar-panel {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      padding: 14px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .panel-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    .file-list {
+      list-style: none;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 4px;
+      font-size: 12px;
+      color: #9ca3af;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .file-item:last-child { border-bottom: none; }
+
+    .file-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: #e8e9eb;
+    }
+
+    .file-item.active {
+      background: rgba(0, 163, 255, 0.1);
+      color: #00A3FF;
+    }
+
+    .file-icon { font-size: 14px; flex-shrink: 0; }
+
+    /* ── Center — AI Response Area ── */
+    .center-area {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .ai-response-area {
+      flex: 1;
+      background: rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: auto;
+      position: relative;
+      min-height: 200px;
+    }
+
+    .ai-response-content {
+      padding: 24px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.72);
+      max-width: 100%;
+      width: 100%;
+    }
+
+    .ai-response-content.empty {
+      text-align: center;
+      color: #555;
+      padding: 60px 24px;
+    }
+
+    .ai-response-content.empty p {
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .ai-response-content.empty span {
+      font-size: 12px;
+      color: #3a3a3a;
+    }
+
+    /* Message bubbles */
+    .msg-user, .msg-ai {
+      margin-bottom: 16px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .msg-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .msg-user .msg-avatar {
+      background: rgba(0, 163, 255, 0.2);
+      color: #00A3FF;
+    }
+
+    .msg-ai .msg-avatar {
+      background: rgba(139, 92, 246, 0.2);
+      color: #8B5CF6;
+    }
+
+    .msg-bubble {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      line-height: 1.55;
+      color: #d1d5db;
+      max-width: calc(100% - 42px);
+    }
+
+    .msg-user .msg-bubble {
+      background: rgba(0, 163, 255, 0.08);
+      border-color: rgba(0, 163, 255, 0.15);
+      color: #e8e9eb;
+    }
+
+    /* ── Task/Input Panel ── */
+    .input-panel {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 10px;
+      padding: 12px 14px;
+      flex-shrink: 0;
+    }
+
+    .task-section {
+      margin-bottom: 8px;
+    }
+
+    .task-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 6px;
+    }
+
+    .task-input-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .task-textarea {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      color: #e8e9eb;
+      font-size: 13px;
+      font-family: inherit;
+      padding: 10px 12px;
+      resize: none;
+      outline: none;
+      min-height: 44px;
+      max-height: 120px;
+      line-height: 1.5;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .task-textarea:focus {
+      border-color: rgba(0, 163, 255, 0.4);
+      box-shadow: 0 0 0 1px rgba(0, 163, 255, 0.15);
+    }
+
+    .task-textarea::placeholder { color: #4B5563; }
+
+    .btn-send {
+      padding: 10px 18px;
+      background: #00A3FF;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      flex-shrink: 0;
+    }
+
+    .btn-send:hover { background: #0088DD; transform: translateY(-1px); }
+    .btn-send:active { transform: translateY(0); }
+    .btn-send:disabled { background: #2a2a2a; color: #555; cursor: not-allowed; transform: none; }
+
+    .input-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar-btn {
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 500;
+      color: #6b6d78;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 5px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+
+    .toolbar-btn:hover {
+      color: #e8e9eb;
+      border-color: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .toolbar-btn.active {
+      color: #00A3FF;
+      border-color: rgba(0, 163, 255, 0.35);
+      background: rgba(0, 163, 255, 0.1);
+    }
+
+    .toolbar-separator {
+      width: 1px;
+      height: 16px;
+      background: rgba(255, 255, 255, 0.08);
+      margin: 0 2px;
+    }
+
+    .toolbar-spacer { flex: 1; }
+
+    .model-select {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 5px;
+      color: #6b6d78;
+      font-size: 11px;
+      padding: 3px 6px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .model-select option { background: #1a1a1a; }
+
+    /* ── Right Sidebar — Code Review ── */
+    .sidebar-right {
+      flex: 0 0 220px;
+      min-width: 180px;
+      max-width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .code-review-panel {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      padding: 14px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .code-review-toolbar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      margin-bottom: 10px;
+    }
+
+    .code-review-content {
+      flex: 1;
+      overflow: auto;
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 11px;
+      line-height: 1.6;
+      color: #9ca3af;
+    }
+
+    .code-review-content pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* Syntax highlight tokens */
+    .tok-keyword { color: #8B5CF6; }
+    .tok-string  { color: #22c55e; }
+    .tok-comment { color: #4B5563; font-style: italic; }
+    .tok-fn      { color: #00A3FF; }
+    .tok-num     { color: #F59E0B; }
+
+    /* ── Bottom Status Bar ── */
+    .statusbar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 5px 16px;
+      background: rgba(0, 0, 0, 0.45);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 11px;
+      color: #4B5563;
+      flex-shrink: 0;
+    }
+
+    .statusbar-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .dot-green  { background: #22c55e; box-shadow: 0 0 5px rgba(34, 197, 94, 0.6); }
+    .dot-blue   { background: #00A3FF; }
+    .dot-yellow { background: #fbbf24; }
+    .dot-gray   { background: #4B5563; }
+
+    .statusbar-spacer { flex: 1; }
+
+    /* ── Popups (Settings / Operations / Chat History) ── */
+    .popup-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(6, 9, 15, 0.93);
+      z-index: 9999;
+      overflow-y: auto;
+    }
+
+    .popup-overlay.visible { display: block; }
+
+    .popup-inner {
+      max-width: 720px;
+      width: 100%;
+      margin: 40px auto 60px;
+      padding: 28px;
+      background: rgba(20, 22, 30, 0.98);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+    }
+
+    .popup-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .popup-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #e8e9eb;
+    }
+
+    .popup-close {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      color: #9ca3af;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .popup-close:hover { background: rgba(255, 255, 255, 0.1); color: #e8e9eb; }
+
+    /* Settings tabs */
+    .settings-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      padding-bottom: 12px;
+    }
+
+    .settings-tab {
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #6b6d78;
+      background: none;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+
+    .settings-tab:hover { color: #e8e9eb; background: rgba(255, 255, 255, 0.04); }
+    .settings-tab.active { color: #00A3FF; border-color: rgba(0, 163, 255, 0.3); background: rgba(0, 163, 255, 0.08); }
+
+    /* Form elements */
+    .form-group { margin-bottom: 16px; }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      background: #111318;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: #e8e9eb;
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: #00A3FF;
+      box-shadow: 0 0 0 1px rgba(0, 163, 255, 0.3);
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: #3a3d4a; }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    /* ── Operations Panel Content ── */
+    .op-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .op-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 10px;
+    }
+
+    .op-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .op-icon.blue   { background: rgba(0, 163, 255, 0.15); }
+    .op-icon.purple { background: rgba(139, 92, 246, 0.15); }
+    .op-icon.green  { background: rgba(34, 197, 94, 0.15); }
+    .op-icon.orange { background: rgba(245, 158, 11, 0.15); }
+
+    .op-details { flex: 1; min-width: 0; }
+
+    .op-name { font-size: 13px; font-weight: 600; color: #e8e9eb; margin-bottom: 2px; }
+    .op-desc { font-size: 11px; color: #6b6d78; }
+
+    .op-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-ready   { background: rgba(34, 197, 94, 0.12);  color: #22c55e; }
+    .badge-running { background: rgba(0, 163, 255, 0.12);  color: #00A3FF; }
+    .badge-pending { background: rgba(245, 158, 11, 0.12); color: #F59E0B; }
+
+    /* ── Chat History ── */
+    .chat-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .chat-item {
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .chat-item:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .chat-item-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #e8e9eb;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chat-item-preview {
+      font-size: 11px;
+      color: #6b6d78;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chat-item-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+      font-size: 10px;
+      color: #3a3d4a;
+    }
+
+    /* ── ROMA Indicator ── */
+    .roma-indicator {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.35);
+      letter-spacing: 0.05em;
+      z-index: 100;
+      user-select: none;
+      pointer-events: none;
+      transition: color 0.5s;
+    }
+
+    .roma-indicator.confirmed { color: rgba(255, 255, 255, 0.65); }
+
+    /* ── Spinner ── */
+    .spinner {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Typing indicator ── */
+    .typing-dots {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      padding: 10px 14px;
+    }
+
+    .typing-dots span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #4B5563;
+      animation: bounce 1.2s infinite;
+    }
+
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
+      40% { transform: translateY(-5px); opacity: 1; }
+    }
+
+    /* ── Scrollbar styling ── */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .sidebar-left, .sidebar-right { display: none; }
+    }
+
+    @media (max-width: 600px) {
+      .topnav-actions { display: none; }
+      .topnav-center { position: static; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Top Navigation ── -->
+  <nav class="topnav">
+    <a class="topnav-brand" href="/TruAi/">
+      <img src="/TruAi/assets/images/TruAi-Logo.png"
+           onerror="this.style.display='none'"
+           alt="TruAi">
+      <span>TruAi</span>
+    </a>
+    <div class="topnav-center" id="project-name">New Project</div>
+    <div class="topnav-actions">
+      <a href="/TruAi/login-portal.html">Login</a>
+      <a href="/TruAi/ubsas-entrance.html">Secure Portal</a>
+      <a href="#" onclick="togglePopup('settings-popup'); return false;">⚙ Settings</a>
+      <a href="#" onclick="togglePopup('operations-popup'); return false;">⚡ Operations</a>
+      <a href="#" onclick="togglePopup('chat-popup'); return false;">💬 History</a>
+    </div>
+  </nav>
+
+  <!-- ── App Body ── -->
+  <div class="app-body">
+
+    <!-- ── Header / Logo ── -->
+    <div class="header-section">
+      <div class="logo-container">
+        <img src="/TruAi/assets/images/TruAi-Logo.png"
+             onerror="this.style.display='none'"
+             alt="TruAi">
+        <div class="project-title" id="header-project-title">Start New Project</div>
+      </div>
+    </div>
+
+    <!-- ── Main 3-Column Area ── -->
+    <div class="main-area">
+
+      <!-- ── Left: Content / Explorer Panel ── -->
+      <div class="sidebar-left">
+        <div class="sidebar-panel">
+          <div class="panel-label">Explorer</div>
+          <ul class="file-list" id="file-list">
+            <li class="file-item active" onclick="selectFile(this, 'index.php')">
+              <span class="file-icon">📄</span> index.php
+            </li>
+            <li class="file-item" onclick="selectFile(this, 'router.php')">
+              <span class="file-icon">📄</span> router.php
+            </li>
+            <li class="file-item" onclick="selectFile(this, 'dashboard.html')">
+              <span class="file-icon">🌐</span> dashboard.html
+            </li>
+            <li class="file-item" onclick="selectFile(this, 'ubsas-entrance.html')">
+              <span class="file-icon">🌐</span> ubsas-entrance.html
+            </li>
+            <li class="file-item" onclick="selectFile(this, 'login-portal.html')">
+              <span class="file-icon">🌐</span> login-portal.html
+            </li>
+            <li class="file-item" onclick="selectFile(this, 'welcome.html')">
+              <span class="file-icon">🌐</span> welcome.html
+            </li>
+            <li class="file-item" onclick="selectFile(this, 'start.html')">
+              <span class="file-icon">🌐</span> start.html
+            </li>
+            <li class="file-item" onclick="selectFile(this, 'assets/js/api.js')">
+              <span class="file-icon">📜</span> api.js
+            </li>
+            <li class="file-item" onclick="selectFile(this, 'assets/js/dashboard.js')">
+              <span class="file-icon">📜</span> dashboard.js
+            </li>
+            <li class="file-item" onclick="selectFile(this, 'assets/js/ai-client.js')">
+              <span class="file-icon">📜</span> ai-client.js
+            </li>
+            <li class="file-item" onclick="selectFile(this, 'assets/js/crypto.js')">
+              <span class="file-icon">📜</span> crypto.js
+            </li>
+            <li class="file-item" onclick="selectFile(this, 'composer.json')">
+              <span class="file-icon">📦</span> composer.json
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ── Center: AI Chat / Response ── -->
+      <div class="center-area">
+
+        <!-- AI Response / Chat Area -->
+        <div class="ai-response-area" id="ai-response-area">
+          <div class="ai-response-content empty" id="ai-response-content">
+            <p>Ask TruAi anything…</p>
+            <span>Start a conversation, run a task, or select a file to analyze</span>
+          </div>
+        </div>
+
+        <!-- Input Panel -->
+        <div class="input-panel">
+          <div class="task-label">Task</div>
+          <div class="task-input-row">
+            <textarea
+              class="task-textarea"
+              id="ai-input"
+              placeholder="Describe what you want TruAi to do…"
+              rows="2"
+              onkeydown="handleInputKeydown(event)"
+            ></textarea>
+            <button class="btn-send" id="btn-send" onclick="sendMessage()">Send</button>
+          </div>
+          <div class="input-toolbar">
+            <button class="toolbar-btn active" id="btn-agent" onclick="setMode('agent')">Agent</button>
+            <button class="toolbar-btn" id="btn-chat"  onclick="setMode('chat')">Chat</button>
+            <button class="toolbar-btn" id="btn-edit"  onclick="setMode('edit')">Inline Edit</button>
+            <div class="toolbar-separator"></div>
+            <button class="toolbar-btn" onclick="attachFile()">📎 Attach</button>
+            <button class="toolbar-btn" onclick="runCodeReview()">🔍 Review</button>
+            <div class="toolbar-spacer"></div>
+            <select class="model-select" id="model-select">
+              <option value="auto">Model: Auto</option>
+              <option value="gpt-4o">GPT-4o</option>
+              <option value="claude-3-5-sonnet">Claude 3.5 Sonnet</option>
+              <option value="claude-3-opus">Claude 3 Opus</option>
+              <option value="gpt-4-turbo">GPT-4 Turbo</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── Right: Code Review Panel ── -->
+      <div class="sidebar-right">
+        <div class="code-review-panel">
+          <div class="panel-label">Code Review</div>
+          <div class="code-review-toolbar">
+            <button class="toolbar-btn" onclick="reviewSelected()">▶ Run</button>
+            <button class="toolbar-btn" onclick="copyReview()">📋 Copy</button>
+            <button class="toolbar-btn" onclick="clearReview()">✕ Clear</button>
+          </div>
+          <div class="code-review-content" id="code-review-content">
+            <pre style="color:#3a3d4a; font-size:11px; text-align:center; padding-top:40px;">
+Select a file or run
+a review to see
+analysis here.</pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Status Bar ── -->
+  <div class="statusbar">
+    <div class="statusbar-item">
+      <div class="status-dot dot-green"></div>
+      <span id="sb-connection">Connected</span>
+    </div>
+    <div class="statusbar-item">
+      <div class="status-dot dot-blue"></div>
+      <span id="sb-model">Auto</span>
+    </div>
+    <div class="statusbar-item">
+      <span id="sb-file">index.php</span>
+    </div>
+    <div class="statusbar-spacer"></div>
+    <div class="statusbar-item">
+      <span id="sb-mode">Agent Mode</span>
+    </div>
+    <div class="statusbar-item">
+      <span>TruAi v1.0</span>
+    </div>
+    <div class="statusbar-item">
+      <span>UBSAS v2.0</span>
+    </div>
+  </div>
+
+  <!-- ── ROMA Indicator ── -->
+  <div class="roma-indicator" id="roma-indicator">Roma • Checking…</div>
+
+  <!-- ══════════ POPUPS ══════════ -->
+
+  <!-- Settings Popup -->
+  <div class="popup-overlay" id="settings-popup">
+    <div class="popup-inner">
+      <div class="popup-header">
+        <div class="popup-title">⚙ Settings</div>
+        <button class="popup-close" onclick="togglePopup('settings-popup')">✕ Close</button>
+      </div>
+      <div class="settings-tabs">
+        <button class="settings-tab active" onclick="switchSettingsTab(this, 'general')">General</button>
+        <button class="settings-tab" onclick="switchSettingsTab(this, 'models')">Models &amp; API</button>
+        <button class="settings-tab" onclick="switchSettingsTab(this, 'features')">Features</button>
+        <button class="settings-tab" onclick="switchSettingsTab(this, 'privacy')">Privacy</button>
+      </div>
+
+      <!-- General Tab -->
+      <div id="settings-tab-general">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="settings-username" placeholder="Enter username">
+          </div>
+          <div class="form-group">
+            <label>Theme</label>
+            <select id="settings-theme">
+              <option value="dark">Dark (Default)</option>
+              <option value="darker">Darker</option>
+              <option value="midnight">Midnight</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Font Size</label>
+            <input type="number" id="settings-fontsize" value="13" min="10" max="22">
+          </div>
+          <div class="form-group">
+            <label>Keybinding</label>
+            <select id="settings-keybinding">
+              <option value="vscode">VS Code</option>
+              <option value="vim">Vim</option>
+              <option value="emacs">Emacs</option>
+              <option value="sublime">Sublime Text</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Models Tab (hidden by default) -->
+      <div id="settings-tab-models" style="display:none;">
+        <div class="form-group">
+          <label>Default Model</label>
+          <select id="settings-model">
+            <option value="auto">Auto (Recommended)</option>
+            <option value="gpt-4o">GPT-4o</option>
+            <option value="claude-3-5-sonnet">Claude 3.5 Sonnet</option>
+            <option value="claude-3-opus">Claude 3 Opus</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>OpenAI API Key</label>
+          <input type="password" id="settings-openai-key" placeholder="sk-…">
+        </div>
+        <div class="form-group">
+          <label>Anthropic API Key</label>
+          <input type="password" id="settings-anthropic-key" placeholder="sk-ant-…">
+        </div>
+      </div>
+
+      <!-- Features Tab (hidden) -->
+      <div id="settings-tab-features" style="display:none;">
+        <div class="form-group">
+          <label>Enable Streaming Responses</label>
+          <select id="settings-streaming">
+            <option value="1">Enabled</option>
+            <option value="0">Disabled</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Inline Edit (Ctrl+K)</label>
+          <select>
+            <option>Enabled</option>
+            <option>Disabled</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Code Review on Save</label>
+          <select>
+            <option>Disabled</option>
+            <option>Enabled</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Privacy Tab (hidden) -->
+      <div id="settings-tab-privacy" style="display:none;">
+        <div class="form-group">
+          <label>Data Sharing</label>
+          <select id="settings-data-sharing">
+            <option value="1">Enabled — Help improve TruAi</option>
+            <option value="0">Disabled</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Session Logging</label>
+          <select>
+            <option>Local only</option>
+            <option>Disabled</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-top:20px; display:flex; gap:10px; justify-content:flex-end;">
+        <button class="toolbar-btn" onclick="togglePopup('settings-popup')">Cancel</button>
+        <button class="btn-send" style="width:auto; padding: 9px 22px;" onclick="saveSettings()">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Operations Popup -->
+  <div class="popup-overlay" id="operations-popup">
+    <div class="popup-inner">
+      <div class="popup-header">
+        <div class="popup-title">⚡ Operations</div>
+        <button class="popup-close" onclick="togglePopup('operations-popup')">✕ Close</button>
+      </div>
+      <div class="op-list">
+        <div class="op-item">
+          <div class="op-icon blue">🤖</div>
+          <div class="op-details">
+            <div class="op-name">AI Agent Task</div>
+            <div class="op-desc">Queue a multi-step agent operation</div>
+          </div>
+          <span class="op-badge badge-ready">Ready</span>
+        </div>
+        <div class="op-item">
+          <div class="op-icon purple">🔍</div>
+          <div class="op-details">
+            <div class="op-name">Code Review</div>
+            <div class="op-desc">Analyze selected files for issues</div>
+          </div>
+          <span class="op-badge badge-ready">Ready</span>
+        </div>
+        <div class="op-item">
+          <div class="op-icon green">✅</div>
+          <div class="op-details">
+            <div class="op-name">Run Tests</div>
+            <div class="op-desc">Execute test suite via run-all-tests.sh</div>
+          </div>
+          <span class="op-badge badge-pending">Pending</span>
+        </div>
+        <div class="op-item">
+          <div class="op-icon orange">🚀</div>
+          <div class="op-details">
+            <div class="op-name">Deploy</div>
+            <div class="op-desc">Push to production environment</div>
+          </div>
+          <span class="op-badge badge-pending">Pending</span>
+        </div>
+        <div class="op-item">
+          <div class="op-icon blue">🔐</div>
+          <div class="op-details">
+            <div class="op-name">UBSAS Auth Check</div>
+            <div class="op-desc">Verify ROMA + UBSAS token integrity</div>
+          </div>
+          <span class="op-badge badge-running">Running</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat History Popup -->
+  <div class="popup-overlay" id="chat-popup">
+    <div class="popup-inner">
+      <div class="popup-header">
+        <div class="popup-title">💬 Chat History</div>
+        <button class="popup-close" onclick="togglePopup('chat-popup')">✕ Close</button>
+      </div>
+      <div class="chat-list" id="chat-history-list">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+  'use strict';
+
+  // ── State ──────────────────────────────────────────────────────────────────
+  const state = {
+    mode:      'agent',   // agent | chat | edit
+    model:     'auto',
+    messages:  [],
+    activeFile: 'index.php',
+    isLoading: false,
+    chatHistory: []
+  };
+
+  // ── Simulated API Base (replace with real TRUAI_CONFIG when available) ──
+  window.TRUAI_CONFIG = window.TRUAI_CONFIG || {
+    API_BASE: (window.location.origin + '/TruAi/api/v1').replace(/\/TruAi\/TruAi/, '/TruAi'),
+    CSRF_TOKEN: '',
+    IS_AUTHENTICATED: false,
+    USERNAME: ''
+  };
+
+  // ── Initialise ─────────────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    checkROMA();
+    loadChatHistory();
+    document.getElementById('model-select').addEventListener('change', function() {
+      state.model = this.value;
+      document.getElementById('sb-model').textContent =
+        this.options[this.selectedIndex].text.replace('Model: ', '');
+    });
+  });
+
+  // ── ROMA Indicator ───────────────────────────────────────────────��─────────
+  async function checkROMA() {
+    const ind = document.getElementById('roma-indicator');
+    try {
+      const r = await fetch(window.TRUAI_CONFIG.API_BASE + '/security/roma', { credentials: 'include' });
+      const d = await r.json();
+      if (d.trust_state === 'VERIFIED') {
+        ind.textContent = 'Roma • Portal Protected • Monitor Active';
+        ind.classList.add('confirmed');
+      } else {
+        ind.textContent = 'Roma • ' + (d.trust_state || 'Unverified');
+      }
+    } catch {
+      ind.textContent = 'Roma • Offline';
+    }
+  }
+
+  // ── Mode buttons ───────────────────────────────────────────────────────────
+  function setMode(m) {
+    state.mode = m;
+    ['agent','chat','edit'].forEach(id => {
+      const btn = document.getElementById('btn-' + id);
+      if (btn) btn.classList.toggle('active', id === m);
+    });
+    document.getElementById('sb-mode').textContent =
+      m.charAt(0).toUpperCase() + m.slice(1) + ' Mode';
+  }
+
+  // ── File selection ─────────────────────────────────────────────────────────
+  function selectFile(el, fname) {
+    document.querySelectorAll('.file-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    state.activeFile = fname;
+    document.getElementById('sb-file').textContent = fname;
+    // Auto-populate a hint
+    document.getElementById('ai-input').placeholder =
+      `Ask about ${fname}, or describe changes you want…`;
+  }
+
+  // ── Input keyboard shortcut ────────────────────────────────────────────────
+  function handleInputKeydown(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  }
+
+  // ── Send message ───────────────────────────────────────────────────────────
+  async function sendMessage() {
+    const input   = document.getElementById('ai-input');
+    const content = input.value.trim();
+    if (!content || state.isLoading) return;
+
+    input.value = '';
+    state.isLoading = true;
+
+    const responseArea   = document.getElementById('ai-response-area');
+    const responseContent = document.getElementById('ai-response-content');
+
+    // If empty state, clear placeholder
+    if (responseContent.classList.contains('empty')) {
+      responseContent.classList.remove('empty');
+      responseContent.innerHTML = '';
+    }
+
+    // Append user message
+    appendMessage('user', content, responseContent);
+
+    // Show typing indicator
+    const typingEl = createTypingIndicator();
+    responseContent.appendChild(typingEl);
+    responseArea.scrollTop = responseArea.scrollHeight;
+
+    // Store in history
+    state.messages.push({ role: 'user', content });
+
+    try {
+      const r = await fetch(window.TRUAI_CONFIG.API_BASE + '/ai/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          message: content,
+          model:   state.model,
+          mode:    state.mode,
+          file:    state.activeFile
+        })
+      });
+
+      typingEl.remove();
+
+      if (r.ok) {
+        const d = await r.json();
+        const reply = d.reply || d.message || d.content || '(No response)';
+        appendMessage('ai', reply, responseContent);
+        state.messages.push({ role: 'assistant', content: reply });
+      } else {
+        // Demo fallback
+        appendMessage('ai', getDemoResponse(content), responseContent);
+      }
+    } catch {
+      typingEl.remove();
+      appendMessage('ai', getDemoResponse(content), responseContent);
+    }
+
+    state.isLoading = false;
+    responseArea.scrollTop = responseArea.scrollHeight;
+    saveChatHistory(content);
+  }
+
+  // ── Append a chat bubble ───────────────────────────────────────────────────
+  function appendMessage(role, text, container) {
+    const wrap = document.createElement('div');
+    wrap.className = 'msg-' + role;
+
+    const avatar = document.createElement('div');
+    avatar.className = 'msg-avatar';
+    avatar.textContent = role === 'user' ? 'U' : 'AI';
+
+    const bubble = document.createElement('div');
+    bubble.className = 'msg-bubble';
+    bubble.textContent = text;
+
+    if (role === 'ai') {
+      wrap.appendChild(avatar);
+      wrap.appendChild(bubble);
+    } else {
+      wrap.appendChild(avatar);
+      wrap.appendChild(bubble);
+    }
+
+    container.appendChild(wrap);
+  }
+
+  // ── Typing indicator ───────────────────────────────────────────────────────
+  function createTypingIndicator() {
+    const wrap   = document.createElement('div');
+    wrap.className = 'msg-ai';
+    wrap.innerHTML = `
+      <div class="msg-avatar">AI</div>
+      <div class="typing-dots"><span></span><span></span><span></span></div>`;
+    return wrap;
+  }
+
+  // ── Demo response (when API is offline) ────────────────────────────────────
+  function getDemoResponse(msg) {
+    const responses = [
+      `I've reviewed your request regarding "${state.activeFile}". Here's my analysis: the code structure looks solid. I recommend adding input validation and ensuring CSRF tokens are checked on all state-mutating endpoints.`,
+      `For the task you've described, I would suggest breaking it into three steps: (1) identify the affected files, (2) make the targeted changes, (3) run the test suite via run-all-tests.sh to verify nothing breaks.`,
+      `Looking at the TruAi architecture, this change should be made in the backend layer. The ROMA oversight system will log this operation automatically. Shall I proceed?`,
+      `Great question! Based on the UBSAS authentication system, the Tier 1 (biometric) and Tier 2 (keychain) flows depend on the native host being installed. If you're testing locally, Tier 3 (manual) is always available.`,
+    ];
+    return responses[Math.floor(Math.random() * responses.length)];
+  }
+
+  // ── Code Review ────────────────────────────────────────────────────────────
+  function runCodeReview() {
+    const el = document.getElementById('code-review-content');
+    el.innerHTML = `<pre>
+<span class="tok-comment">// Code Review: ${state.activeFile}</span>
+<span class="tok-comment">// Generated by TruAi · ${new Date().toLocaleTimeString()}</span>
+
+<span class="tok-keyword">ANALYSIS</span>
+──────────────────────
+<span class="tok-fn">✓ Structure</span>   Clean
+<span class="tok-fn">✓ Imports</span>    Valid
+<span class="tok-fn">⚠ CSRF</span>      Check tokens
+<span class="tok-fn">✓ Auth</span>       UBSAS active
+<span class="tok-fn">✓ Errors</span>     Handled
+
+<span class="tok-keyword">SUGGESTIONS</span>
+──────────────────────
+<span class="tok-string">1.</span> Add rate limiting
+   to /auth/login
+<span class="tok-string">2.</span> Validate all inputs
+   before DB queries
+<span class="tok-string">3.</span> Log operations via
+   ROMA audit trail
+
+<span class="tok-num">Risk Level:</span> LOW
+<span class="tok-num">Score:</span> 87/100
+</pre>`;
+  }
+
+  function reviewSelected() { runCodeReview(); }
+
+  function copyReview() {
+    const txt = document.getElementById('code-review-content').innerText;
+    navigator.clipboard.writeText(txt).catch(() => {});
+  }
+
+  function clearReview() {
+    document.getElementById('code-review-content').innerHTML =
+      '<pre style="color:#3a3d4a; font-size:11px; text-align:center; padding-top:40px;">\nSelect a file or run\na review to see\nanalysis here.</pre>';
+  }
+
+  // ── Attach file placeholder ────────────────────────────────────────────────
+  function attachFile() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.html,.php,.js,.json,.md,.css,.sh';
+    input.onchange = e => {
+      const f = e.target.files[0];
+      if (f) {
+        document.getElementById('ai-input').value +=
+          (document.getElementById('ai-input').value ? '\n' : '') + `[Attached: ${f.name}]`;
+      }
+    };
+    input.click();
+  }
+
+  // ── Popup management ───────────────────────────────────────────────────────
+  function togglePopup(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle('visible');
+    if (id === 'chat-popup' && el.classList.contains('visible')) {
+      renderChatHistory();
+    }
+  }
+
+  // Close popup on overlay click
+  document.addEventListener('click', e => {
+    ['settings-popup','operations-popup','chat-popup'].forEach(id => {
+      const el = document.getElementById(id);
+      if (e.target === el) el.classList.remove('visible');
+    });
+  });
+
+  // ── Settings tabs ──────────────────────────────────────────────────────────
+  function switchSettingsTab(btn, tab) {
+    document.querySelectorAll('.settings-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    ['general','models','features','privacy'].forEach(t => {
+      const el = document.getElementById('settings-tab-' + t);
+      if (el) el.style.display = t === tab ? '' : 'none';
+    });
+  }
+
+  function saveSettings() {
+    // Persist to localStorage as demo
+    const s = {
+      username: document.getElementById('settings-username').value,
+      theme:    document.getElementById('settings-theme').value,
+      fontSize: document.getElementById('settings-fontsize').value,
+    };
+    localStorage.setItem('truai_settings', JSON.stringify(s));
+    togglePopup('settings-popup');
+  }
+
+  // ── Chat History ───────────────────────────────────────────────────────────
+  function saveChatHistory(msg) {
+    const history = JSON.parse(localStorage.getItem('truai_chat_history') || '[]');
+    history.unshift({ title: msg.substring(0, 40), preview: msg.substring(0, 80), ts: Date.now() });
+    if (history.length > 50) history.pop();
+    localStorage.setItem('truai_chat_history', JSON.stringify(history));
+  }
+
+  function loadChatHistory() {
+    state.chatHistory = JSON.parse(localStorage.getItem('truai_chat_history') || '[]');
+  }
+
+  function renderChatHistory() {
+    const list = document.getElementById('chat-history-list');
+    loadChatHistory();
+    if (state.chatHistory.length === 0) {
+      list.innerHTML = '<div style="color:#4B5563; font-size:13px; text-align:center; padding:40px 0;">No history yet. Start a conversation!</div>';
+      return;
+    }
+    list.innerHTML = state.chatHistory.map(item => `
+      <div class="chat-item">
+        <div class="chat-item-title">${escHtml(item.title)}…</div>
+        <div class="chat-item-preview">${escHtml(item.preview)}</div>
+        <div class="chat-item-meta">
+          <span>${new Date(item.ts).toLocaleDateString()}</span>
+          <span>${new Date(item.ts).toLocaleTimeString()}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // ── Utility ────────────────────────────────────────────────────────────────
+  function escHtml(str) {
+    return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  </script>
+
+</body>
+</html>
