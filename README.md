@@ -25,52 +25,6 @@ This software and its documentation are **proprietary and confidential** propert
 
 ---
 
-## 📁 Repository Structure
-
-```text
-Phantom.ai/
-├─ .github/              # GitHub Actions CI workflows
-├─ docs/                 # Project documentation
-│  ├─ architecture.md    # Backend architecture overview
-│  ├─ deployment.md      # Deployment guide
-│  ├─ quickstart.md      # Quick-start instructions
-│  ├─ security-implementation-notes.md
-│  └─ truai-core.md      # TruAI Core documentation
-├─ public/               # UI / static HTML assets
-│  ├─ Phantom.ai-screen.html
-│  ├─ Phantom.ai.auditlog.html
-│  ├─ Phantom.ai.files.html
-│  ├─ Phantom.ai.portal.html
-│  ├─ Phantom.ai.review.html
-│  ├─ Phantom.ai.settings.html
-│  ├─ Phantom.ai.workspace.html
-│  └─ phantom-defined.html
-├─ phantom-ai/           # Core PHP runtime source (PSR-4: PhantomAI\)
-│  ├─ Assets/
-│  ├─ Core/
-│  ├─ Learning/
-│  ├─ Templates/
-│  └─ Workflow/
-├─ api/                  # PHP API endpoint handlers
-├─ assets/               # Static assets (JS, SVG)
-├─ examples/             # Integration examples
-├─ scripts/              # CI / review helper scripts
-├─ composer.json         # PHP dependency manifest
-├─ router.php            # API routing entry point
-├─ .phantom.yml          # Phantom tool configuration (must remain at root)
-├─ README.md
-├─ SECURITY.md           # Security policy (kept at root per GitHub convention)
-├─ CONTRIBUTING.md       # Contribution guidelines
-├─ LICENSE
-└─ NOTICE
-```
-
-> **Note on `.phantom.yml`:** This file is kept at the repository root because
-> the Phantom CI toolchain resolves it relative to the working directory.
-> Moving it would require updating all workflow and script invocations.
-
----
-
 ## 📜 Copyright Notice
 
 **Copyright © 2013 – 2026 Kenneth "Demetrius" Weaver and My Deme, LLC.**  
