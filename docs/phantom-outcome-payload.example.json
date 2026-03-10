@@ -1,0 +1,53 @@
+{
+  "_comment": "Phantom.ai Outcome Reporting Payload — v1 contract (Phase 2 backend wiring required).",
+  "_reference": "ROMA docs/TRUAI_SUBORDINATE_SYSTEM_CONTRACTS.md §Outcome reporting (v2): POST /api/v1/subordinate/outcome",
+
+  "examples": [
+    {
+      "system": "phantom.ai",
+      "task_id": "task-1024",
+      "action": "workspace_file_write",
+      "status": "blocked",
+      "reason": "roma_trust_unverified",
+      "trust_state": "UNVERIFIED",
+      "timestamp": "2026-03-10T00:00:00Z"
+    },
+    {
+      "system": "phantom.ai",
+      "task_id": "task-1025",
+      "action": "ai_task_execute",
+      "status": "completed",
+      "reason": null,
+      "trust_state": "VERIFIED",
+      "timestamp": "2026-03-10T00:01:00Z"
+    },
+    {
+      "system": "phantom.ai",
+      "task_id": "task-1026",
+      "action": "code_review",
+      "status": "completed",
+      "reason": null,
+      "trust_state": "VERIFIED",
+      "timestamp": "2026-03-10T00:02:00Z"
+    },
+    {
+      "system": "phantom.ai",
+      "task_id": "task-1027",
+      "action": "task_escalated_to_truai",
+      "status": "escalated",
+      "reason": "roma_trust_degraded",
+      "trust_state": "DEGRADED",
+      "timestamp": "2026-03-10T00:03:00Z"
+    }
+  ],
+
+  "field_definitions": {
+    "system": "Constant: 'phantom.ai'",
+    "task_id": "Caller-assigned task identifier",
+    "action": "One of: workspace_file_write | ai_task_execute | code_review | task_escalated_to_truai | operation_blocked",
+    "status": "One of: completed | blocked | escalated | failed",
+    "reason": "null on success; reason code string on block/failure (e.g. 'roma_trust_unverified')",
+    "trust_state": "ROMA trust state at time of action: VERIFIED | DEGRADED | UNVERIFIED | UNKNOWN",
+    "timestamp": "ISO 8601 UTC timestamp"
+  }
+}

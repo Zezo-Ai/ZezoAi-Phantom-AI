@@ -1,5 +1,20 @@
 # Phantom.ai Portal - Complete Deployment Guide
 
+> **Updated 2026-03-10** — Canonical routes, lowercase filenames, and ROMA trust alignment applied.
+>
+> ### Canonical Routes (lowercase only — case-sensitive servers)
+> | Page | Canonical Path |
+> |------|---------------|
+> | Dashboard | `/Phantom.ai/dashboard.html` |
+> | Login Portal | `/Phantom.ai/login-portal.html` |
+>
+> ### Governance & Security
+> - Phantom.ai is **subordinate to TruAi Core** (must not override Core decisions).
+> - Trust state is sourced from **ROMA's API base** (`/ROMA/api/v1/security/roma`).
+> - `PHANTOM_CONFIG.ROMA_API_BASE` is separate from `AUTH_API_BASE`.
+> - Protected operations are disabled when ROMA trust is `UNVERIFIED`.
+> - See `docs/phantom-update-plan-2026-03-10.md` for the full update plan.
+
 ## Project Status: ✅ FRONTEND COMPLETE
 
 All frontend development and CSS layout fixes have been successfully completed. The portal is production-ready for immediate deployment and backend integration.
@@ -11,8 +26,8 @@ All frontend development and CSS layout fixes have been successfully completed. 
 ### Frontend Implementation (Phase 1 - 100% Complete)
 
 #### ✅ Core Portal Pages
-- **Login Portal** (`Phantom.ai.portal.html`) - Restored original design with legal acknowledgment modal
-- **Dashboard** (`phantom-defined.html`) - Main dashboard with navigation and overview
+- **Login Portal** (`login-portal.html`) - Restored original design with legal acknowledgment modal
+- **Dashboard** (`dashboard.html`) - Main dashboard with navigation and overview
 - **Workspace** (`Phantom.ai.workspace.html`) - Project/task management interface
 - **Files** (`Phantom.ai.files.html`) - File & asset management (CSS fixed, content ready for backend)
 - **Review** (`Phantom.ai.review.html`) - AI output validation & decision surface (fully reengineered)
@@ -75,10 +90,10 @@ All frontend development and CSS layout fixes have been successfully completed. 
 ```bash
 # Clone the PR branch with all updates
 cd ~ && \
-git clone -b copilot/update-phantom-dashboard-html \
+git clone -b copilot/review-phantom-ai-update \
 https://github.com/DemeWebsolutions/Phantom.ai.git phantom-ai-server && \
 cd phantom-ai-server && \
-open Phantom.ai.portal.html
+open login-portal.html
 ```
 
 **What you get:**
@@ -123,8 +138,8 @@ Follow the comprehensive guide in `BACKEND_ARCHITECTURE.md` for complete setup w
 
 ```
 phantom-ai-server/
-├── Phantom.ai.portal.html          # Login page with legal modal
-├── phantom-defined.html            # Main dashboard
+├── login-portal.html          # Login page with legal modal
+├── dashboard.html            # Main dashboard
 ├── Phantom.ai.workspace.html       # Workspace/project management
 ├── Phantom.ai.files.html           # File management (CSS fixed)
 ├── Phantom.ai.review.html          # AI output review (reengineered)
@@ -146,7 +161,7 @@ phantom-ai-server/
 ```bash
 # Clone the repository
 cd ~ && \
-git clone -b copilot/update-phantom-dashboard-html \
+git clone -b copilot/review-phantom-ai-update \
 https://github.com/DemeWebsolutions/Phantom.ai.git phantom-ai-cursor && \
 cd phantom-ai-cursor
 
@@ -159,7 +174,7 @@ cursor .
 Open these files in Cursor to understand the current state:
 1. `DEPLOYMENT_GUIDE.md` (this file)
 2. `BACKEND_ARCHITECTURE.md` (backend deployment instructions)
-3. `Phantom.ai.portal.html` (login page - entry point)
+3. `login-portal.html` (login page - entry point)
 4. `Phantom.ai.review.html` (example of reengineered page)
 
 **Step 3: Backend Implementation Tasks**
@@ -243,7 +258,7 @@ If you're implementing the backend with Cursor, follow these steps in order:
 **Option A: Test Frontend Only**
 ```bash
 cd ~/phantom-ai-server
-open Phantom.ai.portal.html
+open login-portal.html
 ```
 Navigate through all pages to verify UI/UX.
 
@@ -385,6 +400,6 @@ Complete deployment guide created for Mac home server with:
 
 **Last Updated:** 2026-01-07  
 **Version:** 1.0.0  
-**Branch:** copilot/update-phantom-dashboard-html  
+**Branch:** copilot/review-phantom-ai-update  
 **Status:** ✅ READY FOR DEPLOYMENT
 
