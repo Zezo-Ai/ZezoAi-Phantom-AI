@@ -203,11 +203,11 @@ constitutes copyright infringement and should be reported immediately.
 ## ⚖️ Jurisdiction and Governing Law
 
 **Governing Law:** This Work and any disputes arising from its use shall be governed 
-exclusively by the laws of the United States of America and the State of [Your State], 
+exclusively by the laws of the United States of America and the State of Florida
 without regard to conflict of law principles.
 
 **Exclusive Venue:** Any legal action concerning this Work shall be brought exclusively 
-in the state or federal courts located in [Your County, Your State], and you hereby 
+in the state or federal courts located in Saint Lucie County, Florida, and you hereby 
 consent to personal jurisdiction in such courts.
 
 **Waiver of Jury Trial:** To the fullest extent permitted by law, all parties waive 
