@@ -10,7 +10,7 @@
 class TruAiAPI {
     constructor() {
         // Handle case where TRUAI_CONFIG might not be set (e.g., on login page)
-        this.baseURL = window.TRUAI_CONFIG?.API_BASE || (window.location.origin + '/TruAi/api/v1');
+        this.baseURL = window.PHANTOM_CONFIG?.AUTH_API_BASE || window.TRUAI_CONFIG?.API_BASE || (window.location.origin + '/Phantom.ai/api/v1');
         this.csrfToken = window.TRUAI_CONFIG?.CSRF_TOKEN || '';
     }
 
@@ -33,7 +33,7 @@ class TruAiAPI {
                 }
             } else if (response.status === 401) {
                 // Session expired - redirect to login
-                window.location.href = '/TruAi/login-portal.html';
+                window.location.href = '/Phantom.ai/login-portal.html';
                 return false;
             }
         } catch (error) {
@@ -103,7 +103,7 @@ class TruAiAPI {
                         
                         if (!tokenRefreshed) {
                             // Session recovery failed - redirect to login
-                            window.location.href = '/TruAi/login-portal.html';
+                            window.location.href = '/Phantom.ai/login-portal.html';
                             return;
                         }
                         
@@ -116,7 +116,7 @@ class TruAiAPI {
                             window.TRUAI_CONFIG.IS_AUTHENTICATED = false;
                         }
                         // Redirect to login portal
-                        window.location.href = '/TruAi/login-portal.html';
+                        window.location.href = '/Phantom.ai/login-portal.html';
                         return; // Don't throw error, redirect is happening
                     }
                     

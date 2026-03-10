@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TruAi — Prototype</title>
+  <title>Phantom.ai — Dashboard</title>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -755,6 +755,42 @@
     ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
 
+    /* ── ROMA Execution Header ── */
+    .roma-exec-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      flex-shrink: 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      user-select: none;
+      min-height: 30px;
+    }
+
+    .roma-exec-header .trust-icon { font-size: 13px; flex-shrink: 0; }
+    .roma-exec-header .trust-note { font-weight: 400; opacity: 0.75; margin-left: 6px; }
+
+    .trust-verified   { background: rgba(34,197,94,0.12);  color: #22c55e; }
+    .trust-degraded   { background: rgba(245,158,11,0.12); color: #F59E0B; }
+    .trust-unverified { background: rgba(239,68,68,0.12);  color: #ef4444; }
+    .trust-unknown    { background: rgba(75,85,99,0.15);   color: #9ca3af; }
+
+    /* Roma block message — shown when UNVERIFIED */
+    .roma-block-message {
+      display: none;
+      padding: 10px 16px;
+      margin: 8px 16px 0;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 8px;
+      font-size: 12px;
+      color: #ef4444;
+      flex-shrink: 0;
+    }
+
     /* ── Responsive ── */
     @media (max-width: 900px) {
       .sidebar-left, .sidebar-right { display: none; }
@@ -770,21 +806,32 @@
 
   <!-- ── Top Navigation ── -->
   <nav class="topnav">
-    <a class="topnav-brand" href="/TruAi/">
-      <img src="/TruAi/assets/images/TruAi-Logo.png"
+    <a class="topnav-brand" href="/Phantom.ai/">
+      <img src="/Phantom.ai/assets/phantom-ai-01.svg"
            onerror="this.style.display='none'"
-           alt="TruAi">
-      <span>TruAi</span>
+           alt="Phantom.ai">
+      <span>Phantom.ai</span>
     </a>
     <div class="topnav-center" id="project-name">New Project</div>
     <div class="topnav-actions">
-      <a href="/TruAi/login-portal.html">Login</a>
-      <a href="/TruAi/ubsas-entrance.html">Secure Portal</a>
+      <a href="/Phantom.ai/login-portal.html">Login</a>
       <a href="#" onclick="togglePopup('settings-popup'); return false;">⚙ Settings</a>
       <a href="#" onclick="togglePopup('operations-popup'); return false;">⚡ Operations</a>
       <a href="#" onclick="togglePopup('chat-popup'); return false;">💬 History</a>
     </div>
   </nav>
+
+  <!-- ── ROMA Execution Header ── -->
+  <div class="roma-exec-header trust-unknown" id="roma-exec-header" role="status" aria-live="polite">
+    <span class="trust-icon">…</span>
+    <strong>TRUST STATE: UNKNOWN</strong>
+    <span class="trust-note">Holding execution — trust state not yet confirmed</span>
+  </div>
+
+  <!-- ── Execution Blocked Message ── -->
+  <div class="roma-block-message" id="roma-block-message" role="alert">
+    ✖ Execution blocked: ROMA trust unverified. Protected operations are disabled until trust is restored.
+  </div>
 
   <!-- ── App Body ── -->
   <div class="app-body">
@@ -792,9 +839,9 @@
     <!-- ── Header / Logo ── -->
     <div class="header-section">
       <div class="logo-container">
-        <img src="/TruAi/assets/images/TruAi-Logo.png"
+        <img src="/Phantom.ai/assets/phantom-ai-01.svg"
              onerror="this.style.display='none'"
-             alt="TruAi">
+             alt="Phantom.ai">
         <div class="project-title" id="header-project-title">Start New Project</div>
       </div>
     </div>
@@ -853,7 +900,7 @@
         <!-- AI Response / Chat Area -->
         <div class="ai-response-area" id="ai-response-area">
           <div class="ai-response-content empty" id="ai-response-content">
-            <p>Ask TruAi anything…</p>
+            <p>Ask Phantom.ai anything…</p>
             <span>Start a conversation, run a task, or select a file to analyze</span>
           </div>
         </div>
@@ -865,11 +912,11 @@
             <textarea
               class="task-textarea"
               id="ai-input"
-              placeholder="Describe what you want TruAi to do…"
+              placeholder="Describe what you want Phantom.ai to do…"
               rows="2"
               onkeydown="handleInputKeydown(event)"
             ></textarea>
-            <button class="btn-send" id="btn-send" onclick="sendMessage()">Send</button>
+            <button class="btn-send" id="btn-send" onclick="sendMessage()" data-protected-op>Send</button>
           </div>
           <div class="input-toolbar">
             <button class="toolbar-btn active" id="btn-agent" onclick="setMode('agent')">Agent</button>
@@ -877,7 +924,7 @@
             <button class="toolbar-btn" id="btn-edit"  onclick="setMode('edit')">Inline Edit</button>
             <div class="toolbar-separator"></div>
             <button class="toolbar-btn" onclick="attachFile()">📎 Attach</button>
-            <button class="toolbar-btn" onclick="runCodeReview()">🔍 Review</button>
+            <button class="toolbar-btn" onclick="runCodeReview()" data-protected-op>🔍 Review</button>
             <div class="toolbar-spacer"></div>
             <select class="model-select" id="model-select">
               <option value="auto">Model: Auto</option>
@@ -930,7 +977,7 @@ analysis here.</pre>
       <span id="sb-mode">Agent Mode</span>
     </div>
     <div class="statusbar-item">
-      <span>TruAi v1.0</span>
+      <span>Phantom.ai v1.0</span>
     </div>
     <div class="statusbar-item">
       <span>UBSAS v2.0</span>
@@ -1040,7 +1087,7 @@ analysis here.</pre>
         <div class="form-group">
           <label>Data Sharing</label>
           <select id="settings-data-sharing">
-            <option value="1">Enabled — Help improve TruAi</option>
+            <option value="1">Enabled — Help improve Phantom.ai</option>
             <option value="0">Disabled</option>
           </select>
         </div>
@@ -1125,6 +1172,7 @@ analysis here.</pre>
     </div>
   </div>
 
+  <script src="/Phantom.ai/assets/js/roma-trust.js"></script>
   <script>
   'use strict';
 
@@ -1138,9 +1186,11 @@ analysis here.</pre>
     chatHistory: []
   };
 
-  // ── Simulated API Base (replace with real TRUAI_CONFIG when available) ──
-  window.TRUAI_CONFIG = window.TRUAI_CONFIG || {
-    API_BASE: (window.location.origin + '/TruAi/api/v1').replace(/\/TruAi\/TruAi/, '/TruAi'),
+  // ── Phantom.ai Config ──────────────────────────────────────────────────────
+  window.PHANTOM_CONFIG = window.PHANTOM_CONFIG || {
+    APP_BASE: (window.location.origin + '/Phantom.ai').replace(/\/Phantom\.ai\/Phantom\.ai/, '/Phantom.ai'),
+    AUTH_API_BASE: (window.location.origin + '/Phantom.ai/api/v1').replace(/\/Phantom\.ai\/Phantom\.ai/, '/Phantom.ai'),
+    ROMA_API_BASE: (window.location.origin + '/ROMA/api/v1').replace(/\/ROMA\/ROMA/, '/ROMA'),
     CSRF_TOKEN: '',
     IS_AUTHENTICATED: false,
     USERNAME: ''
@@ -1148,7 +1198,7 @@ analysis here.</pre>
 
   // ── Initialise ─────────────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
-    checkROMA();
+    window.PHANTOM_TRUST.fetchAndRender(window.PHANTOM_CONFIG.ROMA_API_BASE);
     loadChatHistory();
     document.getElementById('model-select').addEventListener('change', function() {
       state.model = this.value;
@@ -1156,23 +1206,6 @@ analysis here.</pre>
         this.options[this.selectedIndex].text.replace('Model: ', '');
     });
   });
-
-  // ── ROMA Indicator ───────────────────────────────────────────────��─────────
-  async function checkROMA() {
-    const ind = document.getElementById('roma-indicator');
-    try {
-      const r = await fetch(window.TRUAI_CONFIG.API_BASE + '/security/roma', { credentials: 'include' });
-      const d = await r.json();
-      if (d.trust_state === 'VERIFIED') {
-        ind.textContent = 'Roma • Portal Protected • Monitor Active';
-        ind.classList.add('confirmed');
-      } else {
-        ind.textContent = 'Roma • ' + (d.trust_state || 'Unverified');
-      }
-    } catch {
-      ind.textContent = 'Roma • Offline';
-    }
-  }
 
   // ── Mode buttons ───────────────────────────────────────────────────────────
   function setMode(m) {
@@ -1234,7 +1267,7 @@ analysis here.</pre>
     state.messages.push({ role: 'user', content });
 
     try {
-      const r = await fetch(window.TRUAI_CONFIG.API_BASE + '/ai/chat', {
+      const r = await fetch(window.PHANTOM_CONFIG.AUTH_API_BASE + '/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -1306,7 +1339,7 @@ analysis here.</pre>
     const responses = [
       `I've reviewed your request regarding "${state.activeFile}". Here's my analysis: the code structure looks solid. I recommend adding input validation and ensuring CSRF tokens are checked on all state-mutating endpoints.`,
       `For the task you've described, I would suggest breaking it into three steps: (1) identify the affected files, (2) make the targeted changes, (3) run the test suite via run-all-tests.sh to verify nothing breaks.`,
-      `Looking at the TruAi architecture, this change should be made in the backend layer. The ROMA oversight system will log this operation automatically. Shall I proceed?`,
+      `Looking at the Phantom.ai architecture, this change should be made in the backend layer. The ROMA oversight system will log this operation automatically. Shall I proceed?`,
       `Great question! Based on the UBSAS authentication system, the Tier 1 (biometric) and Tier 2 (keychain) flows depend on the native host being installed. If you're testing locally, Tier 3 (manual) is always available.`,
     ];
     return responses[Math.floor(Math.random() * responses.length)];
@@ -1317,7 +1350,7 @@ analysis here.</pre>
     const el = document.getElementById('code-review-content');
     el.innerHTML = `<pre>
 <span class="tok-comment">// Code Review: ${state.activeFile}</span>
-<span class="tok-comment">// Generated by TruAi · ${new Date().toLocaleTimeString()}</span>
+<span class="tok-comment">// Generated by Phantom.ai · ${new Date().toLocaleTimeString()}</span>
 
 <span class="tok-keyword">ANALYSIS</span>
 ──────────────────────

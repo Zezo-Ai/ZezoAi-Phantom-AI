@@ -5,14 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phantom.ai - Login Portal</title>
     <script>
-      window.TRUAI_CONFIG = {
-        API_BASE: (window.location.origin + '/TruAi/api/v1').replace(/\/TruAi\/TruAi/, '/TruAi'),
+      window.PHANTOM_CONFIG = {
+        APP_BASE: (window.location.origin + '/Phantom.ai').replace(/\/Phantom\.ai\/Phantom\.ai/, '/Phantom.ai'),
+        AUTH_API_BASE: (window.location.origin + '/Phantom.ai/api/v1').replace(/\/Phantom\.ai\/Phantom\.ai/, '/Phantom.ai'),
+        ROMA_API_BASE: (window.location.origin + '/ROMA/api/v1').replace(/\/ROMA\/ROMA/, '/ROMA'),
         CSRF_TOKEN: '',
         IS_AUTHENTICATED: false,
         USERNAME: ''
       };
     </script>
-    <script src="/TruAi/assets/js/api.js"></script>
+    <script src="/Phantom.ai/assets/js/roma-trust.js"></script>
     <style>
         * {
             margin: 0;
@@ -386,11 +388,11 @@
 </head>
 <body>
     <!-- Background Image -->
-    <img src="/TruAi/assets/images/phantom-bg.png" alt="" class="background">
+    <img src="/Phantom.ai/assets/phantom-ai-02.svg" alt="" class="background">
 
     <!-- Logo -->
     <div class="logo">
-        <img src="/TruAi/assets/images/phantom-logo.png" alt="Phantom.ai">
+        <img src="/Phantom.ai/assets/phantom-ai-01.svg" alt="Phantom.ai">
     </div>
 
     <!-- Roma Indicator -->
@@ -399,7 +401,7 @@
     <!-- Main Login Container -->
     <main class="main-container" id="login-view">
         <div class="login-card">
-            <img src="/TruAi/assets/images/phantom-logo.png" alt="Phantom.ai" style="
+            <img src="/Phantom.ai/assets/phantom-ai-01.svg" alt="Phantom.ai" style="
     width: 100%;
     z-index: 20;
     border-radius: 9999px;
@@ -473,7 +475,7 @@
             <p class="copyright">My Deme, LLC. © <script>document.write(new Date().getFullYear())</script> All Rights Reserved.</p>
             <p style="font-size: 10px; margin-top: 8px;">Protected under Florida State Law and United States Federal Law</p>
             <p style="margin-top: 14px;">
-              <a href="/TruAi" style="
+              <a href="/Phantom.ai/" style="
                 display: inline-flex; align-items: center; gap: 6px;
                 color: #676767; font-size: 12px; font-weight: 500;
                 text-decoration: none; border: 1px solid #d1d5db;
@@ -484,7 +486,7 @@
               onmouseout="this.style.background='transparent';this.style.color='#676767';"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                Return to TruAi
+                Return to Phantom.ai
               </a>
             </p>
         </div></form>
@@ -511,7 +513,7 @@
           All access attempts may be monitored and logged for security and compliance purposes.
         </p>
         <div class="disclaimer-actions">
-          <a href="/TruAi" class="disc-btn disc-btn-secondary" style="text-decoration:none;">Return to TruAi</a>
+          <a href="/Phantom.ai/" class="disc-btn disc-btn-secondary" style="text-decoration:none;">Return to Phantom.ai</a>
           <button type="button" id="disclaimerCancel" class="disc-btn disc-btn-secondary">Cancel / Return to Login</button>
           <button type="button" id="disclaimerAccept" class="disc-btn disc-btn-continue">I Understand and Accept</button>
         </div>
@@ -519,57 +521,63 @@
     </div>
 
     <script>
-        // ── TruAi Auth Wiring ──────────────────────────────────────────────
-        const api = typeof TruAiAPI !== 'undefined' ? new TruAiAPI() : null;
-
-        function getApiBase() {
-          return (window.location.origin + '/TruAi/api/v1').replace(/\/TruAi\/TruAi/, '/TruAi');
+        // ── Phantom.ai Auth Wiring ─────────────────────────────────────────
+        function getAuthApiBase() {
+          return window.PHANTOM_CONFIG
+            ? window.PHANTOM_CONFIG.AUTH_API_BASE
+            : (window.location.origin + '/Phantom.ai/api/v1').replace(/\/Phantom\.ai\/Phantom\.ai/, '/Phantom.ai');
         }
 
-        function updateRoma(data) {
+        function updateRomaIndicator(data) {
           var el = document.getElementById('romaIndicator');
           if (!el) return;
-          if (data && data.roma && data.portal_protected && data.monitor === 'active') {
+          if (data && data.trust_state === 'VERIFIED' && data.roma && data.portal_protected && data.monitor === 'active') {
             el.textContent = 'Roma \u2022 Portal protected \u2022 Monitor active';
             el.classList.add('confirmed');
-          } else if (data && data.trust_state === 'BLOCKED') {
-            el.textContent = 'Roma \u2022 Blocked (suspicion threshold)';
+          } else if (data && (data.trust_state === 'BLOCKED' || data.trust_state === 'UNVERIFIED')) {
+            el.textContent = 'Roma \u2022 ' + (data.trust_state === 'BLOCKED' ? 'Blocked (suspicion threshold)' : 'Unverified (' + (data.reason || 'security check failed') + ')');
             el.classList.remove('confirmed');
-          } else if (data && (data.trust_state === 'UNVERIFIED' || data.reason)) {
-            el.textContent = 'Roma \u2022 Unverified (' + (data.reason || 'security check failed') + ')';
+          } else if (data && data.trust_state === 'DEGRADED') {
+            el.textContent = 'Roma \u2022 Degraded \u2022 Escalation bias active';
+            el.classList.remove('confirmed');
+          } else if (data && data.trust_state) {
+            el.textContent = 'Roma \u2022 ' + data.trust_state;
             el.classList.remove('confirmed');
           } else {
-            el.textContent = 'Roma \u2022 Portal protected';
-            el.classList.add('confirmed');
+            el.textContent = 'Roma \u2022 Unreachable';
+            el.classList.remove('confirmed');
           }
         }
 
         function fetchRoma() {
-          fetch(getApiBase() + '/security/roma', { credentials: 'include' })
-            .then(r => r.json())
-            .then(data => updateRoma(data))
-            .catch(() => {
+          var romaBase = window.PHANTOM_CONFIG
+            ? window.PHANTOM_CONFIG.ROMA_API_BASE
+            : (window.location.origin + '/ROMA/api/v1').replace(/\/ROMA\/ROMA/, '/ROMA');
+          fetch(romaBase.replace(/\/$/, '') + '/security/roma', { credentials: 'include' })
+            .then(function(r) { return r.json(); })
+            .then(function(data) { updateRomaIndicator(data); })
+            .catch(function() {
               var el = document.getElementById('romaIndicator');
-              if (el) el.textContent = 'Roma \u2022 Unreachable (start TruAi server)';
+              if (el) el.textContent = 'Roma \u2022 Unreachable';
             });
         }
 
         // Check existing session on page load
         document.addEventListener('DOMContentLoaded', function () {
           fetchRoma();
-          fetch(getApiBase() + '/auth/status', { credentials: 'include' })
-            .then(r => r.json())
-            .then(data => {
+          fetch(getAuthApiBase() + '/auth/status', { credentials: 'include' })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
               if (data.authenticated) {
-                if (window.TRUAI_CONFIG) {
-                  window.TRUAI_CONFIG.IS_AUTHENTICATED = true;
-                  window.TRUAI_CONFIG.USERNAME = data.username || '';
-                  window.TRUAI_CONFIG.CSRF_TOKEN = data.csrf_token || '';
+                if (window.PHANTOM_CONFIG) {
+                  window.PHANTOM_CONFIG.IS_AUTHENTICATED = true;
+                  window.PHANTOM_CONFIG.USERNAME = data.username || '';
+                  window.PHANTOM_CONFIG.CSRF_TOKEN = data.csrf_token || '';
                 }
                 showDisclaimer();
               }
             })
-            .catch(() => {});
+            .catch(function() {});
         });
 
         function showDisclaimer() {
@@ -596,29 +604,29 @@
             const submitBtn = loginForm.querySelector('button[type="submit"]');
             if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Signing in…'; }
 
-            fetch(getApiBase() + '/auth/login', {
+            fetch(getAuthApiBase() + '/auth/login', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               credentials: 'include',
               body: JSON.stringify({ username: username, password: password })
             })
-            .then(r => r.json())
-            .then(data => {
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
               if (data.success) {
-                if (window.TRUAI_CONFIG) {
-                  window.TRUAI_CONFIG.CSRF_TOKEN = data.csrf_token || '';
-                  window.TRUAI_CONFIG.IS_AUTHENTICATED = true;
-                  window.TRUAI_CONFIG.USERNAME = data.username || username;
+                if (window.PHANTOM_CONFIG) {
+                  window.PHANTOM_CONFIG.CSRF_TOKEN = data.csrf_token || '';
+                  window.PHANTOM_CONFIG.IS_AUTHENTICATED = true;
+                  window.PHANTOM_CONFIG.USERNAME = data.username || username;
                 }
                 showDisclaimer();
               } else {
                 alert(data.error || 'Login failed. Please check your credentials.');
               }
             })
-            .catch(err => {
-              alert('Login failed: ' + (err.message || 'Network error. Ensure TruAi server is running.'));
+            .catch(function(err) {
+              alert('Login failed: ' + (err.message || 'Network error. Ensure Phantom.ai server is running.'));
             })
-            .finally(() => {
+            .finally(function() {
               if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Log in'; }
             });
         });
@@ -626,15 +634,15 @@
         // ── Disclaimer Actions ─────────────────────────────────────────────
         document.getElementById('disclaimerAccept').addEventListener('click', function () {
           hideDisclaimer();
-          // Phantom.ai redirects to TruAi portal dashboard after acceptance
-          window.location.href = '/TruAi';
+          // Redirect to Phantom.ai dashboard after accepting disclaimer
+          window.location.href = '/Phantom.ai/dashboard.html';
         });
 
         document.getElementById('disclaimerCancel').addEventListener('click', function () {
           hideDisclaimer();
           // Sign out and return to login
-          fetch(getApiBase() + '/auth/logout', { method: 'POST', credentials: 'include' }).catch(() => {});
-          if (window.TRUAI_CONFIG) window.TRUAI_CONFIG.IS_AUTHENTICATED = false;
+          fetch(getAuthApiBase() + '/auth/logout', { method: 'POST', credentials: 'include' }).catch(function() {});
+          if (window.PHANTOM_CONFIG) window.PHANTOM_CONFIG.IS_AUTHENTICATED = false;
           document.getElementById('login-view').style.display = 'flex';
           fetchRoma();
         });
