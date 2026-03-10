@@ -1,19 +1,20 @@
 /**
- * TruAi API Client
- * 
- * Handles all API communication
- * 
- * @package TruAi
- * @version 1.0.0
+ * Phantom.ai API Client
+ *
+ * Handles all API communication for Phantom.ai.
+ * Uses PHANTOM_CONFIG (Phantom-scoped) with fallback to TRUAI_CONFIG.
+ *
+ * @package Phantom.ai
+ * @version 1.1.0
  */
 
 class TruAiAPI {
     constructor() {
-        // Handle case where TRUAI_CONFIG might not be set (e.g., on login page)
-        this.baseURL = window.PHANTOM_CONFIG?.AUTH_API_BASE  // Phantom.ai auth API (preferred)
-            || window.TRUAI_CONFIG?.API_BASE                 // TruAi backwards-compat fallback
-            || (window.location.origin + '/Phantom.ai/api/v1'); // last-resort default
-        this.csrfToken = window.TRUAI_CONFIG?.CSRF_TOKEN || '';
+        // Prefer Phantom-scoped config; fall back to TruAi config for compatibility
+        const cfg = window.PHANTOM_CONFIG || window.TRUAI_CONFIG;
+        this.baseURL = (cfg && cfg.AUTH_API_BASE) || (cfg && cfg.API_BASE)
+            || (window.location.origin + '/Phantom.ai/api/v1').replace(/\/Phantom\.ai\/Phantom\.ai/, '/Phantom.ai');
+        this.csrfToken = (cfg && cfg.CSRF_TOKEN) || '';
     }
 
     async updateCsrfToken() {
@@ -28,13 +29,12 @@ class TruAiAPI {
                 const data = await response.json();
                 if (data.csrf_token) {
                     this.csrfToken = data.csrf_token;
-                    if (window.TRUAI_CONFIG) {
-                        window.TRUAI_CONFIG.CSRF_TOKEN = data.csrf_token;
-                    }
+                    const cfg = window.PHANTOM_CONFIG || window.TRUAI_CONFIG;
+                    if (cfg) cfg.CSRF_TOKEN = data.csrf_token;
                     return true;
                 }
             } else if (response.status === 401) {
-                // Session expired - redirect to login
+                // Session expired - redirect to Phantom.ai login
                 window.location.href = '/Phantom.ai/login-portal.html';
                 return false;
             }
@@ -46,8 +46,9 @@ class TruAiAPI {
         }
         
         // Fallback to window config
-        if (window.TRUAI_CONFIG?.CSRF_TOKEN) {
-            this.csrfToken = window.TRUAI_CONFIG.CSRF_TOKEN;
+        const cfg = window.PHANTOM_CONFIG || window.TRUAI_CONFIG;
+        if (cfg && cfg.CSRF_TOKEN) {
+            this.csrfToken = cfg.CSRF_TOKEN;
         }
         
         return !!this.csrfToken;
@@ -104,7 +105,7 @@ class TruAiAPI {
                         const tokenRefreshed = await this.updateCsrfToken();
                         
                         if (!tokenRefreshed) {
-                            // Session recovery failed - redirect to login
+                            // Session recovery failed - redirect to Phantom.ai login
                             window.location.href = '/Phantom.ai/login-portal.html';
                             return;
                         }
@@ -112,12 +113,11 @@ class TruAiAPI {
                         // If we're still here, the session is valid but may have had a CSRF issue
                         // For now, just fall through to the error
                     } else if (isAuthEndpoint && endpoint !== '/auth/refresh-token') {
-                        // Authentication failed on auth endpoint - redirect to login
+                        // Authentication failed on auth endpoint - redirect to Phantom.ai login
                         // Clear any existing auth state
-                        if (window.TRUAI_CONFIG) {
-                            window.TRUAI_CONFIG.IS_AUTHENTICATED = false;
-                        }
-                        // Redirect to login portal
+                        const cfg = window.PHANTOM_CONFIG || window.TRUAI_CONFIG;
+                        if (cfg) cfg.IS_AUTHENTICATED = false;
+                        // Redirect to Phantom.ai login portal
                         window.location.href = '/Phantom.ai/login-portal.html';
                         return; // Don't throw error, redirect is happening
                     }
@@ -305,3 +305,5 @@ class TruAiAPI {
 
 // Export for use in other scripts
 window.TruAiAPI = TruAiAPI;
+// Also export under Phantom namespace for forward compatibility
+window.PhantomAPI = TruAiAPI;

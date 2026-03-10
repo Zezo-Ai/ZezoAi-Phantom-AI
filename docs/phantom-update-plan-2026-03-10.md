@@ -1,71 +1,58 @@
 # Phantom.ai Update Plan — 2026-03-10
 
-Generated from: "File-by-File Edit Plan — Phantom.ai / March 2026"
+Generated: 2026-03-10
 
----
+## Canonical UI Routes
 
-## Canonical UI Routes (lowercase only — case-sensitive servers)
+| Route | File | Status |
+|-------|------|--------|
+| `/Phantom.ai/dashboard.html` | `dashboard.html` | ✅ Canonical (lowercase) |
+| `/Phantom.ai/login-portal.html` | `login-portal.html` | ✅ Canonical (lowercase) |
+| `/Phantom.ai/Dashboard.html` | `Dashboard.html` | ↪ Redirect stub → `dashboard.html` |
+| `/Phantom.ai/phantom.ai-login-portal.html` | `phantom.ai-login-portal.html` | ↪ Redirect stub → `login-portal.html` |
 
-| Page | Canonical Path | Former / Retired Path |
-|------|---------------|-----------------------|
-| Dashboard | `/Phantom.ai/dashboard.html` | `Dashboard.html` (uppercase, root) |
-| Login Portal | `/Phantom.ai/login-portal.html` | `phantom.ai-login-portal.html` (prefixed, root) |
-
-> All internal links and API redirects use the canonical lowercase paths above.
+**Case-sensitive server rule:** Only lowercase filenames are used on the production server.
 
 ---
 
 ## Governance
 
-Phantom.ai is a **subordinate system** of TruAi Core.
+Phantom.ai is subordinate to TruAi Core and must not override Core decisions.
 
-- Must respect TruAi Core's governance layer decisions.
-- Must not override TruAi Core's risk level, tier, or approval decisions.
-- Outcome reporting is sent upward to TruAi (and ultimately ROMA) — not invented locally.
-
-Reference: `truai-core-architecture.md`, ROMA `docs/TRUAI_SUBORDINATE_SYSTEM_CONTRACTS.md`.
+- Phantom.ai **must** respect TruAi Core's governance tier, risk level, and approval decisions.
+- Phantom.ai **must not** invent new authority or override TruAi governance.
+- Phantom.ai **must** report execution outcomes upward via the subordinate contract.
 
 ---
 
-## Security Authority — ROMA Trust State
+## Security Authority
 
-ROMA is the trust substrate. Phantom.ai trust UI must reflect **live ROMA state only**.
-Static "protected" copy is forbidden unless runtime-verified (ROMA TRUST_STATE_DASHBOARD_SPEC).
+ROMA is the trust substrate. Phantom.ai trust UI must reflect live ROMA state only.
 
-### Trust State API
+- Trust state is fetched from `PHANTOM_CONFIG.ROMA_API_BASE + '/security/roma'`
+- No "protected", "verified", or similar claims are shown unless runtime data supports them
+- Fail-closed: if trust state is UNVERIFIED or UNKNOWN, protected operations are blocked
 
-- Endpoint: `GET /ROMA/api/v1/security/roma`
-- Config key: `window.PHANTOM_CONFIG.ROMA_API_BASE`
+---
 
-### Trust States
+## Trust States (ROMA)
 
-| State | Meaning | UI Action |
+| State | Meaning | Execution |
 |-------|---------|-----------|
-| `VERIFIED` | All checks passed | Execution permitted; Execution Header green |
-| `DEGRADED` | Partial failure | Escalation bias ↑; high-risk actions restricted |
-| `UNVERIFIED` | Trust broken | Execution blocked; protected controls disabled |
-| `UNKNOWN` | Not yet checked | Hold execution; header neutral |
-
-### Protected Operations (blocked when not `VERIFIED`)
-
-Any element with `data-protected-op` attribute is automatically gated by `PHANTOM_TRUST._applyGating()`:
-
-- Send / execute AI task (`#btn-send`)
-- Code review trigger (`🔍 Review` toolbar button)
-- Apply/write file actions
-- Task approval and execution
-- Environment-changing operations
-- Cross-system command dispatch
+| `VERIFIED` | All checks passed | Auto-execution allowed |
+| `DEGRADED` | Partial failure | Escalation bias ↑; high-risk ops restricted |
+| `UNVERIFIED` | Trust broken | Execution blocked |
+| `UNKNOWN` | Not yet checked | Hold execution |
 
 ---
 
-## Config Object
+## Phantom-Scoped Config Object
 
 ```javascript
 window.PHANTOM_CONFIG = {
   APP_BASE:      '/Phantom.ai',
-  AUTH_API_BASE: '/Phantom.ai/api/v1',   // Phantom auth endpoints
-  ROMA_API_BASE: '/ROMA/api/v1',         // ROMA trust endpoints (separate)
+  AUTH_API_BASE: '/Phantom.ai/api/v1',
+  ROMA_API_BASE: '/Phantom.ai/api/v1',  // or '/ROMA/api/v1' when ROMA runs separately
   CSRF_TOKEN:    '',
   IS_AUTHENTICATED: false,
   USERNAME: ''
@@ -74,41 +61,83 @@ window.PHANTOM_CONFIG = {
 
 ---
 
-## Files Changed (2026-03-10)
-
-| File | Action |
-|------|--------|
-| `Dashboard.html` | Renamed → `dashboard.html` |
-| `phantom.ai-login-portal.html` | Renamed → `login-portal.html` |
-| `dashboard.html` | Updated title, config, nav links, ROMA Execution Header, trust gating |
-| `login-portal.html` | Updated config, ROMA fetch (ROMA_API_BASE), all `/TruAi/` → `/Phantom.ai/` |
-| `assets/js/api.js` | Updated login redirect to `/Phantom.ai/login-portal.html`; fallback base URL |
-| `assets/js/roma-trust.js` | **Created** — ROMA trust fetch/render/gating helper |
-| `docs/deployment.md` | Updated canonical filenames and route table |
-| `docs/phantom-update-plan-2026-03-10.md` | **Created** (this file) |
-| `docs/phantom-outcome-payload.example.json` | **Created** — outcome reporting contract |
-
----
-
 ## Normative References
 
-- `truai-core-architecture.md` — TruAi Core source of truth, subordinate list
-- `roma-security.md` — ROMA encryption and monitoring layer
-- `authentication-security.md` — Argon2id, rate limiting, session security
-- `local-sovereign-recovery.md` — Local Sovereign Recovery Protocol
-- ROMA `docs/TRUAI_SUBORDINATE_SYSTEM_CONTRACTS.md` — Phantom.ai contract
-- ROMA `docs/TRUST_STATE_DASHBOARD_SPEC.md` — Execution Header spec
-- TruAi `docs/ROMA_CONTRACT.md` — ROMA API payload shape
-- TruAi `docs/SECURITY.md` — Session cookie requirements
+- `truai-core-architecture.md` — TruAi Core architecture
+- `roma-security.md` — ROMA security architecture
+- `authentication-security.md` — Authentication security
+- `local-sovereign-recovery.md` — LSRP documentation
+- `docs/deployment.md` — Deployment guide
+- `docs/truai-core.md` — TruAi Core documentation
+
+External (cross-repo):
+- `DemeWebsolutions/ROMA: docs/TRUAI_SUBORDINATE_SYSTEM_CONTRACTS.md` — Subordinate contracts
+- `DemeWebsolutions/ROMA: docs/TRUST_STATE_DASHBOARD_SPEC.md` — Trust state dashboard spec
 
 ---
 
-## Implementation Priorities (completed)
+## New Files Added (March 2026)
 
-- [x] Route normalization (filename rename + canonical paths)
-- [x] Redirect/API path cleanup (`/TruAi/` → `/Phantom.ai/` and `/ROMA/`)
-- [x] Dashboard Execution Header (ROMA trust strip)
-- [x] Protected-operation gating (`data-protected-op` + `PHANTOM_TRUST`)
-- [x] Login portal ROMA trust badge (live fetch from ROMA_API_BASE)
-- [x] Docs consolidation (this file + deployment.md update)
-- [ ] Outcome reporting contract (payload defined in `phantom-outcome-payload.example.json`; POST wiring is a Phase 2 backend task)
+| File | Purpose |
+|------|---------|
+| `dashboard.html` | Canonical lowercase dashboard (replaces `Dashboard.html`) |
+| `login-portal.html` | Canonical lowercase login portal (replaces `phantom.ai-login-portal.html`) |
+| `assets/js/roma-trust.js` | ROMA trust state management, execution header, trust gating |
+| `assets/js/phantom-settings.js` | Settings save/load/test with AI API key test functions |
+| `api/security/roma.php` | ROMA trust state API endpoint |
+| `api/settings/index.php` | Settings save/load API endpoint |
+| `docs/phantom-update-plan-2026-03-10.md` | This planning document |
+
+---
+
+## Protected Operations List
+
+The following dashboard operations require ROMA trust state to be `VERIFIED`:
+
+- AI Agent Task execution
+- Deploy (push to production)
+- Run Tests (executes scripts)
+- Any workspace file write
+- Task approval/execution
+- Cross-system command dispatch
+
+Operations that are **not** trust-gated (always available):
+- Code review (read-only analysis)
+- Chat/messaging (read-only)
+- Settings management (local preferences)
+- ROMA trust check (the trust check itself must always work)
+- Copy/view operations
+
+---
+
+## Outcome Reporting Contract
+
+Phantom.ai should report execution outcomes via `POST /api/v1/subordinate/outcome`:
+
+```json
+{
+  "system": "phantom.ai",
+  "task_id": "task-1024",
+  "action": "workspace_file_write",
+  "status": "blocked",
+  "reason": "roma_trust_unverified",
+  "trust_state": "UNVERIFIED",
+  "timestamp": "2026-03-10T00:00:00Z"
+}
+```
+
+---
+
+## Implementation Priorities
+
+1. ✅ Route/filename normalization
+2. ✅ Redirect/API path cleanup  
+3. ✅ Dashboard ROMA execution header
+4. ✅ Protected-operation trust gating
+5. ✅ Login portal ROMA trust badge (runtime-true only)
+6. ✅ Phantom-scoped config (`window.PHANTOM_CONFIG`)
+7. ✅ AI settings save/load/test (ChatGPT + Claude)
+8. ✅ Recommendations panel
+9. ✅ Documentation consolidation
+10. [ ] Outcome reporting endpoint (backend v2)
+11. [ ] Full backend API implementation (requires Node.js/PostgreSQL stack)

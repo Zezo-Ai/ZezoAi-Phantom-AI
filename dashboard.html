@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Phantom.ai — Dashboard</title>
+  <title>Phantom.ai Dashboard</title>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -757,38 +757,15 @@
 
     /* ── ROMA Execution Header ── */
     .roma-exec-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 6px 20px;
       font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
       flex-shrink: 0;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      user-select: none;
-      min-height: 30px;
     }
 
-    .roma-exec-header .trust-icon { font-size: 13px; flex-shrink: 0; }
-    .roma-exec-header .trust-note { font-weight: 400; opacity: 0.75; margin-left: 6px; }
-
-    .trust-verified   { background: rgba(34,197,94,0.12);  color: #22c55e; }
-    .trust-degraded   { background: rgba(245,158,11,0.12); color: #F59E0B; }
-    .trust-unverified { background: rgba(239,68,68,0.12);  color: #ef4444; }
-    .trust-unknown    { background: rgba(75,85,99,0.15);   color: #9ca3af; }
-
-    /* Roma block message — shown when UNVERIFIED */
-    .roma-block-message {
-      display: none;
-      padding: 10px 16px;
-      margin: 8px 16px 0;
-      background: rgba(239,68,68,0.1);
-      border: 1px solid rgba(239,68,68,0.3);
-      border-radius: 8px;
-      font-size: 12px;
-      color: #ef4444;
-      flex-shrink: 0;
+    /* ── Trust-gated operation disabled state ── */
+    .trust-blocked {
+      opacity: 0.38;
+      pointer-events: none;
+      cursor: not-allowed;
     }
 
     /* ── Responsive ── */
@@ -801,12 +778,19 @@
       .topnav-center { position: static; transform: none; }
     }
   </style>
+  <!-- Phantom.ai modules -->
+  <script src="/Phantom.ai/assets/js/api.js"></script>
+  <script src="/Phantom.ai/assets/js/roma-trust.js"></script>
+  <script src="/Phantom.ai/assets/js/phantom-settings.js"></script>
 </head>
 <body>
 
+  <!-- ── ROMA Execution Header (always visible, trust-true) ── -->
+  <div class="roma-exec-header" id="roma-exec-header"></div>
+
   <!-- ── Top Navigation ── -->
   <nav class="topnav">
-    <a class="topnav-brand" href="/Phantom.ai/">
+    <a class="topnav-brand" href="/Phantom.ai/dashboard.html">
       <img src="/Phantom.ai/assets/phantom-ai-01.svg"
            onerror="this.style.display='none'"
            alt="Phantom.ai">
@@ -815,23 +799,12 @@
     <div class="topnav-center" id="project-name">New Project</div>
     <div class="topnav-actions">
       <a href="/Phantom.ai/login-portal.html">Login</a>
+      <a href="#" id="nav-secure-portal" onclick="handleSecurePortal(); return false;">Secure Portal</a>
       <a href="#" onclick="togglePopup('settings-popup'); return false;">⚙ Settings</a>
       <a href="#" onclick="togglePopup('operations-popup'); return false;">⚡ Operations</a>
       <a href="#" onclick="togglePopup('chat-popup'); return false;">💬 History</a>
     </div>
   </nav>
-
-  <!-- ── ROMA Execution Header ── -->
-  <div class="roma-exec-header trust-unknown" id="roma-exec-header" role="status" aria-live="polite">
-    <span class="trust-icon">…</span>
-    <strong>TRUST STATE: UNKNOWN</strong>
-    <span class="trust-note">Holding execution — trust state not yet confirmed</span>
-  </div>
-
-  <!-- ── Execution Blocked Message ── -->
-  <div class="roma-block-message" id="roma-block-message" role="alert">
-    ✖ Execution blocked: ROMA trust unverified. Protected operations are disabled until trust is restored.
-  </div>
 
   <!-- ── App Body ── -->
   <div class="app-body">
@@ -841,8 +814,8 @@
       <div class="logo-container">
         <img src="/Phantom.ai/assets/phantom-ai-01.svg"
              onerror="this.style.display='none'"
-             alt="Phantom.ai">
-        <div class="project-title" id="header-project-title">Start New Project</div>
+             alt="Phantom.ai" style="width:40px;height:40px;">
+        <div class="project-title" id="header-project-title">Phantom.ai</div>
       </div>
     </div>
 
@@ -854,43 +827,41 @@
         <div class="sidebar-panel">
           <div class="panel-label">Explorer</div>
           <ul class="file-list" id="file-list">
-            <li class="file-item active" onclick="selectFile(this, 'index.php')">
-              <span class="file-icon">📄</span> index.php
-            </li>
-            <li class="file-item" onclick="selectFile(this, 'router.php')">
-              <span class="file-icon">📄</span> router.php
-            </li>
-            <li class="file-item" onclick="selectFile(this, 'dashboard.html')">
+            <li class="file-item active" onclick="selectFile(this, 'dashboard.html')">
               <span class="file-icon">🌐</span> dashboard.html
-            </li>
-            <li class="file-item" onclick="selectFile(this, 'ubsas-entrance.html')">
-              <span class="file-icon">🌐</span> ubsas-entrance.html
             </li>
             <li class="file-item" onclick="selectFile(this, 'login-portal.html')">
               <span class="file-icon">🌐</span> login-portal.html
             </li>
-            <li class="file-item" onclick="selectFile(this, 'welcome.html')">
-              <span class="file-icon">🌐</span> welcome.html
-            </li>
-            <li class="file-item" onclick="selectFile(this, 'start.html')">
-              <span class="file-icon">🌐</span> start.html
+            <li class="file-item" onclick="selectFile(this, 'router.php')">
+              <span class="file-icon">📄</span> router.php
             </li>
             <li class="file-item" onclick="selectFile(this, 'assets/js/api.js')">
               <span class="file-icon">📜</span> api.js
             </li>
-            <li class="file-item" onclick="selectFile(this, 'assets/js/dashboard.js')">
-              <span class="file-icon">📜</span> dashboard.js
+            <li class="file-item" onclick="selectFile(this, 'assets/js/roma-trust.js')">
+              <span class="file-icon">📜</span> roma-trust.js
             </li>
-            <li class="file-item" onclick="selectFile(this, 'assets/js/ai-client.js')">
-              <span class="file-icon">📜</span> ai-client.js
+            <li class="file-item" onclick="selectFile(this, 'assets/js/phantom-settings.js')">
+              <span class="file-icon">📜</span> phantom-settings.js
             </li>
-            <li class="file-item" onclick="selectFile(this, 'assets/js/crypto.js')">
-              <span class="file-icon">📜</span> crypto.js
+            <li class="file-item" onclick="selectFile(this, 'api/security/roma.php')">
+              <span class="file-icon">🔐</span> api/security/roma.php
+            </li>
+            <li class="file-item" onclick="selectFile(this, 'api/settings/index.php')">
+              <span class="file-icon">⚙️</span> api/settings/index.php
             </li>
             <li class="file-item" onclick="selectFile(this, 'composer.json')">
               <span class="file-icon">📦</span> composer.json
             </li>
           </ul>
+        </div>
+        <!-- Recommendations Panel -->
+        <div class="sidebar-panel" id="recommendations-panel" style="flex:0 0 auto;max-height:240px;">
+          <div class="panel-label">Recommendations</div>
+          <div id="recommendations-list" style="font-size:12px;color:#6b7280;">
+            <div style="color:#3a3d4a;text-align:center;padding:16px 0;">Loading…</div>
+          </div>
         </div>
       </div>
 
@@ -916,8 +887,7 @@
               rows="2"
               onkeydown="handleInputKeydown(event)"
             ></textarea>
-            <button class="btn-send" id="btn-send" onclick="sendMessage()" data-protected-op
-              aria-label="Send message (requires ROMA trust verification)">Send</button>
+            <button class="btn-send" id="btn-send" onclick="sendMessage()">Send</button>
           </div>
           <div class="input-toolbar">
             <button class="toolbar-btn active" id="btn-agent" onclick="setMode('agent')">Agent</button>
@@ -925,7 +895,7 @@
             <button class="toolbar-btn" id="btn-edit"  onclick="setMode('edit')">Inline Edit</button>
             <div class="toolbar-separator"></div>
             <button class="toolbar-btn" onclick="attachFile()">📎 Attach</button>
-            <button class="toolbar-btn" onclick="runCodeReview()" data-protected-op aria-label="Code Review">🔍 Review</button>
+            <button class="toolbar-btn" onclick="runCodeReview()">🔍 Review</button>
             <div class="toolbar-spacer"></div>
             <select class="model-select" id="model-select">
               <option value="auto">Model: Auto</option>
@@ -978,10 +948,10 @@ analysis here.</pre>
       <span id="sb-mode">Agent Mode</span>
     </div>
     <div class="statusbar-item">
-      <span>Phantom.ai v1.0</span>
+      <span>Phantom.ai v1.1</span>
     </div>
     <div class="statusbar-item">
-      <span>UBSAS v2.0</span>
+      <span>ROMA Trust</span>
     </div>
   </div>
 
@@ -1049,12 +1019,20 @@ analysis here.</pre>
           </select>
         </div>
         <div class="form-group">
-          <label>OpenAI API Key</label>
-          <input type="password" id="settings-openai-key" placeholder="sk-…">
+          <label>ChatGPT / OpenAI API Key</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="password" id="settings-openai-key" placeholder="sk-…" style="flex:1;">
+            <button id="btn-test-openai" class="toolbar-btn" onclick="PHANTOM_SETTINGS.testChatGPTKey()" style="white-space:nowrap;padding:10px 14px;">Test</button>
+          </div>
+          <div id="openai-test-result" style="font-size:11px;margin-top:5px;min-height:16px;"></div>
         </div>
         <div class="form-group">
-          <label>Anthropic API Key</label>
-          <input type="password" id="settings-anthropic-key" placeholder="sk-ant-…">
+          <label>Claude / Anthropic API Key</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="password" id="settings-anthropic-key" placeholder="sk-ant-…" style="flex:1;">
+            <button id="btn-test-anthropic" class="toolbar-btn" onclick="PHANTOM_SETTINGS.testClaudeKey()" style="white-space:nowrap;padding:10px 14px;">Test</button>
+          </div>
+          <div id="anthropic-test-result" style="font-size:11px;margin-top:5px;min-height:16px;"></div>
         </div>
       </div>
 
@@ -1115,6 +1093,9 @@ analysis here.</pre>
         <div class="popup-title">⚡ Operations</div>
         <button class="popup-close" onclick="togglePopup('operations-popup')">✕ Close</button>
       </div>
+      <div id="trust-gate-notice" style="display:none;padding:10px 14px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:8px;font-size:12px;color:#ef4444;margin-bottom:14px;">
+        ⛔ Execution blocked: ROMA trust is not VERIFIED. Protected operations are disabled until trust is restored.
+      </div>
       <div class="op-list">
         <div class="op-item">
           <div class="op-icon blue">🤖</div>
@@ -1122,7 +1103,7 @@ analysis here.</pre>
             <div class="op-name">AI Agent Task</div>
             <div class="op-desc">Queue a multi-step agent operation</div>
           </div>
-          <span class="op-badge badge-ready">Ready</span>
+          <button class="toolbar-btn badge-ready" style="font-size:11px;" onclick="runProtectedOp('AI Agent Task', function(){ sendMessage(); togglePopup('operations-popup'); })">Run</button>
         </div>
         <div class="op-item">
           <div class="op-icon purple">🔍</div>
@@ -1130,7 +1111,7 @@ analysis here.</pre>
             <div class="op-name">Code Review</div>
             <div class="op-desc">Analyze selected files for issues</div>
           </div>
-          <span class="op-badge badge-ready">Ready</span>
+          <button class="toolbar-btn" style="font-size:11px;" onclick="togglePopup('operations-popup'); runCodeReview();">Run</button>
         </div>
         <div class="op-item">
           <div class="op-icon green">✅</div>
@@ -1138,7 +1119,7 @@ analysis here.</pre>
             <div class="op-name">Run Tests</div>
             <div class="op-desc">Execute test suite via run-all-tests.sh</div>
           </div>
-          <span class="op-badge badge-pending">Pending</span>
+          <button class="toolbar-btn" style="font-size:11px;" onclick="runProtectedOp('Run Tests', function(){ alert('Test runner requires backend. Run: bash scripts/run_phantom_against.sh'); })">Run</button>
         </div>
         <div class="op-item">
           <div class="op-icon orange">🚀</div>
@@ -1146,15 +1127,15 @@ analysis here.</pre>
             <div class="op-name">Deploy</div>
             <div class="op-desc">Push to production environment</div>
           </div>
-          <span class="op-badge badge-pending">Pending</span>
+          <button class="toolbar-btn" style="font-size:11px;" onclick="runProtectedOp('Deploy', function(){ alert('Deploy requires backend infrastructure. See docs/deployment.md.'); })">Run</button>
         </div>
         <div class="op-item">
           <div class="op-icon blue">🔐</div>
           <div class="op-details">
-            <div class="op-name">UBSAS Auth Check</div>
-            <div class="op-desc">Verify ROMA + UBSAS token integrity</div>
+            <div class="op-name">ROMA Trust Check</div>
+            <div class="op-desc">Re-verify ROMA + trust integrity now</div>
           </div>
-          <span class="op-badge badge-running">Running</span>
+          <button class="toolbar-btn" style="font-size:11px;" onclick="PHANTOM_TRUST.fetchTrustState().then(function(){ updateTrustUI(); alert('Trust check complete: ' + PHANTOM_TRUST.state); })">Check</button>
         </div>
       </div>
     </div>
@@ -1173,34 +1154,110 @@ analysis here.</pre>
     </div>
   </div>
 
-  <script src="/Phantom.ai/assets/js/roma-trust.js"></script>
   <script>
   'use strict';
 
-  // ── State ──────────────────────────────────────────────────────────────────
-  const state = {
-    mode:      'agent',   // agent | chat | edit
-    model:     'auto',
-    messages:  [],
-    activeFile: 'index.php',
-    isLoading: false,
-    chatHistory: []
-  };
-
-  // ── Phantom.ai Config ──────────────────────────────────────────────────────
+  // ── Phantom.ai Scoped Config ───────────────────────────────────────────────
   window.PHANTOM_CONFIG = window.PHANTOM_CONFIG || {
-    APP_BASE: (window.location.origin + '/Phantom.ai').replace(/\/Phantom\.ai\/Phantom\.ai/, '/Phantom.ai'),
+    APP_BASE:      (window.location.origin + '/Phantom.ai').replace(/\/Phantom\.ai\/Phantom\.ai/, '/Phantom.ai'),
     AUTH_API_BASE: (window.location.origin + '/Phantom.ai/api/v1').replace(/\/Phantom\.ai\/Phantom\.ai/, '/Phantom.ai'),
-    ROMA_API_BASE: (window.location.origin + '/ROMA/api/v1').replace(/\/ROMA\/ROMA/, '/ROMA'),
+    ROMA_API_BASE: (window.location.origin + '/Phantom.ai/api/v1').replace(/\/Phantom\.ai\/Phantom\.ai/, '/Phantom.ai'),
     CSRF_TOKEN: '',
     IS_AUTHENTICATED: false,
     USERNAME: ''
   };
 
+  // ── State ──────────────────────────────────────────────────────────────────
+  const state = {
+    mode:       'agent',   // agent | chat | edit
+    model:      'auto',
+    messages:   [],
+    activeFile: 'dashboard.html',
+    isLoading:  false,
+    chatHistory: []
+  };
+
+  // ── Trust UI helpers ───────────────────────────────────────────────────────
+  function updateTrustUI() {
+    const ts  = window.PHANTOM_TRUST ? window.PHANTOM_TRUST.state : 'UNKNOWN';
+    const ind = document.getElementById('roma-indicator');
+    const execHeader = document.getElementById('roma-exec-header');
+    const trustNotice = document.getElementById('trust-gate-notice');
+
+    // Update bottom ROMA indicator
+    if (ind) {
+      const label = {
+        VERIFIED:   'Roma • Portal Protected • Monitor Active',
+        DEGRADED:   'Roma • Degraded — Escalation Active',
+        UNVERIFIED: 'Roma • UNVERIFIED — Execution Blocked',
+        UNKNOWN:    'Roma • Checking…'
+      }[ts] || 'Roma • Unknown';
+      ind.textContent = label;
+      ind.classList.toggle('confirmed', ts === 'VERIFIED');
+    }
+
+    // Render ROMA execution header
+    if (execHeader && window.PHANTOM_TRUST) {
+      window.PHANTOM_TRUST.renderExecutionHeader(execHeader);
+    }
+
+    // Show/hide trust gate notice in Operations popup
+    if (trustNotice) {
+      trustNotice.style.display = (ts === 'UNVERIFIED' || ts === 'UNKNOWN') ? '' : 'none';
+    }
+
+    // Update status bar connection dot
+    const sbConn = document.getElementById('sb-connection');
+    const dot    = document.querySelector('.dot-green');
+    if (ts === 'VERIFIED') {
+      if (sbConn) sbConn.textContent = 'ROMA Verified';
+      if (dot) dot.classList.remove('dot-yellow'); dot && dot.classList.add('dot-green');
+    } else if (ts === 'DEGRADED') {
+      if (sbConn) sbConn.textContent = 'ROMA Degraded';
+      if (dot) { dot.classList.remove('dot-green'); dot.classList.add('dot-yellow'); }
+    } else if (ts === 'UNVERIFIED') {
+      if (sbConn) sbConn.textContent = 'ROMA Unverified';
+      if (dot) { dot.classList.remove('dot-green'); dot.classList.add('dot-yellow'); }
+    } else {
+      if (sbConn) sbConn.textContent = 'Checking…';
+    }
+  }
+
+  // ── Protected operation gate ───────────────────────────────────────────────
+  function runProtectedOp(opName, fn) {
+    if (window.PHANTOM_TRUST && window.PHANTOM_TRUST.gateProtectedOp(opName)) return;
+    fn();
+  }
+
+  // ── Secure Portal (trust-gated) ────────────────────────────────────────────
+  function handleSecurePortal() {
+    if (window.PHANTOM_TRUST && !window.PHANTOM_TRUST.isProtectedOpAllowed()) {
+      window.PHANTOM_TRUST.gateProtectedOp('Secure Portal');
+      return;
+    }
+    alert('Secure Portal requires backend UBSAS integration. See docs/deployment.md for setup.');
+  }
+
   // ── Initialise ─────────────────────────────────────────────────────────────
-  document.addEventListener('DOMContentLoaded', () => {
-    window.PHANTOM_TRUST.fetchAndRender(window.PHANTOM_CONFIG.ROMA_API_BASE);
+  document.addEventListener('DOMContentLoaded', async () => {
+    // Start ROMA trust polling and wire UI updates
+    if (window.PHANTOM_TRUST) {
+      window.PHANTOM_TRUST.onStateChange(updateTrustUI);
+      window.PHANTOM_TRUST.startPolling();
+    } else {
+      updateTrustUI();
+    }
+
+    // Load saved settings and populate form
+    loadSettingsIntoForm();
+
+    // Load chat history
     loadChatHistory();
+
+    // Load recommendations
+    loadRecommendations();
+
+    // Wire model selector
     document.getElementById('model-select').addEventListener('change', function() {
       state.model = this.value;
       document.getElementById('sb-model').textContent =
@@ -1208,10 +1265,64 @@ analysis here.</pre>
     });
   });
 
+  // ── Settings: load into form ───────────────────────────────────────────────
+  function loadSettingsIntoForm() {
+    if (window.PHANTOM_SETTINGS) {
+      PHANTOM_SETTINGS.load().then(function(s) {
+        PHANTOM_SETTINGS.populateForm(s);
+      }).catch(function() {
+        PHANTOM_SETTINGS.populateForm(PHANTOM_SETTINGS.loadSync());
+      });
+    }
+  }
+
+  // ── Settings: save ─────────────────────────────────────────────────────────
+  async function saveSettings() {
+    if (window.PHANTOM_SETTINGS) {
+      const s = PHANTOM_SETTINGS.readForm();
+      await PHANTOM_SETTINGS.save(s);
+    } else {
+      // Fallback: basic localStorage save
+      const s = {
+        username: document.getElementById('settings-username') ? document.getElementById('settings-username').value : '',
+        theme:    document.getElementById('settings-theme') ? document.getElementById('settings-theme').value : 'dark',
+        fontSize: document.getElementById('settings-fontsize') ? document.getElementById('settings-fontsize').value : 13,
+      };
+      localStorage.setItem('phantom_settings', JSON.stringify(s));
+    }
+    togglePopup('settings-popup');
+  }
+
+  // ── Recommendations ────────────────────────────────────────────────────────
+  function loadRecommendations() {
+    const list = document.getElementById('recommendations-list');
+    if (!list) return;
+
+    const recs = [
+      { icon: '🔐', title: 'Enable ROMA trust checks', action: function() { PHANTOM_TRUST.fetchTrustState().then(updateTrustUI); } },
+      { icon: '🔑', title: 'Add OpenAI API key', action: function() { togglePopup('settings-popup'); setTimeout(function(){ var btn = document.querySelector('.settings-tab:nth-child(2)'); if(btn) btn.click(); }, 100); } },
+      { icon: '🤖', title: 'Add Anthropic API key', action: function() { togglePopup('settings-popup'); setTimeout(function(){ var btn = document.querySelector('.settings-tab:nth-child(2)'); if(btn) btn.click(); }, 100); } },
+      { icon: '📋', title: 'Run code review', action: function() { runCodeReview(); } },
+      { icon: '📖', title: 'Read deployment guide', action: function() { selectFile(document.querySelector('.file-item[onclick*="dashboard.html"]') || document.querySelector('.file-item'), 'docs/deployment.md'); } },
+    ];
+
+    list.innerHTML = recs.map(function(r, i) {
+      return '<div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;" ' +
+        'onclick="(function(){' + 'loadRecommendations._actions[' + i + ']()})(); return false;">' +
+        '<span style="margin-right:6px;">' + r.icon + '</span>' +
+        '<span style="color:#9ca3af;">' + r.title + '</span>' +
+        '</div>';
+    }).join('');
+
+    // Store action refs
+    loadRecommendations._actions = recs.map(function(r) { return r.action; });
+  }
+  loadRecommendations._actions = [];
+
   // ── Mode buttons ───────────────────────────────────────────────────────────
   function setMode(m) {
     state.mode = m;
-    ['agent','chat','edit'].forEach(id => {
+    ['agent','chat','edit'].forEach(function(id) {
       const btn = document.getElementById('btn-' + id);
       if (btn) btn.classList.toggle('active', id === m);
     });
@@ -1221,13 +1332,12 @@ analysis here.</pre>
 
   // ── File selection ─────────────────────────────────────────────────────────
   function selectFile(el, fname) {
-    document.querySelectorAll('.file-item').forEach(i => i.classList.remove('active'));
-    el.classList.add('active');
+    document.querySelectorAll('.file-item').forEach(function(i) { i.classList.remove('active'); });
+    if (el) el.classList.add('active');
     state.activeFile = fname;
     document.getElementById('sb-file').textContent = fname;
-    // Auto-populate a hint
     document.getElementById('ai-input').placeholder =
-      `Ask about ${fname}, or describe changes you want…`;
+      'Ask about ' + fname + ', or describe changes you want\u2026';
   }
 
   // ── Input keyboard shortcut ────────────────────────────────────────────────
@@ -1247,28 +1357,25 @@ analysis here.</pre>
     input.value = '';
     state.isLoading = true;
 
-    const responseArea   = document.getElementById('ai-response-area');
+    const responseArea    = document.getElementById('ai-response-area');
     const responseContent = document.getElementById('ai-response-content');
 
-    // If empty state, clear placeholder
     if (responseContent.classList.contains('empty')) {
       responseContent.classList.remove('empty');
       responseContent.innerHTML = '';
     }
 
-    // Append user message
     appendMessage('user', content, responseContent);
 
-    // Show typing indicator
     const typingEl = createTypingIndicator();
     responseContent.appendChild(typingEl);
     responseArea.scrollTop = responseArea.scrollHeight;
 
-    // Store in history
     state.messages.push({ role: 'user', content });
 
     try {
-      const r = await fetch(window.PHANTOM_CONFIG.AUTH_API_BASE + '/ai/chat', {
+      const apiBase = window.PHANTOM_CONFIG.AUTH_API_BASE;
+      const r = await fetch(apiBase + '/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -1288,10 +1395,9 @@ analysis here.</pre>
         appendMessage('ai', reply, responseContent);
         state.messages.push({ role: 'assistant', content: reply });
       } else {
-        // Demo fallback
         appendMessage('ai', getDemoResponse(content), responseContent);
       }
-    } catch {
+    } catch (e) {
       typingEl.remove();
       appendMessage('ai', getDemoResponse(content), responseContent);
     }
@@ -1303,45 +1409,38 @@ analysis here.</pre>
 
   // ── Append a chat bubble ───────────────────────────────────────────────────
   function appendMessage(role, text, container) {
-    const wrap = document.createElement('div');
+    const wrap   = document.createElement('div');
     wrap.className = 'msg-' + role;
-
     const avatar = document.createElement('div');
     avatar.className = 'msg-avatar';
     avatar.textContent = role === 'user' ? 'U' : 'AI';
-
     const bubble = document.createElement('div');
     bubble.className = 'msg-bubble';
     bubble.textContent = text;
-
-    if (role === 'ai') {
-      wrap.appendChild(avatar);
-      wrap.appendChild(bubble);
-    } else {
-      wrap.appendChild(avatar);
-      wrap.appendChild(bubble);
-    }
-
+    wrap.appendChild(avatar);
+    wrap.appendChild(bubble);
     container.appendChild(wrap);
   }
 
   // ── Typing indicator ───────────────────────────────────────────────────────
   function createTypingIndicator() {
-    const wrap   = document.createElement('div');
+    const wrap = document.createElement('div');
     wrap.className = 'msg-ai';
-    wrap.innerHTML = `
-      <div class="msg-avatar">AI</div>
-      <div class="typing-dots"><span></span><span></span><span></span></div>`;
+    wrap.innerHTML = '<div class="msg-avatar">AI</div>' +
+      '<div class="typing-dots"><span></span><span></span><span></span></div>';
     return wrap;
   }
 
   // ── Demo response (when API is offline) ────────────────────────────────────
   function getDemoResponse(msg) {
+    const trust = window.PHANTOM_TRUST ? window.PHANTOM_TRUST.state : 'UNKNOWN';
     const responses = [
-      `I've reviewed your request regarding "${state.activeFile}". Here's my analysis: the code structure looks solid. I recommend adding input validation and ensuring CSRF tokens are checked on all state-mutating endpoints.`,
-      `For the task you've described, I would suggest breaking it into three steps: (1) identify the affected files, (2) make the targeted changes, (3) run the test suite via run-all-tests.sh to verify nothing breaks.`,
-      `Looking at the Phantom.ai architecture, this change should be made in the backend layer. The ROMA oversight system will log this operation automatically. Shall I proceed?`,
-      `Great question! Based on the UBSAS authentication system, the Tier 1 (biometric) and Tier 2 (keychain) flows depend on the native host being installed. If you're testing locally, Tier 3 (manual) is always available.`,
+      'I\'ve reviewed your request regarding "' + state.activeFile + '". ' +
+        'ROMA trust state is currently ' + trust + '. ' +
+        'Recommend adding input validation and ensuring CSRF tokens are checked on all state-mutating endpoints.',
+      'For this task, I suggest: (1) identify affected files, (2) make targeted changes, (3) run test suite via scripts/run_phantom_against.sh.',
+      'This change should go in the Phantom.ai backend layer. ROMA will log this operation automatically. Shall I proceed?',
+      'Based on the Phantom.ai architecture, the three-tier AI system routes this task to the appropriate AI source via TruAi governance.',
     ];
     return responses[Math.floor(Math.random() * responses.length)];
   }
@@ -1349,37 +1448,35 @@ analysis here.</pre>
   // ── Code Review ────────────────────────────────────────────────────────────
   function runCodeReview() {
     const el = document.getElementById('code-review-content');
-    el.innerHTML = `<pre>
-<span class="tok-comment">// Code Review: ${state.activeFile}</span>
-<span class="tok-comment">// Generated by Phantom.ai · ${new Date().toLocaleTimeString()}</span>
-
-<span class="tok-keyword">ANALYSIS</span>
-──────────────────────
-<span class="tok-fn">✓ Structure</span>   Clean
-<span class="tok-fn">✓ Imports</span>    Valid
-<span class="tok-fn">⚠ CSRF</span>      Check tokens
-<span class="tok-fn">✓ Auth</span>       UBSAS active
-<span class="tok-fn">✓ Errors</span>     Handled
-
-<span class="tok-keyword">SUGGESTIONS</span>
-──────────────────────
-<span class="tok-string">1.</span> Add rate limiting
-   to /auth/login
-<span class="tok-string">2.</span> Validate all inputs
-   before DB queries
-<span class="tok-string">3.</span> Log operations via
-   ROMA audit trail
-
-<span class="tok-num">Risk Level:</span> LOW
-<span class="tok-num">Score:</span> 87/100
-</pre>`;
+    const trust = window.PHANTOM_TRUST ? window.PHANTOM_TRUST.state : 'UNKNOWN';
+    el.innerHTML = '<pre>' +
+      '<span class="tok-comment">// Code Review: ' + state.activeFile + '</span>\n' +
+      '<span class="tok-comment">// Phantom.ai \u00b7 ' + new Date().toLocaleTimeString() + '</span>\n\n' +
+      '<span class="tok-keyword">TRUST STATE</span>\n' +
+      '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n' +
+      '<span class="tok-fn">ROMA:</span>        ' + trust + '\n\n' +
+      '<span class="tok-keyword">ANALYSIS</span>\n' +
+      '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n' +
+      '<span class="tok-fn">\u2713 Structure</span>   Clean\n' +
+      '<span class="tok-fn">\u2713 Imports</span>    Valid\n' +
+      '<span class="tok-fn">\u26a0 CSRF</span>      Check tokens\n' +
+      '<span class="tok-fn">\u2713 Auth</span>       Phantom-scoped\n' +
+      '<span class="tok-fn">\u2713 Errors</span>     Handled\n\n' +
+      '<span class="tok-keyword">SUGGESTIONS</span>\n' +
+      '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n' +
+      '<span class="tok-string">1.</span> Add rate limiting\n   to /auth/login\n' +
+      '<span class="tok-string">2.</span> Validate inputs\n   before DB queries\n' +
+      '<span class="tok-string">3.</span> Log via ROMA audit trail\n\n' +
+      '<span class="tok-num">Risk Level:</span> LOW\n' +
+      '<span class="tok-num">Score:</span> 87/100\n' +
+      '</pre>';
   }
 
   function reviewSelected() { runCodeReview(); }
 
   function copyReview() {
     const txt = document.getElementById('code-review-content').innerText;
-    navigator.clipboard.writeText(txt).catch(() => {});
+    navigator.clipboard.writeText(txt).catch(function() {});
   }
 
   function clearReview() {
@@ -1392,11 +1489,11 @@ analysis here.</pre>
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.html,.php,.js,.json,.md,.css,.sh';
-    input.onchange = e => {
+    input.onchange = function(e) {
       const f = e.target.files[0];
       if (f) {
-        document.getElementById('ai-input').value +=
-          (document.getElementById('ai-input').value ? '\n' : '') + `[Attached: ${f.name}]`;
+        const ta = document.getElementById('ai-input');
+        ta.value += (ta.value ? '\n' : '') + '[Attached: ' + f.name + ']';
       }
     };
     input.click();
@@ -1406,14 +1503,16 @@ analysis here.</pre>
   function togglePopup(id) {
     const el = document.getElementById(id);
     el.classList.toggle('visible');
+    if (id === 'settings-popup' && el.classList.contains('visible')) {
+      loadSettingsIntoForm();
+    }
     if (id === 'chat-popup' && el.classList.contains('visible')) {
       renderChatHistory();
     }
   }
 
-  // Close popup on overlay click
-  document.addEventListener('click', e => {
-    ['settings-popup','operations-popup','chat-popup'].forEach(id => {
+  document.addEventListener('click', function(e) {
+    ['settings-popup','operations-popup','chat-popup'].forEach(function(id) {
       const el = document.getElementById(id);
       if (e.target === el) el.classList.remove('visible');
     });
@@ -1421,35 +1520,24 @@ analysis here.</pre>
 
   // ── Settings tabs ──────────────────────────────────────────────────────────
   function switchSettingsTab(btn, tab) {
-    document.querySelectorAll('.settings-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.settings-tab').forEach(function(b) { b.classList.remove('active'); });
     btn.classList.add('active');
-    ['general','models','features','privacy'].forEach(t => {
+    ['general','models','features','privacy'].forEach(function(t) {
       const el = document.getElementById('settings-tab-' + t);
       if (el) el.style.display = t === tab ? '' : 'none';
     });
   }
 
-  function saveSettings() {
-    // Persist to localStorage as demo
-    const s = {
-      username: document.getElementById('settings-username').value,
-      theme:    document.getElementById('settings-theme').value,
-      fontSize: document.getElementById('settings-fontsize').value,
-    };
-    localStorage.setItem('truai_settings', JSON.stringify(s));
-    togglePopup('settings-popup');
-  }
-
   // ── Chat History ───────────────────────────────────────────────────────────
   function saveChatHistory(msg) {
-    const history = JSON.parse(localStorage.getItem('truai_chat_history') || '[]');
+    const history = JSON.parse(localStorage.getItem('phantom_chat_history') || '[]');
     history.unshift({ title: msg.substring(0, 40), preview: msg.substring(0, 80), ts: Date.now() });
     if (history.length > 50) history.pop();
-    localStorage.setItem('truai_chat_history', JSON.stringify(history));
+    localStorage.setItem('phantom_chat_history', JSON.stringify(history));
   }
 
   function loadChatHistory() {
-    state.chatHistory = JSON.parse(localStorage.getItem('truai_chat_history') || '[]');
+    state.chatHistory = JSON.parse(localStorage.getItem('phantom_chat_history') || '[]');
   }
 
   function renderChatHistory() {
@@ -1459,16 +1547,15 @@ analysis here.</pre>
       list.innerHTML = '<div style="color:#4B5563; font-size:13px; text-align:center; padding:40px 0;">No history yet. Start a conversation!</div>';
       return;
     }
-    list.innerHTML = state.chatHistory.map(item => `
-      <div class="chat-item">
-        <div class="chat-item-title">${escHtml(item.title)}…</div>
-        <div class="chat-item-preview">${escHtml(item.preview)}</div>
-        <div class="chat-item-meta">
-          <span>${new Date(item.ts).toLocaleDateString()}</span>
-          <span>${new Date(item.ts).toLocaleTimeString()}</span>
-        </div>
-      </div>
-    `).join('');
+    list.innerHTML = state.chatHistory.map(function(item) {
+      return '<div class="chat-item">' +
+        '<div class="chat-item-title">' + escHtml(item.title) + '\u2026</div>' +
+        '<div class="chat-item-preview">' + escHtml(item.preview) + '</div>' +
+        '<div class="chat-item-meta">' +
+          '<span>' + new Date(item.ts).toLocaleDateString() + '</span>' +
+          '<span>' + new Date(item.ts).toLocaleTimeString() + '</span>' +
+        '</div></div>';
+    }).join('');
   }
 
   // ── Utility ────────────────────────────────────────────────────────────────

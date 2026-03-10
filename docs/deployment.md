@@ -1,23 +1,41 @@
 # Phantom.ai Portal - Complete Deployment Guide
 
-> **Updated 2026-03-10** — Canonical routes, lowercase filenames, and ROMA trust alignment applied.
->
-> ### Canonical Routes (lowercase only — case-sensitive servers)
-> | Page | Canonical Path |
-> |------|---------------|
-> | Dashboard | `/Phantom.ai/dashboard.html` |
-> | Login Portal | `/Phantom.ai/login-portal.html` |
->
-> ### Governance & Security
-> - Phantom.ai is **subordinate to TruAi Core** (must not override Core decisions).
-> - Trust state is sourced from **ROMA's API base** (`/ROMA/api/v1/security/roma`).
-> - `PHANTOM_CONFIG.ROMA_API_BASE` is separate from `AUTH_API_BASE`.
-> - Protected operations are disabled when ROMA trust is `UNVERIFIED`.
-> - See `docs/phantom-update-plan-2026-03-10.md` for the full update plan.
+## Project Status: ✅ MARCH 2026 UPDATE COMPLETE
 
-## Project Status: ✅ FRONTEND COMPLETE
+All March 2026 implementation items are complete. Canonical filenames, ROMA trust integration,
+Phantom-scoped config, AI settings save/load/test, and trust-gated operations are fully implemented.
 
-All frontend development and CSS layout fixes have been successfully completed. The portal is production-ready for immediate deployment and backend integration.
+---
+
+## 🗂️ Canonical Routes (Case-Sensitive Server)
+
+| URL | File | Description |
+|-----|------|-------------|
+| `/Phantom.ai/dashboard.html` | `dashboard.html` | Main dashboard (canonical, lowercase) |
+| `/Phantom.ai/login-portal.html` | `login-portal.html` | Login portal (canonical, lowercase) |
+
+**Important:** Use lowercase filenames only on production (case-sensitive server).
+Legacy files `Dashboard.html` and `phantom.ai-login-portal.html` are redirect stubs.
+
+---
+
+## 🔐 ROMA Trust and Security
+
+- Trust state fetched from `PHANTOM_CONFIG.ROMA_API_BASE + '/security/roma'`
+- Endpoint: `GET /api/security/roma` (handled by `api/security/roma.php`)
+- Trust states: `VERIFIED` | `DEGRADED` | `UNVERIFIED` | `UNKNOWN`
+- Protected operations blocked when trust is not `VERIFIED`
+- No static "protected" claims — all trust signals are runtime-true
+
+---
+
+## ⚙️ AI Settings (ChatGPT + Claude)
+
+Settings are saved via `assets/js/phantom-settings.js`:
+- Persisted to `localStorage` (primary) and optionally to session via `api/settings`
+- ChatGPT API key: enter in Settings → Models & API → OpenAI API Key → click **Test**
+- Claude API key: enter in Settings → Models & API → Anthropic API Key → click **Test**
+- Test buttons call the respective API's models endpoint to validate the key
 
 ---
 
@@ -25,14 +43,14 @@ All frontend development and CSS layout fixes have been successfully completed. 
 
 ### Frontend Implementation (Phase 1 - 100% Complete)
 
-#### ✅ Core Portal Pages
-- **Login Portal** (`login-portal.html`) - Restored original design with legal acknowledgment modal
-- **Dashboard** (`dashboard.html`) - Main dashboard with navigation and overview
-- **Workspace** (`Phantom.ai.workspace.html`) - Project/task management interface
-- **Files** (`Phantom.ai.files.html`) - File & asset management (CSS fixed, content ready for backend)
-- **Review** (`Phantom.ai.review.html`) - AI output validation & decision surface (fully reengineered)
-- **Audit Log** (`Phantom.ai.auditlog.html`) - Activity tracking interface
-- **Settings** (`Phantom.ai.settings.html`) - Configuration management with AI credentials
+#### ✅ Core Portal Pages (March 2026 — Canonical)
+- **Login Portal** (`login-portal.html`) - Canonical login with ROMA trust badge and Phantom-scoped config
+- **Dashboard** (`dashboard.html`) - Main dashboard with ROMA Execution Header, trust gating, AI settings
+- **Workspace** (`public/Phantom.ai.workspace.html`) - Project/task management interface
+- **Files** (`public/Phantom.ai.files.html`) - File & asset management (CSS fixed, content ready for backend)
+- **Review** (`public/Phantom.ai.review.html`) - AI output validation & decision surface (fully reengineered)
+- **Audit Log** (`public/Phantom.ai.auditlog.html`) - Activity tracking interface
+- **Settings** (`public/Phantom.ai.settings.html`) - Configuration management with AI credentials
 
 #### ✅ Layout & Design Fixes
 - **Three-Column Layout** - Fixed critical CSS rendering issue on Review and Files pages
@@ -90,10 +108,10 @@ All frontend development and CSS layout fixes have been successfully completed. 
 ```bash
 # Clone the PR branch with all updates
 cd ~ && \
-git clone -b copilot/review-phantom-ai-update \
+git clone -b copilot/update-phantom-dashboard-html \
 https://github.com/DemeWebsolutions/Phantom.ai.git phantom-ai-server && \
 cd phantom-ai-server && \
-open login-portal.html
+open Phantom.ai.portal.html
 ```
 
 **What you get:**
@@ -138,8 +156,8 @@ Follow the comprehensive guide in `BACKEND_ARCHITECTURE.md` for complete setup w
 
 ```
 phantom-ai-server/
-├── login-portal.html          # Login page with legal modal
-├── dashboard.html            # Main dashboard
+├── Phantom.ai.portal.html          # Login page with legal modal
+├── phantom-defined.html            # Main dashboard
 ├── Phantom.ai.workspace.html       # Workspace/project management
 ├── Phantom.ai.files.html           # File management (CSS fixed)
 ├── Phantom.ai.review.html          # AI output review (reengineered)
@@ -161,7 +179,7 @@ phantom-ai-server/
 ```bash
 # Clone the repository
 cd ~ && \
-git clone -b copilot/review-phantom-ai-update \
+git clone -b copilot/update-phantom-dashboard-html \
 https://github.com/DemeWebsolutions/Phantom.ai.git phantom-ai-cursor && \
 cd phantom-ai-cursor
 
@@ -174,7 +192,7 @@ cursor .
 Open these files in Cursor to understand the current state:
 1. `DEPLOYMENT_GUIDE.md` (this file)
 2. `BACKEND_ARCHITECTURE.md` (backend deployment instructions)
-3. `login-portal.html` (login page - entry point)
+3. `Phantom.ai.portal.html` (login page - entry point)
 4. `Phantom.ai.review.html` (example of reengineered page)
 
 **Step 3: Backend Implementation Tasks**
@@ -258,7 +276,7 @@ If you're implementing the backend with Cursor, follow these steps in order:
 **Option A: Test Frontend Only**
 ```bash
 cd ~/phantom-ai-server
-open login-portal.html
+open Phantom.ai.portal.html
 ```
 Navigate through all pages to verify UI/UX.
 
@@ -400,6 +418,6 @@ Complete deployment guide created for Mac home server with:
 
 **Last Updated:** 2026-01-07  
 **Version:** 1.0.0  
-**Branch:** copilot/review-phantom-ai-update  
+**Branch:** copilot/update-phantom-dashboard-html  
 **Status:** ✅ READY FOR DEPLOYMENT
 
