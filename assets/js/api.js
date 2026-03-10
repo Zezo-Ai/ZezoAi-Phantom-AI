@@ -10,7 +10,9 @@
 class TruAiAPI {
     constructor() {
         // Handle case where TRUAI_CONFIG might not be set (e.g., on login page)
-        this.baseURL = window.PHANTOM_CONFIG?.AUTH_API_BASE || window.TRUAI_CONFIG?.API_BASE || (window.location.origin + '/Phantom.ai/api/v1');
+        this.baseURL = window.PHANTOM_CONFIG?.AUTH_API_BASE  // Phantom.ai auth API (preferred)
+            || window.TRUAI_CONFIG?.API_BASE                 // TruAi backwards-compat fallback
+            || (window.location.origin + '/Phantom.ai/api/v1'); // last-resort default
         this.csrfToken = window.TRUAI_CONFIG?.CSRF_TOKEN || '';
     }
 

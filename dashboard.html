@@ -916,7 +916,8 @@
               rows="2"
               onkeydown="handleInputKeydown(event)"
             ></textarea>
-            <button class="btn-send" id="btn-send" onclick="sendMessage()" data-protected-op>Send</button>
+            <button class="btn-send" id="btn-send" onclick="sendMessage()" data-protected-op
+              aria-label="Send message (requires ROMA trust verification)">Send</button>
           </div>
           <div class="input-toolbar">
             <button class="toolbar-btn active" id="btn-agent" onclick="setMode('agent')">Agent</button>
@@ -924,7 +925,7 @@
             <button class="toolbar-btn" id="btn-edit"  onclick="setMode('edit')">Inline Edit</button>
             <div class="toolbar-separator"></div>
             <button class="toolbar-btn" onclick="attachFile()">📎 Attach</button>
-            <button class="toolbar-btn" onclick="runCodeReview()" data-protected-op>🔍 Review</button>
+            <button class="toolbar-btn" onclick="runCodeReview()" data-protected-op aria-label="Code Review">🔍 Review</button>
             <div class="toolbar-spacer"></div>
             <select class="model-select" id="model-select">
               <option value="auto">Model: Auto</option>

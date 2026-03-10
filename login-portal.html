@@ -635,7 +635,8 @@
         document.getElementById('disclaimerAccept').addEventListener('click', function () {
           hideDisclaimer();
           // Redirect to Phantom.ai dashboard after accepting disclaimer
-          window.location.href = '/Phantom.ai/dashboard.html';
+          var appBase = window.PHANTOM_CONFIG ? window.PHANTOM_CONFIG.APP_BASE : '/Phantom.ai';
+          window.location.href = appBase.replace(/\/$/, '') + '/dashboard.html';
         });
 
         document.getElementById('disclaimerCancel').addEventListener('click', function () {
