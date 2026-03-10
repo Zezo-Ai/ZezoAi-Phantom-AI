@@ -24,15 +24,19 @@
 
 $checks = [
     // NOTE: These are stub checks for the frontend to function while the full backend stack
-    // is being implemented. In production, replace each `true` with real validation:
+    // is being implemented. Until all checks are replaced with real validation, the trust
+    // state will report UNVERIFIED (fail-closed). In production, replace each stub `true`
+    // with real validation:
     //   encryption_keys:    verify AES-256-GCM key material is loaded and rotated
     //   session:            verify active PHP session with valid auth token
     //   workspace:          verify workspace directory exists and is accessible
     //   workspace_writable: verify workspace directory is writable by the PHP process
-    'encryption_keys'    => true,
+    // IMPORTANT: Until this stub is replaced, encryption_keys and workspace are hardcoded
+    // to false so the endpoint defaults to UNVERIFIED (fail-closed).
+    'encryption_keys'    => false,  // TODO: implement real key material check
     'session'            => (session_status() === PHP_SESSION_ACTIVE),
-    'workspace'          => true,
-    'workspace_writable' => true,
+    'workspace'          => false,  // TODO: implement real workspace check
+    'workspace_writable' => false,  // TODO: implement real writable check
 ];
 
 // Fail-closed: downgrade to UNVERIFIED if any check fails

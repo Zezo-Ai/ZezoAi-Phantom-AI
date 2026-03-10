@@ -1211,7 +1211,7 @@ analysis here.</pre>
     const dot    = document.querySelector('.dot-green');
     if (ts === 'VERIFIED') {
       if (sbConn) sbConn.textContent = 'ROMA Verified';
-      if (dot) dot.classList.remove('dot-yellow'); dot && dot.classList.add('dot-green');
+      if (dot) { dot.classList.remove('dot-yellow'); dot.classList.add('dot-green'); }
     } else if (ts === 'DEGRADED') {
       if (sbConn) sbConn.textContent = 'ROMA Degraded';
       if (dot) { dot.classList.remove('dot-green'); dot.classList.add('dot-yellow'); }

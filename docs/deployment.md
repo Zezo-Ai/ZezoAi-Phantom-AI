@@ -111,7 +111,7 @@ cd ~ && \
 git clone -b copilot/update-phantom-dashboard-html \
 https://github.com/DemeWebsolutions/Phantom.ai.git phantom-ai-server && \
 cd phantom-ai-server && \
-open Phantom.ai.portal.html
+open login-portal.html
 ```
 
 **What you get:**
@@ -156,8 +156,8 @@ Follow the comprehensive guide in `BACKEND_ARCHITECTURE.md` for complete setup w
 
 ```
 phantom-ai-server/
-├── Phantom.ai.portal.html          # Login page with legal modal
-├── phantom-defined.html            # Main dashboard
+├── login-portal.html               # Login portal (canonical, March 2026)
+├── dashboard.html                  # Main dashboard (canonical, March 2026)
 ├── Phantom.ai.workspace.html       # Workspace/project management
 ├── Phantom.ai.files.html           # File management (CSS fixed)
 ├── Phantom.ai.review.html          # AI output review (reengineered)
@@ -192,7 +192,7 @@ cursor .
 Open these files in Cursor to understand the current state:
 1. `DEPLOYMENT_GUIDE.md` (this file)
 2. `BACKEND_ARCHITECTURE.md` (backend deployment instructions)
-3. `Phantom.ai.portal.html` (login page - entry point)
+3. `login-portal.html` (login page - canonical entry point)
 4. `Phantom.ai.review.html` (example of reengineered page)
 
 **Step 3: Backend Implementation Tasks**
@@ -276,7 +276,7 @@ If you're implementing the backend with Cursor, follow these steps in order:
 **Option A: Test Frontend Only**
 ```bash
 cd ~/phantom-ai-server
-open Phantom.ai.portal.html
+open login-portal.html
 ```
 Navigate through all pages to verify UI/UX.
 

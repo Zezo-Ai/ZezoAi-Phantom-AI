@@ -44,9 +44,9 @@ if ($method === 'GET') {
                 if (is_string($val)) {
                     $val = trim($val);
                     // Validate expected prefixes; reject if too long (defense-in-depth)
-                    if ($key === 'openaiApiKey' && !preg_match('/^(sk-[A-Za-z0-9\-_]{20,200})?$/', $val)) {
+                    if ($key === 'openaiApiKey' && !preg_match('/^(sk-[A-Za-z0-9]{20,200})?$/', $val)) {
                         $val = '';
-                    } elseif ($key === 'anthropicApiKey' && !preg_match('/^(sk-ant-[A-Za-z0-9\-_]{20,300})?$/', $val)) {
+                    } elseif ($key === 'anthropicApiKey' && !preg_match('/^(sk-ant-[A-Za-z0-9]{20,300})?$/', $val)) {
                         $val = '';
                     }
                 } else {
