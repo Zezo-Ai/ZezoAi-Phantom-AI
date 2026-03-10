@@ -1,8 +1,41 @@
 # Phantom.ai Portal - Complete Deployment Guide
 
-## Project Status: ✅ FRONTEND COMPLETE
+## Project Status: ✅ MARCH 2026 UPDATE COMPLETE
 
-All frontend development and CSS layout fixes have been successfully completed. The portal is production-ready for immediate deployment and backend integration.
+All March 2026 implementation items are complete. Canonical filenames, ROMA trust integration,
+Phantom-scoped config, AI settings save/load/test, and trust-gated operations are fully implemented.
+
+---
+
+## 🗂️ Canonical Routes (Case-Sensitive Server)
+
+| URL | File | Description |
+|-----|------|-------------|
+| `/Phantom.ai/dashboard.html` | `dashboard.html` | Main dashboard (canonical, lowercase) |
+| `/Phantom.ai/login-portal.html` | `login-portal.html` | Login portal (canonical, lowercase) |
+
+**Important:** Use lowercase filenames only on production (case-sensitive server).
+Legacy files `Dashboard.html` and `phantom.ai-login-portal.html` are redirect stubs.
+
+---
+
+## 🔐 ROMA Trust and Security
+
+- Trust state fetched from `PHANTOM_CONFIG.ROMA_API_BASE + '/security/roma'`
+- Endpoint: `GET /api/security/roma` (handled by `api/security/roma.php`)
+- Trust states: `VERIFIED` | `DEGRADED` | `UNVERIFIED` | `UNKNOWN`
+- Protected operations blocked when trust is not `VERIFIED`
+- No static "protected" claims — all trust signals are runtime-true
+
+---
+
+## ⚙️ AI Settings (ChatGPT + Claude)
+
+Settings are saved via `assets/js/phantom-settings.js`:
+- Persisted to `localStorage` (primary) and optionally to session via `api/settings`
+- ChatGPT API key: enter in Settings → Models & API → OpenAI API Key → click **Test**
+- Claude API key: enter in Settings → Models & API → Anthropic API Key → click **Test**
+- Test buttons call the respective API's models endpoint to validate the key
 
 ---
 
@@ -10,14 +43,14 @@ All frontend development and CSS layout fixes have been successfully completed. 
 
 ### Frontend Implementation (Phase 1 - 100% Complete)
 
-#### ✅ Core Portal Pages
-- **Login Portal** (`Phantom.ai.portal.html`) - Restored original design with legal acknowledgment modal
-- **Dashboard** (`phantom-defined.html`) - Main dashboard with navigation and overview
-- **Workspace** (`Phantom.ai.workspace.html`) - Project/task management interface
-- **Files** (`Phantom.ai.files.html`) - File & asset management (CSS fixed, content ready for backend)
-- **Review** (`Phantom.ai.review.html`) - AI output validation & decision surface (fully reengineered)
-- **Audit Log** (`Phantom.ai.auditlog.html`) - Activity tracking interface
-- **Settings** (`Phantom.ai.settings.html`) - Configuration management with AI credentials
+#### ✅ Core Portal Pages (March 2026 — Canonical)
+- **Login Portal** (`login-portal.html`) - Canonical login with ROMA trust badge and Phantom-scoped config
+- **Dashboard** (`dashboard.html`) - Main dashboard with ROMA Execution Header, trust gating, AI settings
+- **Workspace** (`public/Phantom.ai.workspace.html`) - Project/task management interface
+- **Files** (`public/Phantom.ai.files.html`) - File & asset management (CSS fixed, content ready for backend)
+- **Review** (`public/Phantom.ai.review.html`) - AI output validation & decision surface (fully reengineered)
+- **Audit Log** (`public/Phantom.ai.auditlog.html`) - Activity tracking interface
+- **Settings** (`public/Phantom.ai.settings.html`) - Configuration management with AI credentials
 
 #### ✅ Layout & Design Fixes
 - **Three-Column Layout** - Fixed critical CSS rendering issue on Review and Files pages

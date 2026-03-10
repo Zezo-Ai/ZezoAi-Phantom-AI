@@ -62,7 +62,15 @@ try {
         case 'api/audit/log':
             require __DIR__ . '/api/audit/log.php';
             break;
-            
+
+        case 'api/security/roma':
+            require __DIR__ . '/api/security/roma.php';
+            break;
+
+        case 'api/settings':
+            require __DIR__ . '/api/settings/index.php';
+            break;
+
         default:
             http_response_code(404);
             echo json_encode([
@@ -73,7 +81,9 @@ try {
                     '/api/audit/list',
                     '/api/truai/arbitrate',
                     '/api/truai/maintenance',
-                    '/api/audit/log'
+                    '/api/audit/log',
+                    '/api/security/roma',
+                    '/api/settings'
                 ]
             ]);
             break;
