@@ -23,9 +23,15 @@
 // Session already started by router.php via phantom_start_session()
 
 $checks = [
-    'encryption_keys' => true,
-    'session'         => (session_status() === PHP_SESSION_ACTIVE),
-    'workspace'       => true,
+    // NOTE: These are stub checks for the frontend to function while the full backend stack
+    // is being implemented. In production, replace each `true` with real validation:
+    //   encryption_keys:    verify AES-256-GCM key material is loaded and rotated
+    //   session:            verify active PHP session with valid auth token
+    //   workspace:          verify workspace directory exists and is accessible
+    //   workspace_writable: verify workspace directory is writable by the PHP process
+    'encryption_keys'    => true,
+    'session'            => (session_status() === PHP_SESSION_ACTIVE),
+    'workspace'          => true,
     'workspace_writable' => true,
 ];
 

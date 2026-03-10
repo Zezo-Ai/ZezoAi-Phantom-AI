@@ -27,7 +27,7 @@ window.PHANTOM_TRUST = (function () {
   function getRomaApiBase() {
     return (window.PHANTOM_CONFIG && window.PHANTOM_CONFIG.ROMA_API_BASE)
       ? window.PHANTOM_CONFIG.ROMA_API_BASE
-      : (window.location.origin + '/ROMA/api/v1').replace(/\/ROMA\/ROMA/, '/ROMA');
+      : (window.location.origin + '/Phantom.ai/api/v1').replace(/\/Phantom\.ai\/Phantom\.ai/, '/Phantom.ai');
   }
 
   function _notify() {

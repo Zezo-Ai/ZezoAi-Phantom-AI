@@ -541,21 +541,21 @@
         function updateRoma(data) {
           var el = document.getElementById('romaIndicator');
           if (!el) return;
-          // Only show truthful runtime state — no static "protected" claim
-          if (data && data.trust_state === 'VERIFIED' && data.portal_protected && data.monitor === 'active') {
-            el.textContent = 'Roma \u2022 Portal Protected \u2022 Monitor Active';
+          // Single source of truth: trust_state from ROMA API
+          // Only show "protected" when trust_state is explicitly VERIFIED
+          var ts = (data && data.trust_state) ? data.trust_state : 'UNKNOWN';
+          if (ts === 'VERIFIED') {
+            el.textContent = 'Roma \u2022 VERIFIED \u2022 Monitor Active';
             el.classList.add('confirmed');
-          } else if (data && data.trust_state === 'DEGRADED') {
-            el.textContent = 'Roma \u2022 Degraded \u2014 Escalation Active';
+          } else if (ts === 'DEGRADED') {
+            el.textContent = 'Roma \u2022 DEGRADED \u2014 Escalation Active';
             el.classList.remove('confirmed');
-          } else if (data && (data.trust_state === 'UNVERIFIED' || data.trust_state === 'BLOCKED')) {
-            el.textContent = 'Roma \u2022 Unverified \u2014 Execution Blocked';
-            el.classList.remove('confirmed');
-          } else if (data && data.trust_state === 'UNKNOWN') {
-            el.textContent = 'Roma \u2022 Checking\u2026';
+          } else if (ts === 'UNVERIFIED' || ts === 'BLOCKED') {
+            el.textContent = 'Roma \u2022 UNVERIFIED \u2014 Execution Blocked';
             el.classList.remove('confirmed');
           } else {
-            el.textContent = 'Roma \u2022 Unreachable';
+            // UNKNOWN or any unexpected value — do not claim protection
+            el.textContent = 'Roma \u2022 Checking\u2026';
             el.classList.remove('confirmed');
           }
         }

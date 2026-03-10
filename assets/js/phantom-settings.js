@@ -169,6 +169,11 @@ window.PHANTOM_SETTINGS = (function () {
     /**
      * Test ChatGPT (OpenAI) API key.
      * Shows result in element with id "openai-test-result" if present.
+     *
+     * Security note: This test calls OpenAI's API directly from the browser.
+     * The key will be visible in browser network traffic. For production environments,
+     * prefer a server-side proxy test (implement POST /api/settings/test-openai).
+     * This client-side test is provided for local/development use.
      */
     testChatGPTKey: async function () {
       var keyEl  = document.getElementById('settings-openai-key');
@@ -210,6 +215,11 @@ window.PHANTOM_SETTINGS = (function () {
     /**
      * Test Claude (Anthropic) API key.
      * Shows result in element with id "anthropic-test-result" if present.
+     *
+     * Security note: This test calls Anthropic's API directly from the browser.
+     * The key will be visible in browser network traffic. For production environments,
+     * prefer a server-side proxy test (implement POST /api/settings/test-anthropic).
+     * This client-side test is provided for local/development use.
      */
     testClaudeKey: async function () {
       var keyEl = document.getElementById('settings-anthropic-key');
